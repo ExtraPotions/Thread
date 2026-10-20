@@ -1,0 +1,570 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T19:45:37.356390+00:00",
+  "title": "Design System: Thread",
+  "extensions": {
+    "colorMeta": {
+      "native-dark-bg": {
+        "role": "neutral",
+        "displayName": "Native Dark Bg",
+        "tonalRamp": [
+          "oklch(0.1500 0.00635 236.98)",
+          "oklch(0.2643 0.00635 236.98)",
+          "oklch(0.3786 0.00635 236.98)",
+          "oklch(0.4929 0.00635 236.98)",
+          "oklch(0.6071 0.00635 236.98)",
+          "oklch(0.7214 0.00635 236.98)",
+          "oklch(0.8357 0.00635 236.98)",
+          "oklch(0.9500 0.00635 236.98)"
+        ]
+      },
+      "native-dark-panel": {
+        "role": "neutral",
+        "displayName": "Native Dark Panel",
+        "tonalRamp": [
+          "oklch(0.1500 0.00841 240.27)",
+          "oklch(0.2643 0.00841 240.27)",
+          "oklch(0.3786 0.00841 240.27)",
+          "oklch(0.4929 0.00841 240.27)",
+          "oklch(0.6071 0.00841 240.27)",
+          "oklch(0.7214 0.00841 240.27)",
+          "oklch(0.8357 0.00841 240.27)",
+          "oklch(0.9500 0.00841 240.27)"
+        ]
+      },
+      "native-dark-text": {
+        "role": "neutral",
+        "displayName": "Native Dark Text",
+        "tonalRamp": [
+          "oklch(0.1500 0.00506 228.82)",
+          "oklch(0.2643 0.00506 228.82)",
+          "oklch(0.3786 0.00506 228.82)",
+          "oklch(0.4929 0.00506 228.82)",
+          "oklch(0.6071 0.00506 228.82)",
+          "oklch(0.7214 0.00506 228.82)",
+          "oklch(0.8357 0.00506 228.82)",
+          "oklch(0.9500 0.00506 228.82)"
+        ]
+      },
+      "native-dark-muted": {
+        "role": "neutral",
+        "displayName": "Native Dark Muted",
+        "tonalRamp": [
+          "oklch(0.1500 0.01744 230.97)",
+          "oklch(0.2643 0.01744 230.97)",
+          "oklch(0.3786 0.01744 230.97)",
+          "oklch(0.4929 0.01744 230.97)",
+          "oklch(0.6071 0.01744 230.97)",
+          "oklch(0.7214 0.01744 230.97)",
+          "oklch(0.8357 0.01744 230.97)",
+          "oklch(0.9500 0.01744 230.97)"
+        ]
+      },
+      "native-dark-accent": {
+        "role": "primary",
+        "displayName": "Native Dark Accent",
+        "tonalRamp": [
+          "oklch(0.1500 0.11782 254.50)",
+          "oklch(0.2643 0.11782 254.50)",
+          "oklch(0.3786 0.11782 254.50)",
+          "oklch(0.4929 0.11782 254.50)",
+          "oklch(0.6071 0.11782 254.50)",
+          "oklch(0.7214 0.11782 254.50)",
+          "oklch(0.8357 0.11782 254.50)",
+          "oklch(0.9500 0.11782 254.50)"
+        ]
+      },
+      "native-dark-accent2": {
+        "role": "primary",
+        "displayName": "Native Dark Accent2",
+        "tonalRamp": [
+          "oklch(0.1500 0.10898 260.08)",
+          "oklch(0.2643 0.10898 260.08)",
+          "oklch(0.3786 0.10898 260.08)",
+          "oklch(0.4929 0.10898 260.08)",
+          "oklch(0.6071 0.10898 260.08)",
+          "oklch(0.7214 0.10898 260.08)",
+          "oklch(0.8357 0.10898 260.08)",
+          "oklch(0.9500 0.10898 260.08)"
+        ]
+      },
+      "native-light-bg": {
+        "role": "neutral",
+        "displayName": "Native Light Bg",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "native-light-panel": {
+        "role": "neutral",
+        "displayName": "Native Light Panel",
+        "tonalRamp": [
+          "oklch(0.1500 0.00252 228.78)",
+          "oklch(0.2643 0.00252 228.78)",
+          "oklch(0.3786 0.00252 228.78)",
+          "oklch(0.4929 0.00252 228.78)",
+          "oklch(0.6071 0.00252 228.78)",
+          "oklch(0.7214 0.00252 228.78)",
+          "oklch(0.8357 0.00252 228.78)",
+          "oklch(0.9500 0.00252 228.78)"
+        ]
+      },
+      "native-light-text": {
+        "role": "neutral",
+        "displayName": "Native Light Text",
+        "tonalRamp": [
+          "oklch(0.1500 0.01608 232.61)",
+          "oklch(0.2643 0.01608 232.61)",
+          "oklch(0.3786 0.01608 232.61)",
+          "oklch(0.4929 0.01608 232.61)",
+          "oklch(0.6071 0.01608 232.61)",
+          "oklch(0.7214 0.01608 232.61)",
+          "oklch(0.8357 0.01608 232.61)",
+          "oklch(0.9500 0.01608 232.61)"
+        ]
+      },
+      "native-light-muted": {
+        "role": "neutral",
+        "displayName": "Native Light Muted",
+        "tonalRamp": [
+          "oklch(0.1500 0.02727 232.41)",
+          "oklch(0.2643 0.02727 232.41)",
+          "oklch(0.3786 0.02727 232.41)",
+          "oklch(0.4929 0.02727 232.41)",
+          "oklch(0.6071 0.02727 232.41)",
+          "oklch(0.7214 0.02727 232.41)",
+          "oklch(0.8357 0.02727 232.41)",
+          "oklch(0.9500 0.02727 232.41)"
+        ]
+      },
+      "native-light-accent": {
+        "role": "primary",
+        "displayName": "Native Light Accent",
+        "tonalRamp": [
+          "oklch(0.1500 0.13771 258.55)",
+          "oklch(0.2643 0.13771 258.55)",
+          "oklch(0.3786 0.13771 258.55)",
+          "oklch(0.4929 0.13771 258.55)",
+          "oklch(0.6071 0.13771 258.55)",
+          "oklch(0.7214 0.13771 258.55)",
+          "oklch(0.8357 0.13771 258.55)",
+          "oklch(0.9500 0.13771 258.55)"
+        ]
+      },
+      "native-line": {
+        "role": "neutral",
+        "displayName": "Native Line",
+        "tonalRamp": [
+          "oklch(0.1500 0.02510 233.66)",
+          "oklch(0.2643 0.02510 233.66)",
+          "oklch(0.3786 0.02510 233.66)",
+          "oklch(0.4929 0.02510 233.66)",
+          "oklch(0.6071 0.02510 233.66)",
+          "oklch(0.7214 0.02510 233.66)",
+          "oklch(0.8357 0.02510 233.66)",
+          "oklch(0.9500 0.02510 233.66)"
+        ]
+      },
+      "gem-bg": {
+        "role": "neutral",
+        "displayName": "Gem Bg",
+        "tonalRamp": [
+          "oklch(0.1500 0.01835 42.80)",
+          "oklch(0.2643 0.01835 42.80)",
+          "oklch(0.3786 0.01835 42.80)",
+          "oklch(0.4929 0.01835 42.80)",
+          "oklch(0.6071 0.01835 42.80)",
+          "oklch(0.7214 0.01835 42.80)",
+          "oklch(0.8357 0.01835 42.80)",
+          "oklch(0.9500 0.01835 42.80)"
+        ]
+      },
+      "gem-panel": {
+        "role": "neutral",
+        "displayName": "Gem Panel",
+        "tonalRamp": [
+          "oklch(0.1500 0.02562 47.65)",
+          "oklch(0.2643 0.02562 47.65)",
+          "oklch(0.3786 0.02562 47.65)",
+          "oklch(0.4929 0.02562 47.65)",
+          "oklch(0.6071 0.02562 47.65)",
+          "oklch(0.7214 0.02562 47.65)",
+          "oklch(0.8357 0.02562 47.65)",
+          "oklch(0.9500 0.02562 47.65)"
+        ]
+      },
+      "gem-line": {
+        "role": "neutral",
+        "displayName": "Gem Line",
+        "tonalRamp": [
+          "oklch(0.1500 0.08393 52.36)",
+          "oklch(0.2643 0.08393 52.36)",
+          "oklch(0.3786 0.08393 52.36)",
+          "oklch(0.4929 0.08393 52.36)",
+          "oklch(0.6071 0.08393 52.36)",
+          "oklch(0.7214 0.08393 52.36)",
+          "oklch(0.8357 0.08393 52.36)",
+          "oklch(0.9500 0.08393 52.36)"
+        ]
+      },
+      "gem-text": {
+        "role": "neutral",
+        "displayName": "Gem Text",
+        "tonalRamp": [
+          "oklch(0.1500 0.02568 67.52)",
+          "oklch(0.2643 0.02568 67.52)",
+          "oklch(0.3786 0.02568 67.52)",
+          "oklch(0.4929 0.02568 67.52)",
+          "oklch(0.6071 0.02568 67.52)",
+          "oklch(0.7214 0.02568 67.52)",
+          "oklch(0.8357 0.02568 67.52)",
+          "oklch(0.9500 0.02568 67.52)"
+        ]
+      },
+      "gem-muted": {
+        "role": "neutral",
+        "displayName": "Gem Muted",
+        "tonalRamp": [
+          "oklch(0.1500 0.05535 55.14)",
+          "oklch(0.2643 0.05535 55.14)",
+          "oklch(0.3786 0.05535 55.14)",
+          "oklch(0.4929 0.05535 55.14)",
+          "oklch(0.6071 0.05535 55.14)",
+          "oklch(0.7214 0.05535 55.14)",
+          "oklch(0.8357 0.05535 55.14)",
+          "oklch(0.9500 0.05535 55.14)"
+        ]
+      },
+      "gem-accent": {
+        "role": "primary",
+        "displayName": "Gem Accent",
+        "tonalRamp": [
+          "oklch(0.1500 0.18734 34.52)",
+          "oklch(0.2643 0.18734 34.52)",
+          "oklch(0.3786 0.18734 34.52)",
+          "oklch(0.4929 0.18734 34.52)",
+          "oklch(0.6071 0.18734 34.52)",
+          "oklch(0.7214 0.18734 34.52)",
+          "oklch(0.8357 0.18734 34.52)",
+          "oklch(0.9500 0.18734 34.52)"
+        ]
+      },
+      "gem-accent2": {
+        "role": "primary",
+        "displayName": "Gem Accent2",
+        "tonalRamp": [
+          "oklch(0.1500 0.12058 57.74)",
+          "oklch(0.2643 0.12058 57.74)",
+          "oklch(0.3786 0.12058 57.74)",
+          "oklch(0.4929 0.12058 57.74)",
+          "oklch(0.6071 0.12058 57.74)",
+          "oklch(0.7214 0.12058 57.74)",
+          "oklch(0.8357 0.12058 57.74)",
+          "oklch(0.9500 0.12058 57.74)"
+        ]
+      },
+      "gem-focus": {
+        "role": "primary",
+        "displayName": "Gem Focus",
+        "tonalRamp": [
+          "oklch(0.1500 0.07908 65.28)",
+          "oklch(0.2643 0.07908 65.28)",
+          "oklch(0.3786 0.07908 65.28)",
+          "oklch(0.4929 0.07908 65.28)",
+          "oklch(0.6071 0.07908 65.28)",
+          "oklch(0.7214 0.07908 65.28)",
+          "oklch(0.8357 0.07908 65.28)",
+          "oklch(0.9500 0.07908 65.28)"
+        ]
+      },
+      "gem-link": {
+        "role": "primary",
+        "displayName": "Gem Link",
+        "tonalRamp": [
+          "oklch(0.1500 0.10038 62.43)",
+          "oklch(0.2643 0.10038 62.43)",
+          "oklch(0.3786 0.10038 62.43)",
+          "oklch(0.4929 0.10038 62.43)",
+          "oklch(0.6071 0.10038 62.43)",
+          "oklch(0.7214 0.10038 62.43)",
+          "oklch(0.8357 0.10038 62.43)",
+          "oklch(0.9500 0.10038 62.43)"
+        ]
+      },
+      "contrast-bg": {
+        "role": "neutral",
+        "displayName": "Contrast Bg",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "contrast-panel": {
+        "role": "neutral",
+        "displayName": "Contrast Panel",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "contrast-line": {
+        "role": "neutral",
+        "displayName": "Contrast Line",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "contrast-text": {
+        "role": "neutral",
+        "displayName": "Contrast Text",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "contrast-muted": {
+        "role": "neutral",
+        "displayName": "Contrast Muted",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "contrast-accent": {
+        "role": "primary",
+        "displayName": "Contrast Accent",
+        "tonalRamp": [
+          "oklch(0.1500 0.00000 0.00)",
+          "oklch(0.2643 0.00000 0.00)",
+          "oklch(0.3786 0.00000 0.00)",
+          "oklch(0.4929 0.00000 0.00)",
+          "oklch(0.6071 0.00000 0.00)",
+          "oklch(0.7214 0.00000 0.00)",
+          "oklch(0.8357 0.00000 0.00)",
+          "oklch(0.9500 0.00000 0.00)"
+        ]
+      },
+      "error-light": {
+        "role": "neutral",
+        "displayName": "Error Light",
+        "tonalRamp": [
+          "oklch(0.1500 0.17004 25.63)",
+          "oklch(0.2643 0.17004 25.63)",
+          "oklch(0.3786 0.17004 25.63)",
+          "oklch(0.4929 0.17004 25.63)",
+          "oklch(0.6071 0.17004 25.63)",
+          "oklch(0.7214 0.17004 25.63)",
+          "oklch(0.8357 0.17004 25.63)",
+          "oklch(0.9500 0.17004 25.63)"
+        ]
+      },
+      "error-dark": {
+        "role": "neutral",
+        "displayName": "Error Dark",
+        "tonalRamp": [
+          "oklch(0.1500 0.10098 22.46)",
+          "oklch(0.2643 0.10098 22.46)",
+          "oklch(0.3786 0.10098 22.46)",
+          "oklch(0.4929 0.10098 22.46)",
+          "oklch(0.6071 0.10098 22.46)",
+          "oklch(0.7214 0.10098 22.46)",
+          "oklch(0.8357 0.10098 22.46)",
+          "oklch(0.9500 0.10098 22.46)"
+        ]
+      },
+      "selection-bg": {
+        "role": "neutral",
+        "displayName": "Selection Bg",
+        "tonalRamp": [
+          "oklch(0.1500 0.07327 256.00)",
+          "oklch(0.2643 0.07327 256.00)",
+          "oklch(0.3786 0.07327 256.00)",
+          "oklch(0.4929 0.07327 256.00)",
+          "oklch(0.6071 0.07327 256.00)",
+          "oklch(0.7214 0.07327 256.00)",
+          "oklch(0.8357 0.07327 256.00)",
+          "oklch(0.9500 0.07327 256.00)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "menu": {
+        "displayName": "Menu",
+        "purpose": "Compact Core menu base."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "THREAD title."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Core menu controls and navigation."
+      },
+      "context": {
+        "displayName": "Context",
+        "purpose": "Page context tools, initially 12px."
+      },
+      "help": {
+        "displayName": "Help",
+        "purpose": "Core help and notes."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "Core menu subtitle."
+      }
+    },
+    "shadows": [
+      {
+        "name": "menu-and-context",
+        "value": "0 4px 10px #0003",
+        "purpose": "Menu, notice and local context overlay separation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "lean-menu",
+        "value": "none",
+        "purpose": "Lean menu layout transitions are disabled."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "context-narrow",
+        "value": "600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Menu action",
+      "kind": "button",
+      "refersTo": "menu-button",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<button class=\"ds-menu-button\">Use default view now</button>",
+      "css": ".ds-menu-button{font:400 12px/1.35 \"Segoe UI\",system-ui,sans-serif;color:var(--theme-text,#edf1f3);background:var(--theme-panel,#181c1f);border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;padding:5px 8px;min-height:30px;cursor:pointer;}.ds-menu-button:hover{cursor:pointer}.ds-menu-button:focus-visible{outline:2px solid var(--theme-focus,var(--theme-accent2,#90baff));outline-offset:2px}.ds-field-label{display:grid;gap:4px;font:12px/1.5 \"Segoe UI\",sans-serif;color:var(--theme-text,#edf1f3)}"
+    },
+    {
+      "name": "Menu field",
+      "kind": "input",
+      "refersTo": "menu-input",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<label class=\"ds-field-label\">Shortcut label <input class=\"ds-menu-input\" value=\"Reading\"></label>",
+      "css": ".ds-menu-input{font:400 12px/1.35 \"Segoe UI\",system-ui,sans-serif;color:var(--theme-text,#edf1f3);background:var(--theme-panel,#181c1f);border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;padding:6px;max-width:100%;}.ds-menu-input:hover{cursor:pointer}.ds-menu-input:focus-visible{outline:2px solid var(--theme-focus,var(--theme-accent2,#90baff));outline-offset:2px}.ds-field-label{display:grid;gap:4px;font:12px/1.5 \"Segoe UI\",sans-serif;color:var(--theme-text,#edf1f3)}"
+    },
+    {
+      "name": "Menu route",
+      "kind": "nav",
+      "refersTo": "menu-navigation",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<nav aria-label=\"THREAD\"><button class=\"ds-menu-navigation\" aria-current=\"page\">Feed</button></nav>",
+      "css": ".ds-menu-navigation{font:400 12px/1.35 \"Segoe UI\",system-ui,sans-serif;color:var(--theme-text,#edf1f3);background:var(--theme-panel,#181c1f);border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;padding:5px 3px;min-height:30px;min-width:76px;text-align:left;background:color-mix(in srgb,var(--theme-accent2,#90baff) 13%,var(--theme-panel,#181c1f));border-color:var(--theme-focus,var(--theme-accent2,#90baff));}.ds-menu-navigation:hover{cursor:pointer}.ds-menu-navigation:focus-visible{outline:2px solid var(--theme-focus,var(--theme-accent2,#90baff));outline-offset:2px}.ds-field-label{display:grid;gap:4px;font:12px/1.5 \"Segoe UI\",sans-serif;color:var(--theme-text,#edf1f3)}"
+    },
+    {
+      "name": "Rectangular switch off",
+      "kind": "button",
+      "refersTo": "switch-off",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<button class=\"ds-switch\" role=\"switch\" aria-label=\"Enable companion\" aria-checked=\"false\"></button>",
+      "css": ".ds-switch{position:relative;width:34px;height:24px;min-width:34px;padding:0;border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;background:var(--theme-panel,#181c1f);cursor:pointer}.ds-switch::after{content:\"\";position:absolute;width:12px;height:16px;top:3px;left:3px;border-radius:2px;background:var(--theme-muted,#b4c1c8)}.ds-switch[aria-checked=true]{background:var(--theme-accent,#5c93d7)}.ds-switch[aria-checked=true]::after{transform:translateX(14px);background:var(--theme-bg,#0e1113)}.ds-switch:hover{cursor:pointer}.ds-switch:focus-visible{outline:2px solid var(--theme-focus,var(--theme-accent2,#90baff));outline-offset:2px}"
+    },
+    {
+      "name": "Rectangular switch on",
+      "kind": "button",
+      "refersTo": "switch-on",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<button class=\"ds-switch\" role=\"switch\" aria-label=\"Enable companion\" aria-checked=\"true\"></button>",
+      "css": ".ds-switch{position:relative;width:34px;height:24px;min-width:34px;padding:0;border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;background:var(--theme-panel,#181c1f);cursor:pointer}.ds-switch::after{content:\"\";position:absolute;width:12px;height:16px;top:3px;left:3px;border-radius:2px;background:var(--theme-muted,#b4c1c8)}.ds-switch[aria-checked=true]{background:var(--theme-accent,#5c93d7)}.ds-switch[aria-checked=true]::after{transform:translateX(14px);background:var(--theme-bg,#0e1113)}.ds-switch:hover{cursor:pointer}.ds-switch:focus-visible{outline:2px solid var(--theme-focus,var(--theme-accent2,#90baff));outline-offset:2px}"
+    },
+    {
+      "name": "Reading card",
+      "kind": "card",
+      "refersTo": "reading-card",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<article class=\"ds-reading-card\"><h3>A useful discussion</h3><p>Native content retains metadata, actions and gates.</p></article>",
+      "css": ".ds-reading-card{border:1px solid var(--color-neutral-border,#71828c);border-radius:8px;padding:14px;margin-block:10px;min-width:0;max-width:100%;overflow-wrap:anywhere;font-family:\"Segoe UI\",system-ui,sans-serif}"
+    },
+    {
+      "name": "Context popover",
+      "kind": "custom",
+      "refersTo": "context-popover",
+      "description": "Extracted appearance from THREAD and bundled owned Core; illustrative static markup.",
+      "html": "<section class=\"ds-context\"><h2>Parent context</h2><p>Local context beside loaded content.</p><button class=\"ds-context-close\">Close</button></section>",
+      "css": ".ds-context{width:350px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;padding:14px;border:1px solid var(--rc-line,#71828c);border-radius:7px;box-shadow:0 4px 10px #0003;color:var(--rc-text,#edf1f3);background:var(--rc-bg,#0e1113);font:400 12px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-context h2{font-size:16px;margin:0 0 8px}.ds-context-close{font:400 12px/1.35 \"Segoe UI\",system-ui,sans-serif;color:var(--theme-text,#edf1f3);background:var(--theme-panel,#181c1f);border:1px solid var(--theme-muted,#b4c1c8);border-radius:5px;min-height:32px;padding:5px 8px;border-radius:6px}.ds-context-close:hover{cursor:pointer}.ds-context-close:focus-visible{outline:2px solid var(--rc-blue,#90baff);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Reading stays on the page",
+    "overview": "Thread extends the approved native-style reading world: quiet neutral surfaces, readable system sans, blue interaction cues, compact settings and local context beside native content. Pear Crystal identifies THREAD with the owned orange faceted gem in assets/thread-gem.svg; keep its geometry free of letters or pictograms. Sole product authorship is expDARE.\n\nThe default menu follows native site colors with light/dark fallbacks. The optional gem menu theme adds warm dark surfaces and orange accents only to THREAD menu and notice surfaces. It starts off. This document captures an established implementation, not a replacement visual identity.",
+    "keyCharacteristics": [
+      "Native reading content remains central.",
+      "Rectangular switches and rounded rectangular controls.",
+      "Readable text across spacing presets.",
+      "Secondary settings disclose in place."
+    ],
+    "rules": [
+      {
+        "name": "The Menu Scope Rule",
+        "body": "Gem colors affect THREAD menus and notices only; page content and other suite products retain their own appearance.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Density Rule",
+        "body": "Tighten spacing rather than shrinking reading text.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do preserve native foreground/background pairs and visible focus.",
+      "Do keep the gem theme optional, off by default and limited to THREAD menu/notice surfaces.",
+      "Do reuse the bundled Core launcher, menu, menu-size controls and notice components.",
+      "Do preserve one shared launcher, native rail controls and reachable viewport fallbacks.",
+      "Do keep native actions, metadata, flair and spoiler gates available across views.",
+      "Do label authored fixtures and distinguish local annotations from native server actions."
+    ],
+    "donts": [
+      "Don't introduce pill controls or checkboxes.",
+      "Don't recolor the page or other products with the gem theme.",
+      "Don't replace the selected gem with letters, pictograms or new artwork.",
+      "Don't infer live Reddit, installed Vivaldi, mobile-web or long-session validation from fixtures.",
+      "Don't treat a limited switch correction verdict as whole-product approval."
+    ]
+  }
+}

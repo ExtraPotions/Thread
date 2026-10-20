@@ -1,0 +1,26 @@
+name: Manual tests
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: THREAD
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ExtraPotions/exp-core
+          ref: v3.9.8
+          path: exp-core
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: exp-core
+      - run: npx playwright install --with-deps chromium --only-shell
+        working-directory: exp-core
+      - run: node THREAD/scripts/build.cjs --check
+      - run: node --test --test-concurrency=2 THREAD/tests/*.test.cjs

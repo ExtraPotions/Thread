@@ -1,0 +1,42 @@
+# Thread local development
+
+Authorship solely expDARE. The first-release candidate targets https://github.com/ExtraPotions/Thread; public repository creation is pending explicit approval. Commit, push and publication follow workspace authorization rules. The internal product ID is `thread`, root `exp-thread-root`, storage `exp:v1:thread:<native-account>:*`, page attributes `data-rc-*`.
+
+Use Node 24.21+ and the adjacent exp-core workspace's pinned Playwright 1.64.1. The browser runner explicitly selects approved headless shell 156.0.8078.4, revision1248; no full Chromium153 or automated Vivaldi.
+
+```
+node ../exp-core/scripts/build.cjs
+node ../exp-core/scripts/sync-products.cjs THREAD
+npm run build
+npm run build:check
+npm test
+npm run screenshots
+```
+
+The Core commands above are run from exp-core (or use its script's full path from the workspace root). Build reads vendor bundle hash and creates one readable `thread.user.js` with original runtime and inline owned SVG via a disposable Blob URL. It does not install anything. Tests resolve Playwright from this folder if present, otherwise the adjacent Core installation. No dependency installation is needed for this workspace build.
+
+For shared registration changes, deliberately sync/build all intended consumers. Core menu/annotation/coexistence scripts include Thread via a dedicated modern-Reddit fixture lane, since their established four-product fixtures use different sites. `suite:local` can copy the uncommitted provisional folder without initializing a repository. No command is a release gate. The local-only release preparer refuses publication setup.
+
+Source modules: model/store validation, disposable regex, conservative native adapter, bounded runtime, Core-backed UI, bootstrap. `tests/fixture.cjs` contains entirely authored page content and simulated native actions; it is not captured Reddit markup. The native desktop header/account components and feed wrappers were observed during the prior live audit; the current candidate's installed behavior remains unverified. Unsupported native actions report unavailable; there are no guessed API endpoints.
+
+## Native DOM contracts and evidence
+
+Identity does not require a profile drawer to be open. `src/adapter.js` reads `shreddit-app` identity attributes, native `achievements-entrypoint[username]` / `after-login-toast-dispatcher[username]`, and canonical `/user/<name>/` links within the header or user menu. It excludes owned controls and post/comment descendants, normalizes names, and accepts a single distinct valid name. Conflicting names return unknown identity and pause private records. A native login link can identify the guest scope when no account name exists. These are DOM observations, with no identity API request or account-switch action.
+
+The original flat feed fixture did not represent native article wrappers with direct `hr` separators or the `shreddit-post` `view-type` contract. The current runtime marks compatible grid wrappers, hides only direct `hr` children of the marked grid container, and leaves other unmarked children spanning the grid. Cards/Grid set `cardView`; Compact Cards/List set `compactView`. Returning to Native or releasing a post restores the saved native attribute only while it still equals Thread's applied value; a later site-owned value is preserved. This describes the local implementation, not acceptance of Reddit's actual shadow rendering.
+
+The reduced feed strip remains sticky below the native header and contains the view selector plus configured destinations/sort/loading controls. Previous/Next and “Jump between loaded comments” belong to comment pages. Jump scope selects navigation targets; it does not filter visible comments or search unloaded replies. Back to top is a separate fixed action, shown after scrolling. Persistent and temporary sidebar controls live in Feed → Sidebars.
+
+`tests/browser.cjs` has authored cases for native component identity/conflicts, wrapped feed separators and native attribute restoration, comment-only jump scope, the sticky strip, separate top action and Feed sidebar controls. The prior `local-verification/thread-refinement-20261020/browser-final.log` records 35 passing browser groups with no page errors; that is retained fixture evidence, not a test run performed by this documentation pass or proof for the current release candidate. Native feed-action visibility and parent-preview findings remain outside this change. Installed Vivaldi, touch, screen-reader and long-session acceptance remain unverified. Account switching remains deferred.
+
+## Local runtime and distribution
+
+Storage bounds: 100 rules, 1,000 people with explicit capacity failure, 100 thread visits × 500 read IDs, 100 collapse records × 500 IDs, up to500 hidden-history records, 20 pinned native destinations. User-authored people records do not expire silently; history/visits expire under the configured retention. No post bodies/media are stored. At most250 nearby content nodes and250 exposure timers are retained; regex batches are sequential, at most250 texts ×4,000 characters, patterns256 characters and90ms wall-clock deadline. A page scan examines at most2,000 candidate nodes. Automatic loading starts off and caps each content type at1–5 visible native batches per route; manual retry cannot reset its budget. Route changes cancel work and clear transient node references.
+
+Native account identity is read only from narrowly identified header/app surfaces; unknown identity pauses private rules, people and reading/history records. There is no credential access or account switching. Separate tabs re-read current data before record updates and receive userscript storage listeners. Import/export is deliberate and validated; diagnostics omit usernames, page text, URLs, personal records and credentials.
+
+The opener uses Core's existing SITE_SLOTS machinery. On www/sh Reddit, only while a Thread launcher is registered, Core derives a slot from the native left rail and accessible collapse/expand handle. The circular shared gem matches the smaller native handle dimension (24–48px, normally32px), straddles the rail edge and sits8px below the handle; menus dock beside it, or below at narrow widths. Missing/collapsed rails use a top-left fallback below the native header/handle. Resize, bounded page-mutation invalidation and scrolling recalculate geometry; replacing a rail releases the previous size observation. Reddit flyouts update their slot when the rail changes rather than freezing stale geometry. No native control is repurposed and no extra in-page anchor/launcher is inserted. Other sites and Reddit without Thread retain their existing placement. Version notices use Core's theme-bearing notice controller, with no fictitious release/install links.
+
+External blockers: own Reddit app registration and legitimate access/authentication have not been supplied. Karma/account-age/resolved nicknames/missing flair enrichment, API budget headers and rate-limit retry cannot truthfully run. Current official guidance requires registered OAuth access and says unauthenticated traffic is blocked. No other app's identity is used. Native video remains native; companion viewer currently covers first-party images only. Optional local snapshots/bookmark library are deferred.
+
+First-release metadata, install/support URLs and manual publication are prepared for ExtraPotions/Thread. Publish release uploads the selected committed userscript, gem and SHA256SUMS without rebuilding or testing. Manual tests check out matching Core beside Thread; Windows uses the approved shell and Linux uses the default Playwright headless shell. Prepare future patches with RELEASE_NOTES_JSON and npm run prepare:release:feature, then build and verify. Public repository creation remains pending; publication does not establish installed acceptance. The shared header heart uses the suite donation control.

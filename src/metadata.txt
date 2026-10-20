@@ -1,0 +1,24 @@
+// ==UserScript==
+// @name         Thread
+// @namespace    expDARE.ExtraPotions.THREAD
+// @version      0.1.0
+// @description  Your Reddit, refined. Reading, layout and local personal context for modern Reddit.
+// @author       expDARE
+// @license      PolyForm-Noncommercial-1.0.0
+// @icon         https://raw.githubusercontent.com/ExtraPotions/Thread/main/assets/thread-gem.svg
+// @homepageURL  https://github.com/ExtraPotions/Thread
+// @supportURL   https://github.com/ExtraPotions/Thread/issues
+// @updateURL    https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js
+// @downloadURL  https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js
+// @match        https://www.reddit.com/*
+// @match        https://sh.reddit.com/*
+// @match        https://old.reddit.com/*
+// @run-at       document-idle
+// @noframes
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @grant        GM_deleteValue
+// @grant        GM_listValues
+// @grant        GM_addValueChangeListener
+// @grant        GM_removeValueChangeListener
+// ==/UserScript==

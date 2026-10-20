@@ -1,0 +1,195 @@
+MODERN REDDIT COMPANION — BEHAVIORAL REQUIREMENTS, DRAFT 3
+Product authorship: expDARE. Local planning; no publication authorized.
+
+Purpose
+Enhance the current Reddit website with compact reading, useful personal context
+and navigation. Produce original code, copy, artwork and tests. Use authorized
+first-party Reddit evidence and our own suite components. Do not consult or reuse
+third-party enhancement implementations. The implementer must receive this file
+in a fresh session without the preceding reference-audit conversation.
+
+2026-10-20 scope amendment
+The expanded UI remains a disposable, isolated demonstration. It is not an
+installed userscript. Production implementation must be original, undertaken in
+a fresh implementation session with this behavior-only specification. No upstream
+implementation, assets, selectors or source files are implementation inputs.
+
+UI grouping and feature inventory
+Feed: current feed sort and default feed sort, per-community remembered choice,
+optional sort shortcut buttons, bounded automatic next-page loading, independent
+flair and awards visibility. A default applies when no explicit/remembered choice
+exists. Respect valid sorts for the current feed; Top needs a native time range.
+Community content expands in place: flair navigation, collapse highlights,
+hide recommendations. Post presentation expands separately: subtle hover surface,
+author, selectable text, long-text expansion, save visibility (always/upvoted/off),
+awards (show/upvoted/collapse/off), hide/dim/blur action. Restore remains accessible
+and does not discard a filter. Visible flair uses existing page data first;
+missing Home/Popular flair enrichment must not silently create an API crawl.
+
+Read: existing read/new tracking, density, parent context, keyboard and inline
+media. Navigation/media disclosure: show navigation buttons independently of
+keyboard shortcuts, scroll-top, zoomable lightbox, background close, background
+navigation. Left/right image-side background navigates when enabled; remaining
+background closes when enabled. Image/toolbar clicks never close inadvertently.
+Zoom must preserve fit, keyboard focus, resource cleanup and spoiler gates.
+Comment-page disclosure: sort shortcut buttons, remember sort, hide related posts,
+hide sticky conversation bar. Comment actions: bounded visible more-replies,
+share in context menu, dim negative scores, collapse pinned/AutoModerator,
+comment save. Do not run recursive expansion or change votes automatically.
+
+Look: theme and menu geometry; page-layout disclosure with wide mode, feed/comment
+width and offset in pixels, independent left/right sidebar visibility. Collapse
+is temporary and independent from removing a sidebar. Always provide a reachable
+restore control; clamp offsets to available space at narrow widths. Text/profile
+disclosure: content font default14px, UI default12px, simplify profile menu, old
+Reddit redirect modes suggest/redirect/off. Redirect is opt-in with loop prevention;
+do not change native logout/account/security actions or add account switching.
+
+Filters: literal and regex matching for posts/comments, scope/exceptions, reversible
+hide/dim/blur, recent hidden-post history and bounded retention. Invalid regex is
+an explicit recoverable error. Arbitrary regex evaluation must be isolated and
+time-bounded, not run unchecked on the main thread or retain every page node.
+History capacity zero disables recording; deleting history does not delete tags.
+
+People: custom tags/notes, optional user karma and account-age badge, nickname
+profile/nickname/both and maximum length. Prefer native page data; enrichment is
+off until legitimate API access is verified. Unknown/deleted users are distinct
+from a newly created user. Do not invent karma, badges or resolved nicknames.
+
+System: working app name, independent registered API identity, request-limit
+warnings, bounded retention, diagnostics, local version/changelog. Names alone
+provide no authentication. Do not impersonate another app or borrow its identity.
+Read X-Ratelimit-Used/Remaining/Reset when API access is implemented; pause optional
+enrichment and show retry timing on limits. No credentials in diagnostics.
+Official Reddit Data API Wiki, updated May11,2026: authenticated eligible clients
+have100 requests per minute per OAuth client ID, averaged over10 minutes.
+Unauthenticated traffic is blocked. The reference's100 total/10min claim is not
+the current official contract. Verify current terms/access before implementation.
+Source: https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki
+
+Support and Donations are different destinations. Support contains help,
+privacy-safe diagnostics and reports. The donation heart opens Donations only.
+Reset is separate and requires confirmation. No payment/report is sent by a demo.
+
+Current preview verification boundary
+Working on authored sample data: feed sort/default, controls visibility,
+sidebars, literal post filtering, treatment/history, read/navigation/actions,
+bounded sample pagination and visible reply loading, diagrams/lightbox and zoom,
+theme/density/text/page dimensions, highlights/recommendations, separate routes.
+Planned/configuration-only: regex execution and comment filtering, API user/flair
+enrichment, real API app registration/rate budget, actual redirects, native profile
+integration, authenticated saves/votes and production persistence. No API request,
+real account change, installed-script edit or published update is demonstrated.
+
+Support boundary
+Desktop current Reddit first, with narrow/short window support. Determine and
+document mobile-web feasibility separately; no native mobile-app support.
+Cover feeds, communities, search, threads, profiles and custom feeds where each
+feature is meaningful. Preserve ordinary Reddit behavior when a feature is off
+or unavailable. Do not redesign or support historical Reddit interfaces.
+
+R01 Filtering
+Allow users to define local rules for words, domains, communities, authors and
+post flair, with per-community scope and exceptions. A match must offer a compact
+reason and a keyboard/touch-accessible reveal action. Revealing content must not
+delete its rule. Existing and newly loaded content must behave consistently.
+Local filtering must not alter Reddit block/mute/follow/report state.
+
+R02 Personal context
+Allow private user labels, notes and local ignore rules. Present short labels
+beside relevant authors; expose full notes on deliberate interaction. Account
+actions must be explicit and visibly distinct from local annotations. Isolate
+personal records per account and handle deleted/unknown authors without conflation.
+
+R03 Reading density
+Offer a small number of readable density choices, content-width and optional
+sidebar controls. Reduce spacing rather than force tiny text. Preserve post
+actions, flair, author identity, spoiler gates and focus visibility. Respect the
+site theme; integrate with the suite theme product when present without requiring it.
+
+R04 Sort and destinations
+Remember a chosen community feed/comment sort with a temporary override. Preserve
+explicit navigation intent. Provide compact pinned community/custom-feed links,
+reusing Reddit destinations and account features where suitable.
+
+R05 Comment traversal
+Provide next/previous navigation through loaded comments by original poster,
+moderator, tagged user or unread state. Show selection and matching scope. Do
+not imply unloaded comments have been searched. Explicitly offer further loading
+when supported, without a background crawl or recursive expansion. A user-enabled option may load a bounded next batch only when its visible trigger enters the viewport.
+
+R06 Context preview
+Provide a parent-context preview through hover, focus and deliberate touch.
+Include a link to the original context and an easy dismiss action. It must remain
+within the visible window, not steal typing focus, and handle removed, unavailable
+or unloaded parents truthfully. No inaccessible hover-only behavior.
+
+R07 Collapsing
+Provide collapse-to-top-level and chosen depth, plus per-thread collapse memory.
+Preserve native expansion and a clear reveal path. Any special pinned/automoderator
+collapse behavior requires an explicit preference and starts disabled.
+
+R08 Return visits
+Track opened threads and observed/read comments locally, provide resume context
+and show what changed since the last visit. Clearly label count-based estimates
+as estimates. Deleted comments, count decreases, sort changes, unloaded content
+and multiple tabs must not mark unseen comments read or produce negative counts.
+Reading requires a defined exposure criterion, not merely page insertion.
+
+R09 Keyboard use
+Allow remappable next/previous, open, collapse, save, hide and native vote actions.
+Do not intercept typing, shortcuts inside editors, composition input or native
+modal interaction. Show keyboard focus. All writes require a deliberate user
+action; no automated voting, reporting or messaging.
+
+R10 Media
+Provide on-demand inline viewing/zoom and gallery traversal where useful. Honor
+spoiler/mature-content boundaries and user mute/autoplay preferences. Close or
+navigation stops playback and releases resources. Avoid simultaneous players and
+automatic media downloads; begin with native/first-party media.
+
+R11 Account switching — DEFERRED
+The user deferred account switching on 2026-10-20. Do not implement account
+switching, credentials, account shortcuts presented as switching, or account
+management UI in the current scope. The other feature areas remain authorized.
+
+R12 Personal library (optional following required core features)
+Consider manual bookmarks, notes and user-requested snapshots, visibly separate
+from server-side Save. Explain that a snapshot is a dated local copy. Export and
+delete records deliberately; do not automatically archive browsed content.
+
+R13 Suite interface
+Use existing authorized suite components and conventions: one launcher, compact
+menu, product badge, version/update/changelog controls, Look, Support, Reset and
+donation affordance. Use rectangular toggles and rounded rectangular buttons.
+Contextual controls should avoid duplicate menus and duplicated status. Put
+secondary preferences behind in-place disclosures. Help must support focus/touch.
+Do not add a second theme engine, dashboard, extension/plugin system or editor.
+
+R14 Data and lifecycle
+Keep data local, with account isolation, validated import/export and clear reset
+boundaries. Never export credentials or diagnostic page text/private notes.
+Use bounded transient history, explicit retention controls and graceful capacity
+behavior; do not silently expire user-authored notes/tags. Ensure independent
+tabs and route changes do not duplicate controls or leak state between accounts.
+Idle work and retained page references must remain bounded. Release resources
+on navigation, feature disable and page teardown.
+
+R15 Acceptance evidence
+Build and test feature-relevant cases, then verify current-site behavior separately
+from fixture behavior. Exercise newly inserted and removed content, rapid route
+changes, back/forward, account changes, long scrolling and repeated teardown.
+Test keyboard, touch, narrow windows, short windows, light/dark, failed requests,
+malformed imports, unsafe text and coinstalled suite products. Record incremental
+memory/CPU/storage against the native page after fixed workloads; require stable
+retained resource counts across repeated navigation. Set numerical budgets from
+measured baseline. No framework or remote runtime dependencies.
+
+Implementation sequence
+A. Independent site feasibility and baseline for the non-account features.
+B. Filtering, personal context, density, sort and shortcuts.
+C. Comment traversal/context/collapse, return visits and keyboard.
+D. Media, then optional personal library. Account switching is deferred.
+All requested feature areas except deferred account switching remain in scope; any unresolved requirement is
+explicitly reported. Commits, pushes, tags and publication require separate user
+authorization. This document authorizes no such operation.

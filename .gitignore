@@ -1,0 +1,6 @@
+node_modules/
+test-artifacts/
+.impeccable/review/
+*.log
+Thumbs.db
+.DS_Store

@@ -1,0 +1,48 @@
+Reddit companion — local scope plan
+Authorship: expDARE. No product or publication operation is authorized here.
+
+Use CLEAN-ROOM-SPEC-v3.txt as the behavior-only input in a fresh implementation
+session. Do not feed the comparison script source/audit into that session.
+
+1. Foundation and page lifecycle
+   Confirm current Reddit routes and DOM contracts from first-party observations.
+   Own one cancellable observer/lifecycle per route. Reuse authorized exp-core
+   launcher/menu/help/diagnostics. Validate local settings and migrations; retain
+   separate account namespaces without implementing account switching.
+
+2. Reading and page layout (no enrichment requests)
+   Feed/comment sort defaults and explicit overrides, sidebars and restore handles,
+   content geometry and text sizing, reversible native-content presentation,
+   highlights/recommendations, native save placement, readable comment context.
+   Preserve native mature/spoiler gates and security/account menu entries.
+
+3. Personal context and filters
+   Tags and notes, bounded hidden history, literal post/comment filtering and
+   per-community exceptions. Add regex only with isolated time-bounded execution,
+   invalid-pattern recovery and bounded input sizes. No regex on the UI thread.
+
+4. Media and bounded loading
+   On-demand galleries with zoom, explicit background-navigation/close precedence,
+   keyboard/focus recovery and resource disposal. Add opt-in visible next-page and
+   more-replies loading with deduplication, finite budget, cancellation on navigation,
+   no recursive expansion and a reachable manual fallback/error retry control.
+
+5. Optional API enrichment after a separate feasibility check
+   Establish legitimate access and own registered identity; verify current official
+   API conditions. Read real budget headers, cache only appropriate bounded data,
+   avoid duplicate requests across views/tabs and pause optional work on rate limits.
+   Keep core reading features useful without enrichment. Add karma/account-age,
+   nicknames and missing flair only when supported. Never borrow another app name.
+
+6. Verify the actual product
+   Build the affected product; regressions for route reuse, ownership/cleanup,
+   malformed settings, regex timeout, hidden-history bounds, API failures and
+   native behavior when disabled. Use the approved current headless shell, not
+   the full Chromium executable associated with Windows account lockouts.
+   Then user-controlled installation and live Vivaldi evidence. Fixture results
+   cannot substitute for real Reddit compatibility or long-session memory tests.
+
+UI preview boundary
+This turn changes only local prototype/planning files and coordination notes.
+Regex/API enrichment/redirect/native profile integration remain planned. Local
+sample actions never vote, save, hide, report, donate or authenticate on Reddit.

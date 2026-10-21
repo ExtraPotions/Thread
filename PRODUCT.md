@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Original vanilla JavaScript/CSS userscript, build-time bundled owned exp-core. No remote runtime dependencies. THREAD is a local product folder, with no Git repository or public install configured.
+Original vanilla JavaScript/CSS userscript, build-time bundled owned exp-core. No remote runtime dependencies. Public repository: https://github.com/ExtraPotions/Thread, with built userscript assets.
 
 ## Users
 
@@ -16,7 +16,7 @@ Readers using modern desktop Reddit feeds and discussions, including keyboard an
 
 ## Product Purpose
 
-Reading, reversible local filtering and personal context alongside native Reddit. Product name Thread; suite header THREAD. Sole authorship expDARE.
+Reading, reversible local filtering and personal context alongside native Reddit. Product name and suite header Thread. Sole authorship expDARE.
 
 ## Operating Context
 
@@ -24,7 +24,7 @@ The approved native-style preview establishes visual direction. Native desktop a
 
 ## Capabilities and Constraints
 
-Four content views (Cards, Compact Cards, Grid, List), feed defaults, native sort destinations, independent sidebars, bounded visible native loading, local rules/tags/notes, comment traversal/context/collapse/read exposure, on-demand first-party images and shared Core menu/launcher. Basic account identity uses native DOM without API calls. API enrichment is unavailable until legitimate independently registered access exists. Account switching remains deferred. The user authorized release of the current suite on 2026-10-20; project rules separately require commit/push approval, and Thread still needs authorization and configuration for its first public repository. No publication or installed changes have occurred.
+Four content views (Cards, Compact Cards, Grid, List), feed defaults, native sort destinations, independent sidebars, bounded visible native loading, local rules/tags/notes, comment traversal/context/collapse/read exposure, on-demand first-party images and shared Core menu/launcher. Basic account identity uses native DOM without API calls. API enrichment is unavailable until legitimate independently registered access exists. Account switching remains deferred. Code, including owned Core, uses PolyForm Noncommercial 1.0.0; original artwork and documentation use CC BY-NC-SA 4.0. User release/commit/push authorization and publication resumption were confirmed on 2026-10-20. Installed copies are updated separately.
 
 ## Brand Commitments
 

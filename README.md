@@ -2,7 +2,7 @@
 
 **Your Reddit, refined.**
 
-Reading, layout and filtering tools for modern Reddit by expDARE. The suite header is **Thread**, with the selected orange **Asscher** gem. This candidate is unpublished and has not replaced the previously installed build.
+Reading, layout and filtering tools for modern Reddit by expDARE. The suite header is **Thread**, with the selected orange **Asscher** gem. Install or update through your userscript manager.
 
 Code, including bundled exp-core, uses [PolyForm Noncommercial 1.0.0](LICENSE-CODE.md). Original artwork and documentation use [CC BY-NC-SA 4.0](LICENSE-ASSETS.md). Copyright 2026 expDARE. See the [license index](LICENSE) and [licensing notice](NOTICE.md).
 
@@ -16,11 +16,13 @@ The **Use gem menu theme** switch in Look is **off by default**. It colors only 
 
 Open Thread from the circular gem button below the left navigation rail's collapse handle. Its diameter follows the native handle (32px on the inspected Reddit interface). The menu opens beside that anchor; narrow or missing rails retain a contained, reachable fallback. Co-installed products use the suite launcher.
 
-The menu follows the shared Core sidebar template. Feed, Read, Filters, People and Look retain Thread's controls; System contains Status, paired Show/Copy Diagnostics, Settings transfer and Reset. Support and Reset are available only inside System. Setting explanations use contained hover/focus tips. Donations stay in the header heart, separate from troubleshooting. The first-release candidate prepares Report a Problem for the project issue form; public repository creation is pending.
+The menu follows the shared Core sidebar template. Feed, Read, Filters, People and Look retain Thread's controls; System contains Status, paired Show/Copy Diagnostics, Settings transfer and Reset. Support and Reset are available only inside System. Setting explanations use contained hover/focus tips. Donations stay in the header heart, separate from troubleshooting. Report a Problem opens the project issue form; review diagnostics before submitting.
 
 ![THREAD Look with normal menu theme; authored fixture](docs/screenshots/gem-off.png)
 ![THREAD Look with optional gem menu theme; authored fixture](docs/screenshots/gem-on.png)
 
 These are captures of the built local userscript on authored fixtures. Current native Reddit DOM inspection confirmed the account-marker and Grid-separator mismatches; the local candidate fixes those contracts and has regression coverage for account isolation, actual wrapper structure, distinct media sizes and native-view restoration. It has not been installed or retested against Reddit's live shadow rendering. Earlier native feed-action visibility and parent-preview findings remain outside this change. Mobile web and long-session performance remain unverified. API enrichment is explicitly unavailable until legitimate independent app access exists.
 
-See [development](docs/development.md) for commands, bounds and limitations, [behavioral scope](docs/behavioral-spec-v3.txt) for the authorized requirements, and [menu verification](../local-verification/thread-menu-fix-20261020/REPORT.txt) for local evidence. No public install link exists.
+[Install Thread](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) · [Releases](https://github.com/ExtraPotions/Thread/releases) · [Support](https://github.com/ExtraPotions/Thread/issues)
+
+See [development](docs/development.md) for commands, bounds and limitations, and [behavioral scope](docs/behavioral-spec-v3.txt) for the requirements. Tests and fixture sources are included in this repository.

@@ -1,3 +1,9 @@
+## 0.1.5 — 2026-10-21
+
+- Make Compact Cards denser with tighter spacing, readable titles and three-line text previews.
+- Group Thread actions in a keyboard-accessible disclosure while preserving native controls and readable media.
+- Keep full text available through Expand long text and preserve recovery actions and keyboard focus.
+
 ## 0.1.4 — 2026-10-20
 
 - Keep feed thumbnails at their native size in Cards, Compact Cards and Grid.

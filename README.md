@@ -23,6 +23,8 @@
 - **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.
 - **Choose the menu look:** enable **Look → Use gem menu theme** for Thread's orange palette. It starts off and colors the menu and notices.
 
+Compact Cards uses tighter spacing, three-line text previews and a **Thread actions** disclosure. Reddit's own controls remain visible, thumbnails keep their native size, and opened media stays readable. Enable **Feed → Post presentation → Expand long text** to show the full text.
+
 Account switching and Reddit API enrichment are unavailable. See [development](docs/development.md) for supported behavior and verification limits.
 
 ## See it in action

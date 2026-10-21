@@ -78,6 +78,7 @@ RC.Runtime=class {
     if(item.kind==='comment'&&this.settings.shareContext)button('Share context',async()=>{if(!item.url)return this.notify('Native context link unavailable.');try{await navigator.clipboard.writeText(item.url);this.notify('Context link copied.');}catch{this.popover('Context link',RC.el('a',{href:item.url},'Open native context'));}});
     if(this.settings.inlineMedia&&RC.Adapter.media(item).length)button('View media',()=>this.media(item));
     if(previous)previous.replaceWith(bar);else item.node.prepend(bar);record.tools=bar;
+    if(focused==='Thread actions')record.compactSummaryFocus=true;
     if(focused)[...bar.querySelectorAll('button')].find(b=>b.textContent===focused)?.focus();
   }
   saveCollapse(id,on){if(!this.verified)return;const raw=this.store.get('collapse',{});const entries=RC.Model.plain(raw)?Object.entries(raw).slice(-99):[];const data=Object.fromEntries(entries);const ids=new Set(Array.isArray(data[this.threadKey()])?data[this.threadKey()]:[]);on?ids.add(id):ids.delete(id);data[this.threadKey()]=[...ids].slice(-500);this.store.set('collapse',data);}
@@ -128,6 +129,7 @@ RC.Runtime=class {
       if(item.kind!=='post'||location.pathname.includes('/comments/'))continue;
       if(view==='native')this.restoreView(record);else{if(record.nativeViewApplied===undefined)record.nativeView=item.node.getAttribute('view-type');else if(item.node.getAttribute('view-type')!==record.nativeViewApplied)record.nativeView=item.node.getAttribute('view-type');const type=item.node.querySelector(':scope > [slot="expando-content"]')?'compactView':item.node.querySelector(':scope > [slot="post-media-container"]')?'cardView':['compactView','cardView'].includes(record.nativeView)?record.nativeView:['cards','grid'].includes(view)?'cardView':'compactView';this.attr(item.node,'view-type',type);record.nativeViewApplied=type;}
       this.attr(item.node,'data-rc-view',view==='native'?null:view);
+      this.compactTools(record,view);
       this.nativeMediaLayout(record,view);
       if(view==='grid'){
         let parent=item.node.parentElement,child=item.node;
@@ -142,16 +144,31 @@ RC.Runtime=class {
       }
     }
   }
+  compactTools(record,view){
+    const bar=record.tools;if(!bar)return;
+    const previous=bar.querySelector(':scope > details.rc-compact-actions');
+    const compact=view==='compact'&&!record.item.node.hasAttribute('data-rc-treatment')&&!record.item.node.hasAttribute('data-rc-collapsed');
+    if(compact&&!previous){
+      const details=RC.el('details',{class:'rc-compact-actions'}),summary=RC.el('summary',{},'Thread actions'),actions=RC.el('div',{class:'rc-action-items'});
+      const focused=bar.contains(document.activeElement)?document.activeElement:null;
+      actions.append(...bar.childNodes);details.append(summary,actions);details.open=!!record.compactActionsOpen||!!focused;
+      details.addEventListener('toggle',()=>{record.compactActionsOpen=details.open;});bar.append(details);if(record.compactSummaryFocus){summary.focus({preventScroll:true});delete record.compactSummaryFocus;}else if(focused)focused.focus({preventScroll:true});
+    }else if(!compact&&previous){
+      const focused=previous.contains(document.activeElement)?document.activeElement:null;
+      bar.append(...previous.querySelector('.rc-action-items').childNodes);previous.remove();
+      if(focused?.localName==='summary')bar.querySelector('button')?.focus({preventScroll:true});else focused?.focus({preventScroll:true});
+    }
+  }
   nativeMediaLayout(record,view){
     const post=record.item.node,root=post.shadowRoot;
     const toolsSlot=view!=='native'&&post.getAttribute('view-type')==='compactView'&&root?.querySelector('slot[name="desktop-cta-row"]')?'desktop-cta-row':'';
     if(record.tools&&record.tools.getAttribute('slot')!==toolsSlot){if(toolsSlot)record.tools.setAttribute('slot',toolsSlot);else record.tools.removeAttribute('slot');}
-    if(view==='native'||!root?.querySelector('slot[name="expando-content"]')||!post.querySelector(':scope > [slot="expando-content"]')){record.mediaStyle?.remove();delete record.mediaStyle;return;}
+    if(view==='native'||!root?.querySelector('slot[name="expando-content"],slot[name="desktop-cta-row"]')){record.mediaStyle?.remove();delete record.mediaStyle;return;}
     if(record.mediaStyle?.isConnected&&record.mediaStyle.getRootNode()===root)return;
     record.mediaStyle?.remove();const style=document.createElement('style');style.dataset.rcMediaLayout='1';
     // Leave the native thumbnail column intact. Only full media spans the post;
     // native hidden expandos, player nodes and handlers retain control of opening it.
-    style.textContent=':host([data-rc-view]) :is(div,section):has(>slot[name="expando-content"]){grid-column:1/-1!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important}';
+    style.textContent=':host([data-rc-view="compact"]) :is(div,section):has(>slot[name="desktop-cta-row"]){display:flex;flex-wrap:wrap;align-items:center;gap:4px}:host([data-rc-view]) :is(div,section):has(>slot[name="expando-content"]){grid-column:1/-1!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important}';
     root.append(style);record.mediaStyle=style;
   }
   restoreView(record){record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}

@@ -17,7 +17,7 @@
 ## What you can do
 
 - **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. The feed strip scrolls with the page, leaving Reddit's Sort By controls accessible. Saved List preferences use Compact Cards.
-- **Read media comfortably:** inline images and embedded players fit the post width while keeping the original player controls.
+- **Read media comfortably:** feed thumbnails keep Reddit's native size. Opened images and embedded players fit the post width while keeping the original player controls.
 - **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules.
 - **Keep private notes:** add local author tags, notes and nicknames. Personal records stay paused when your account cannot be identified reliably.
 - **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.

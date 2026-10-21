@@ -1,9 +1,9 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require(require.resolve('playwright',{paths:[path.resolve(__dirname,'../../exp-core')]}));
-test('native compact shadow slots do not keep Cards/Grid media in a 104px thumbnail column',async t=>{
+test('feed thumbnails retain native size while opened media gets the full post width',async t=>{
  const browser=await chromium.launch({executablePath:process.platform==='win32'?'C:/Users/OneDareAtHome/AppData/Local/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-win64/chrome-headless-shell.exe':undefined});t.after(()=>browser.close());
- for(const width of [390,1440]){
+ for(const width of [320,390,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
   await page.route('**/*',route=>new URL(route.request().url()).hostname==='i.redd.it'?route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="640" height="960"><rect width="640" height="960" fill="#203c61"/></svg>'}):route.fulfill({contentType:'text/html',body:'<!doctype html><meta name="viewport" content="width=device-width"><style>body{margin:0}main{max-width:800px;margin:auto}.contents{display:contents}.hidden{display:none}.native-thumb{width:104px;height:78px;overflow:hidden}.native-thumb img{width:100%;height:100%;object-fit:cover}</style><header><a href="/login">Log In</a></header><main><shreddit-feed><shreddit-post id="t3_shadow" view-type="compactView" author="reader" post-title="Native shadow media" permalink="/r/example/comments/shadow/test/"><div slot="thumbnail" class="contents"><div><div slot="thumbnail" class="native-thumb"><img src="https://i.redd.it/portrait.svg" width="640" height="960" alt="Portrait"></div></div></div><h2 slot="title">Native shadow media</h2><div id="expando" slot="expando-content" class="hidden"><div style="height:700px;background:#203c61"><button style="margin-top:650px" id="bottom">Native player controls</button></div></div><button slot="overflow-menu-bar" id="expand" onclick="document.querySelector(\'#expando\').classList.toggle(\'hidden\')">Expand native media</button></shreddit-post></shreddit-feed></main>'}));
   await page.goto('https://www.reddit.com/r/example/');
@@ -13,9 +13,13 @@ test('native compact shadow slots do not keep Cards/Grid media in a 104px thumbn
    await control.selectOption(view);await page.waitForFunction(view=>document.querySelector('shreddit-post').getAttribute('data-rc-view')===view,view);
    assert.equal(await page.locator('shreddit-post').getAttribute('view-type'),'compactView','the native renderer must retain its matching expando slot');
    const media=await page.locator('.native-thumb').evaluate(n=>({width:n.getBoundingClientRect().width,height:n.clientHeight,scroll:n.scrollHeight}));
-   assert.equal(await page.getByRole('button',{name:'Tag / note',exact:true}).isVisible(),true);assert(media.width>=Math.min(250,width-40),'native shadow thumbnail remained too small: '+JSON.stringify({width,view,media}));assert(media.height>=media.scroll-1);
+   assert.equal(await page.getByRole('button',{name:'Tag / note',exact:true}).isVisible(),true);
+   assert.equal(Math.round(media.width),104,'feed thumbnail must retain its native width: '+JSON.stringify({width,view,media}));assert.equal(media.height,78,'feed thumbnail must retain its native height');
    assert.equal(await page.locator('#expando').isVisible(),false,'Thread must not open native gated/closed media');
-   await page.locator('#expand').click();await page.locator('#bottom').click();if(process.env.THREAD_MEDIA_EVIDENCE&&width===390&&view==='cards'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:process.env.THREAD_MEDIA_EVIDENCE,fullPage:true});}await page.locator('#expand').click();
+   if(process.env.THREAD_MEDIA_EVIDENCE&&view==='cards'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:process.env.THREAD_MEDIA_EVIDENCE+'-'+width+'-closed.png',fullPage:true});}
+   await page.locator('#expand').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('#expando').isVisible(),true);
+   const opened=await page.locator('#expando').evaluate(n=>({width:n.getBoundingClientRect().width,height:n.clientHeight,scroll:n.scrollHeight,post:n.closest('shreddit-post').clientWidth}));assert(opened.width>=opened.post-40,'opened media should span the post width');assert(opened.height>=opened.scroll-1,'opened media must not be cropped');
+   await page.locator('#bottom').click();if(process.env.THREAD_MEDIA_EVIDENCE&&view==='cards'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:process.env.THREAD_MEDIA_EVIDENCE+'-'+width+'-opened.png',fullPage:true});}await page.locator('#expand').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('#expando').isVisible(),false);assert.equal(Math.round((await page.locator('.native-thumb').boundingBox()).width),104);
   }
   await control.selectOption('native');await page.waitForFunction(()=>!document.querySelector('shreddit-post').hasAttribute('data-rc-view'));
   assert.equal(await page.evaluate(()=>document.querySelector('shreddit-post').shadowRoot.querySelectorAll('style[data-rc-media-layout]').length),0);

@@ -146,13 +146,12 @@ RC.Runtime=class {
     const post=record.item.node,root=post.shadowRoot;
     const toolsSlot=view!=='native'&&post.getAttribute('view-type')==='compactView'&&root?.querySelector('slot[name="desktop-cta-row"]')?'desktop-cta-row':'';
     if(record.tools&&record.tools.getAttribute('slot')!==toolsSlot){if(toolsSlot)record.tools.setAttribute('slot',toolsSlot);else record.tools.removeAttribute('slot');}
-    const media=post.querySelector('[slot="thumbnail"] img,[slot="thumbnail"] video,[slot="thumbnail"] iframe,[slot="expando-content"] shreddit-player,[slot="expando-content"] iframe');
-    if(view==='native'||!root?.querySelector('slot[name="thumbnail"]')||!media){record.mediaStyle?.remove();delete record.mediaStyle;return;}
+    if(view==='native'||!root?.querySelector('slot[name="expando-content"]')||!post.querySelector(':scope > [slot="expando-content"]')){record.mediaStyle?.remove();delete record.mediaStyle;return;}
     if(record.mediaStyle?.isConnected&&record.mediaStyle.getRootNode()===root)return;
     record.mediaStyle?.remove();const style=document.createElement('style');style.dataset.rcMediaLayout='1';
-    // Native compact posts keep a separate 104px shadow column even after view-type changes.
-    // Reflow that slot's container; retain native hidden expandos, player nodes and handlers.
-    style.textContent=':host([data-rc-view]) div:has(>div>slot[name="thumbnail"]){display:flex!important;flex-direction:column!important;align-items:stretch!important}:host([data-rc-view]) :is(div,section):has(>slot[name="thumbnail"]),:host([data-rc-view]) :is(div,section):has(>slot[name="expando-content"]){width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;margin-inline:0!important;overflow:visible!important}';
+    // Leave the native thumbnail column intact. Only full media spans the post;
+    // native hidden expandos, player nodes and handlers retain control of opening it.
+    style.textContent=':host([data-rc-view]) :is(div,section):has(>slot[name="expando-content"]){grid-column:1/-1!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important}';
     root.append(style);record.mediaStyle=style;
   }
   restoreView(record){record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}

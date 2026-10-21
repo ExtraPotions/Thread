@@ -1,3 +1,8 @@
+## 0.1.4 — 2026-10-20
+
+- Keep feed thumbnails at their native size in Cards, Compact Cards and Grid.
+- Keep opened images and embedded players readable without cropping or changing native opening controls.
+
 ## 0.1.3 — 2026-10-20
 
 - Show Thread for Reddit as the name in userscript managers.

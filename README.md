@@ -6,9 +6,9 @@ Reading, layout and filtering tools for modern Reddit by expDARE. The suite head
 
 Code, including bundled exp-core, uses [PolyForm Noncommercial 1.0.0](LICENSE-CODE.md). Original artwork and documentation use [CC BY-NC-SA 4.0](LICENSE-ASSETS.md). Copyright 2026 expDARE. See the [license index](LICENSE) and [licensing notice](NOTICE.md).
 
-Choose Cards, Compact Cards, Grid or List, filter posts/comments reversibly, keep private author tags/notes and navigate loaded discussions. Thread uses the actual shared ExtraPotions Core launcher and menu. Native account actions remain deliberate. Account switching is deferred.
+Choose Cards, Compact Cards or Grid, filter posts/comments reversibly, keep private author tags/notes and navigate loaded discussions. Thread uses the actual shared ExtraPotions Core launcher and menu. Native account actions remain deliberate. Account switching is deferred.
 
-The small sticky feed strip holds the current content view and optional pinned/sort shortcuts. Sidebar settings and temporary collapse actions live in **Feed → Sidebars**. **Back to top** appears separately at the page edge after scrolling. Previous/Next controls appear only on discussion pages: All, OP, Moderator, Tagged and Unread choose **loaded comment jump targets**, without filtering comments or searching unloaded replies. Unread requires local read tracking.
+The small feed strip scrolls normally so it cannot cover Reddit’s native Sort By control. It holds the current content view and optional pinned/sort shortcuts. Sidebar settings and temporary collapse actions live in **Feed → Sidebars**. **Back to top** appears separately at the page edge after scrolling. Previous/Next controls appear only on discussion pages: All, OP, Moderator, Tagged and Unread choose **loaded comment jump targets**, without filtering comments or searching unloaded replies. Unread requires local read tracking.
 
 Signed-in identity is detected from Reddit's native account components and canonical header profile links, without an API call. If those markers disagree or are unavailable, personal records stay isolated until identity is known. Basic view/layout tools remain available. Account switching itself remains deferred.
 
@@ -26,3 +26,7 @@ These are captures of the built local userscript on authored fixtures. Current n
 [Install Thread](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) · [Releases](https://github.com/ExtraPotions/Thread/releases) · [Support](https://github.com/ExtraPotions/Thread/issues)
 
 See [development](docs/development.md) for commands, bounds and limitations, and [behavioral scope](docs/behavioral-spec-v3.txt) for the requirements. Tests and fixture sources are included in this repository.
+
+Saved List preferences migrate to Compact Cards. Native, Cards, Compact Cards and Grid remain available, alongside Reddit's own sorting controls.
+
+Inline images and embedded players fit the post width without cropped content. Native video playback stays with Reddit and the original provider.

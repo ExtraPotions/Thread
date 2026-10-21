@@ -1,10 +1,10 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),test=require('node:test');
 const RC=new Function('const RC={};\n'+fs.readFileSync(path.join(__dirname,'../src/model.js'),'utf8')+'\nreturn RC;')();
-test('settings validate four views, ranges, native defaults and duplicate shortcut removal',()=>{
+test('settings validate three views, ranges, native defaults and duplicate shortcut removal',()=>{
   const s=RC.Model.settings({defaultView:'grid',historyCapacity:-1,contentFont:1,loadBudget:100,autoPages:'yes',keys:{next:'j',previous:'j',upvote:'u'}});
-  assert.equal(s.defaultView,'grid');assert.equal(s.historyCapacity,0);assert.equal(s.contentFont,12);assert.equal(s.loadBudget,5);assert.equal(s.autoPages,false);assert.equal(s.keys.next,'j');assert.equal(s.keys.previous,'');assert.equal(s.keys.upvote,'u');
-  for(const view of ['cards','compact','grid','list'])assert.equal(RC.Model.settings({defaultView:view}).defaultView,view);
+  assert.equal(RC.Model.settings({defaultView:'list'}).defaultView,'compact');assert.equal(s.defaultView,'grid');assert.equal(s.historyCapacity,0);assert.equal(s.contentFont,12);assert.equal(s.loadBudget,5);assert.equal(s.autoPages,false);assert.equal(s.keys.next,'j');assert.equal(s.keys.previous,'');assert.equal(s.keys.upvote,'u');
+  for(const view of ['cards','compact','grid'])assert.equal(RC.Model.settings({defaultView:view}).defaultView,view);
 });
 test('rules preserve scope/exceptions, distinguish post/comment and never treat literals as regex',()=>{
   const [r]=RC.Model.rules([{field:'title',pattern:'a+b',scope:'one',except:'two',target:'post',treatment:'blur'}]);

@@ -1,3 +1,11 @@
+## 0.1.3 — 2026-10-20
+
+- Show Thread for Reddit as the name in userscript managers.
+
+- Keep inline images, native video players and embedded media readable without cropping.
+- Remove List view and its thumbnail setting; saved List preferences use Compact Cards.
+- Keep the feed strip in normal page flow so Reddit’s native Sort By controls remain accessible.
+
 ## 0.1.2 — 2026-10-20
 
 - Keep Reset All Settings below Settings transfer and API access.

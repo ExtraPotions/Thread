@@ -1,3 +1,8 @@
+## 0.1.2 — 2026-10-20
+
+- Keep Reset All Settings below Settings transfer and API access.
+- Separate Reset from the other System controls while retaining confirmation.
+
 ## 0.1.1 — 2026-10-20
 
 - Keep Show Diagnostics, Copy Diagnostics and Reset All Settings directly accessible in System.

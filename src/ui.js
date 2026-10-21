@@ -96,7 +96,7 @@ RC.UI=class {
     const preferences=this.detail('Settings transfer',this.note('Exports contain your private tags and notes. Import replaces this account’s settings, rules and people.'),RC.button('Export current account',()=>this.export()),this.importForm());
     const system=ExtraPotionsCore.createProductSystem({id:'thread',version:RC.VERSION,timeline:this.healthControl.element,diagnostics,preferences,layout:'grouped',notify:text=>this.status(text),onReset:()=>{this.r.store.reset();this.r.clearRoute();this.r.refreshSettings();this.r.schedule();this.refresh();}});
     const reset=system.querySelector('[data-exp-destructive]');ExtraPotionsCore.setMenuHelp(reset,'Permanently clears this account’s Thread settings and local records. Other products are unaffected. Tap twice within 4 seconds to confirm.');
-    system.append(this.detail('API access',this.note('Optional API enrichment is unavailable. Reading tools use native page content; own registration and approved access are required for enrichment.')));
+    system.insertBefore(this.detail('API access',this.note('Optional API enrichment is unavailable. Reading tools use native page content; own registration and approved access are required for enrichment.')),system.querySelector('[data-exp-system-item="reset"]'));
     return system;
   }
   openRoute(id){if(['support','reset'].includes(id)){this.openRoute('system');const target=this.product.panel.querySelector('[data-exp-system-item="'+id+'"]');if(target){target.open=true;target.scrollIntoView({block:'nearest'});}return;}if(!this.product.isOpen)this.product.open();const button=this.product.shadow.querySelector('[data-section="'+id+'"]');if(button?.getAttribute('aria-expanded')!=='true')button?.click();}

@@ -150,6 +150,7 @@ async function run(){
   assert.match(await menuRoot.locator('pre.diag').innerText(),/accountVerified/);
   await menuRoot.getByRole('button',{name:'Copy Diagnostics',exact:true}).click();assert.equal(await uiPage.evaluate(()=>JSON.parse(window.__copied).product),'THREAD');
   assert.equal(await menuRoot.getByRole('button',{name:'Report a Problem',exact:true}).isDisabled(),false);
+  assert.equal(await menuRoot.locator('[data-exp-product-system]').evaluate(system=>system.lastElementChild.dataset.expSystemItem),'reset','Reset follows API access and settings transfer');
   await openSystem(menuRoot,'reset');await menuRoot.getByRole('button',{name:'Reset All Settings',exact:true}).click();assert.equal(await menuRoot.getByRole('button',{name:'Tap Again to Reset',exact:true}).isVisible(),true);assert.equal(await menuRoot.getByRole('dialog').isVisible(),true);
   await menuRoot.getByRole('button',{name:'Hide Diagnostics',exact:true}).focus();assert.equal(await menuRoot.getByRole('button',{name:'Tap Again to Reset',exact:true}).count(),0);
  });

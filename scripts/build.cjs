@@ -7,7 +7,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8').replace(/\r\n/g,'\n');
 const core=read('vendor/exp-core/exp-core.js');
 const manifest=JSON.parse(read('vendor/exp-core/manifest.json'));
 if(hash(core)!==manifest.bundleSha256)throw Error('Core bundle hash mismatch');
-const files=['model.js','regex.js','adapter.js','runtime.js','ui.js','main.js'];
+const files=['model.js','regex.js','adapter.js','runtime.js','reading.js','ui.js','main.js'];
 const css=read('src/style.css');
 const notes=read('CHANGELOG.md').split(/^## /m).slice(1).find(section=>section.startsWith(version+' '));
 if(!notes)throw Error('Current release notes missing');

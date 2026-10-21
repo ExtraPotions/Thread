@@ -1,3 +1,10 @@
+## 0.2.0 — 2026-10-21
+
+- Add local saved collections with private notes, search, editing, rename, Undo and settings transfer.
+- Add optional read-post filtering and bounded feed-position restoration with manual-scroll protection.
+- Add loaded-comment search, top-level/sibling navigation and reply folding that keeps the parent available.
+- Add reading presets and keep touch Thread actions left of native controls in every feed view.
+
 ## 0.1.6 — 2026-10-21
 
 - Make Compact Cards into thumbnail-and-text rows with full media opened on demand.

@@ -15,6 +15,19 @@
 [data-rc-treatment="hide"]>:not([data-rc-owned]){display:none!important}
 [data-rc-collapsed]>:not([data-rc-owned]){display:none!important}
 [data-rc-read] [slot="comment"]{opacity:.78}
+[data-rc-post-read-hidden]{display:none!important}
+[data-rc-post-read]:not([data-rc-post-read-hidden])>[slot="title"]{opacity:.75}
+[data-rc-reading-font] :is([slot="title"],[slot="comment"],[slot="text-body"]){font-family:var(--rc-reading-font)!important}
+[data-rc-reading-line] :is([slot="comment"],[slot="text-body"]){line-height:var(--rc-line-height)!important}
+[data-rc-reading-gap] :is([slot="comment"],[slot="text-body"]) p{margin-block:var(--rc-paragraph-gap)!important}
+[data-rc-search-match] [slot="comment"]{outline:2px solid var(--rc-blue,#174c99);outline-offset:2px}
+.rc-reading-controls{display:grid;gap:8px;margin-block:8px}
+.rc-library-entry{border-bottom:1px solid var(--rc-line);padding-block:12px}
+.rc-library-entry button{margin:4px 4px 0 0}
+.rc-popover :is(input,textarea,select){width:100%}
+.rc-popover[data-rc-owned] :is(input,select,button){min-height:44px}
+.rc-popover.rc-reading-panel{left:50%;translate:-50% 0;z-index:2147483647}
+.rc-reading-panel :is(input,textarea)::placeholder{color:var(--rc-muted);opacity:1}
 [data-rc-density="compact"]{padding-block:8px!important}
 [data-rc-density="mini"]{padding-block:5px!important}
 [data-rc-font]{font-size:var(--rc-content-font,14px)!important}
@@ -33,6 +46,7 @@
 .rc-compact-actions{min-width:0;max-width:100%}
 .rc-compact-actions summary{font:inherit;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;max-width:100%;letter-spacing:normal;cursor:pointer;width:fit-content}
 .rc-action-items{display:flex;flex-wrap:wrap;gap:4px;padding-block:4px}
+.rc-tools[data-rc-feed-actions]{display:inline-flex;order:-1!important;flex:0 1 auto;align-self:flex-start;vertical-align:middle;max-width:100%;padding:0;border:0;margin:0 4px 0 0}
 [data-rc-view="compact"][data-rc-compact-preview]:not([data-rc-compact-media-open])>[slot="post-media-container"]:not([hidden]){display:none!important}
 .rc-compact-preview{position:relative;z-index:1;display:block;width:104px;height:78px;padding:0;overflow:hidden;cursor:pointer;border:1px solid var(--rc-line);border-radius:6px}
 .rc-compact-preview img{width:100%;height:100%;object-fit:cover}
@@ -46,6 +60,7 @@
 [data-rc-compact-flat]>.rc-tools{display:inline-flex;vertical-align:middle}
 [data-rc-compact-flat]>[slot="post-media-container"]{clear:both}
 @media(pointer:coarse){.rc-compact-actions summary,[data-rc-view="compact"] .rc-tools button{min-height:44px}}
+@media(pointer:coarse){.rc-tools[data-rc-feed-actions] button{min-height:44px}}
 /* Keep native thumbnails compact; only full media owns uncapped height. */
 [data-rc-view]:where(:not([data-rc-treatment="hide"]):not([data-rc-collapsed])) [slot="post-media-container"]:not([hidden]):not(.hidden):not(:has(gallery-carousel,faceplate-carousel)){display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible}
 [data-rc-view] [slot="expando-content"]{width:100%;max-width:100%;max-height:none;overflow:visible}

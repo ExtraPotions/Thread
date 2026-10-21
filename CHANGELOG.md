@@ -1,3 +1,8 @@
+## 0.2.1 — 2026-10-21
+
+- Keep native compact post controls beside Thread actions on touch devices instead of forcing an extra footer row.
+- Use smaller native compact thumbnails and a full-width controls row in constrained iPad feeds while preserving native overflow and media controls.
+
 ## 0.2.0 — 2026-10-21
 
 - Add local saved collections with private notes, search, editing, rename, Undo and settings transfer.

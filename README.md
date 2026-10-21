@@ -30,6 +30,8 @@ Compact Cards shows thumbnail-and-text rows with two-line previews and a **Threa
 
 On touch devices, **Thread actions** sits to the left of Reddit's post controls in every feed view. The row wraps when space is tight, and opening Thread actions keeps Reddit's controls accessible.
 
+Compact Cards on touch devices keeps Reddit's native compact footer on one row, with 80 × 60 thumbnails and the footer spanning the post width. Reddit continues to place native actions in its own overflow menu when they do not fit.
+
 Native galleries retain Reddit's slide sizing and navigation. **View media** shows one image per gallery slide in order, without feed thumbnails or decorative background copies.
 
 Previews recover when Reddit refreshes a post or loads its media later. Hide, blur and collapse also apply to media previews. **Close media** pauses native audio/video; embedded providers keep their own playback controls.
@@ -55,6 +57,8 @@ Account switching and Reddit API enrichment are unavailable. See [development](d
 
 Screenshots use sample content.
 
+<a href="docs/screenshots/compact-native-ipad.png"><img src="docs/screenshots/compact-native-ipad.png" width="660" alt="Thread: compact native footer in a sidebar-constrained iPad landscape feed"></a>
+
 <table>
   <tr>
     <td width="50%" valign="top" align="center"><a href="docs/screenshots/collections-ipad.png"><img src="docs/screenshots/collections-ipad.png" width="220" alt="Thread: local collections with search and editable bookmarks on iPad"></a><br><strong>Local collections</strong></td>
@@ -62,7 +66,7 @@ Screenshots use sample content.
   </tr>
 </table>
 
-Layout captures use iPad portrait dimensions with touch emulation. They show the built userscript on authored sample pages, not an installed iPad browser.
+Layout captures use iPad portrait and landscape dimensions with touch emulation. They show the built userscript on authored sample pages, not an installed iPad browser.
 
 All ExtraPotions menus share the same Core template. Open **System** for status, diagnostics, troubleshooting and Reset. Donations remain in the header heart.
 

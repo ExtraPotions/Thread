@@ -17,13 +17,17 @@
 ## What you can do
 
 - **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. The feed strip scrolls with the page, leaving Reddit's Sort By controls accessible. Saved List preferences use Compact Cards.
-- **Read media comfortably:** feed thumbnails keep Reddit's native size. Opened images and embedded players fit the post width while keeping the original player controls.
+- **Read media comfortably:** use thumbnail previews in Compact Cards and open full media when you want it. Opened images and embedded players fit the post width while keeping the original player controls.
 - **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules.
 - **Keep private notes:** add local author tags, notes and nicknames. Personal records stay paused when your account cannot be identified reliably.
 - **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.
 - **Choose the menu look:** enable **Look → Use gem menu theme** for Thread's orange palette. It starts off and colors the menu and notices.
 
-Compact Cards uses tighter spacing, three-line text previews and a **Thread actions** disclosure. Reddit's own controls remain visible, thumbnails keep their native size, and opened media stays readable. Enable **Feed → Post presentation → Expand long text** to show the full text.
+Compact Cards shows thumbnail-and-text rows with two-line previews and a **Thread actions** disclosure. Full media stays collapsed until you choose **Open media** or Reddit's existing expand control. Opened images and players keep their full readable layout. Enable **Feed → Post presentation → Expand long text** to show the full text.
+
+Native galleries retain Reddit's slide sizing and navigation. **View media** shows one image per gallery slide in order, without feed thumbnails or decorative background copies.
+
+Previews recover when Reddit refreshes a post or loads its media later. Hide, blur and collapse also apply to media previews. **Close media** pauses native audio/video; embedded providers keep their own playback controls.
 
 Account switching and Reddit API enrichment are unavailable. See [development](docs/development.md) for supported behavior and verification limits.
 
@@ -31,12 +35,14 @@ Account switching and Reddit API enrichment are unavailable. See [development](d
 
 <table>
   <tr>
-    <td width="50%" valign="top" align="center"><a href="docs/screenshots/gem-off.png"><img src="docs/screenshots/gem-off.png" width="220" alt="Thread: Look controls with the normal menu theme"></a><br><strong>Normal menu theme</strong></td>
-    <td width="50%" valign="top" align="center"><a href="docs/screenshots/gem-on.png"><img src="docs/screenshots/gem-on.png" width="220" alt="Thread: Look controls with the optional gem menu theme"></a><br><strong>Gem menu theme</strong></td>
+    <td width="50%" valign="top" align="center"><a href="docs/screenshots/cards-ipad.png"><img src="docs/screenshots/cards-ipad.png" width="220" alt="Thread: Cards with full media at iPad portrait size"></a><br><strong>Cards on iPad</strong></td>
+    <td width="50%" valign="top" align="center"><a href="docs/screenshots/compact-ipad.png"><img src="docs/screenshots/compact-ipad.png" width="220" alt="Thread: Compact Cards with thumbnail rows at iPad portrait size"></a><br><strong>Compact Cards on iPad</strong></td>
   </tr>
 </table>
 
 Screenshots use sample content.
+
+Layout captures use iPad portrait dimensions with touch emulation. They show the built userscript on authored sample pages, not an installed iPad browser.
 
 All ExtraPotions menus share the same Core template. Open **System** for status, diagnostics, troubleshooting and Reset. Donations remain in the header heart.
 

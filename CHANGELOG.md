@@ -1,3 +1,10 @@
+## 0.1.6 — 2026-10-21
+
+- Make Compact Cards into thumbnail-and-text rows with full media opened on demand.
+- Keep Thread action taps local and restore media controls after Reddit refreshes or late loading.
+- Preserve gallery slide order and native controls, with hide, blur and collapse respected by previews.
+- Prevent native expando overlap and pause native audio/video when closing media.
+
 ## 0.1.5 — 2026-10-21
 
 - Make Compact Cards denser with tighter spacing, readable titles and three-line text previews.

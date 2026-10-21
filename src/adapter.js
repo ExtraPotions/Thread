@@ -53,6 +53,17 @@ RC.Adapter=(()=>{
   function sortUrl(sort,comment,range){const match=sortLinks(comment).find(({u})=>comment?u.searchParams.get('sort')===sort:u.pathname.replace(/\/$/,'').endsWith('/'+sort));if(!match)return null;const u=new URL(match.u);if(sort==='top'&&!comment)u.searchParams.set('t',range);return u;}
   function media(item){
     if(item.gated||item.node.querySelector('shreddit-blurred-container,[data-testid="nsfw-gate"],[data-testid="spoiler-gate"]'))return [];
+    const source=n=>{try{const u=new URL(n.currentSrc||n.getAttribute('src')||n.getAttribute('data-lazy-src'));return u.protocol==='https:'&&['i.redd.it','preview.redd.it'].includes(u.hostname)?{src:u.href,alt:n.alt||'Post image'}:null;}catch{return null;}};
+    const galleries=own(item.node,'gallery-carousel');
+    if(galleries.length){
+      // A slide includes a decorative backdrop, a preview and a lightbox original.
+      // Preserve slide order and do not mix feed thumbnails into the gallery.
+      return galleries.flatMap(g=>[...g.querySelectorAll('ul > li')].flatMap(slide=>{
+        const candidates=[...slide.querySelectorAll('zoomable-img img,figure img')].map(source).filter(Boolean);
+        const image=candidates.find(i=>new URL(i.src).hostname==='i.redd.it')||candidates[0];
+        return image?[image]:[];
+      })).slice(0,20);
+    }
     const images=new Map();
     for(const n of own(item.node,'img')){
       if(n.closest('button,a[href*="/user/"],[slot="author"],[slot="commentAvatar"],[data-testid*="avatar"]')||n.hasAttribute('hidden'))continue;

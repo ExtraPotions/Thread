@@ -1,32 +1,50 @@
-# Thread
+<p align="center"><img src="assets/thread-gem.svg" width="128" height="128" alt="Thread icon"></p>
+
+# Thread for Reddit
 
 **Your Reddit, refined.**
 
-Reading, layout and filtering tools for modern Reddit by expDARE. The suite header is **Thread**, with the selected orange **Asscher** gem. Install or update through your userscript manager.
+[![Install Thread for Reddit](docs/badges/install.svg)](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js)
+[![Code: PolyForm Noncommercial 1.0.0](docs/badges/code.svg)](LICENSE-CODE.md)
+[![Artwork and documentation: CC BY-NC-SA 4.0](docs/badges/assets.svg)](LICENSE-ASSETS.md)
 
-Code, including bundled exp-core, uses [PolyForm Noncommercial 1.0.0](LICENSE-CODE.md). Original artwork and documentation use [CC BY-NC-SA 4.0](LICENSE-ASSETS.md). Copyright 2026 expDARE. See the [license index](LICENSE) and [licensing notice](NOTICE.md).
+## Get started
 
-Choose Cards, Compact Cards or Grid, filter posts/comments reversibly, keep private author tags/notes and navigate loaded discussions. Thread uses the actual shared ExtraPotions Core launcher and menu. Native account actions remain deliberate. Account switching is deferred.
+1. Install a userscript manager such as [Violentmonkey](https://violentmonkey.github.io/get-it/) or [Tampermonkey](https://www.tampermonkey.net/).
+2. [Install Thread for Reddit](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) and confirm in your userscript manager.
+3. Refresh modern Reddit and open the Thread gem below the left navigation rail's collapse handle. With other ExtraPotions products installed, they share one launcher: open it and choose Thread.
 
-The small feed strip scrolls normally so it cannot cover Reddit’s native Sort By control. It holds the current content view and optional pinned/sort shortcuts. Sidebar settings and temporary collapse actions live in **Feed → Sidebars**. **Back to top** appears separately at the page edge after scrolling. Previous/Next controls appear only on discussion pages: All, OP, Moderator, Tagged and Unread choose **loaded comment jump targets**, without filtering comments or searching unloaded replies. Unread requires local read tracking.
+## What you can do
 
-Signed-in identity is detected from Reddit's native account components and canonical header profile links, without an API call. If those markers disagree or are unavailable, personal records stay isolated until identity is known. Basic view/layout tools remain available. Account switching itself remains deferred.
+- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. The feed strip scrolls with the page, leaving Reddit's Sort By controls accessible. Saved List preferences use Compact Cards.
+- **Read media comfortably:** inline images and embedded players fit the post width while keeping the original player controls.
+- **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules.
+- **Keep private notes:** add local author tags, notes and nicknames. Personal records stay paused when your account cannot be identified reliably.
+- **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.
+- **Choose the menu look:** enable **Look → Use gem menu theme** for Thread's orange palette. It starts off and colors the menu and notices.
 
-The **Use gem menu theme** switch in Look is **off by default**. It colors only Thread's menu and notices. The normal menu follows native site/system colors; No separate page-theme userscript is required. SHIFT is retired; existing installations remain user-controlled.
+Account switching and Reddit API enrichment are unavailable. See [development](docs/development.md) for supported behavior and verification limits.
 
-Open Thread from the circular gem button below the left navigation rail's collapse handle. Its diameter follows the native handle (32px on the inspected Reddit interface). The menu opens beside that anchor; narrow or missing rails retain a contained, reachable fallback. Co-installed products use the suite launcher.
+## See it in action
 
-The menu follows the shared Core sidebar template. Feed, Read, Filters, People and Look retain Thread's controls; System contains Status, paired Show/Copy Diagnostics, Settings transfer and Reset. Support and Reset are available only inside System. Setting explanations use contained hover/focus tips. Donations stay in the header heart, separate from troubleshooting. Report a Problem opens the project issue form; review diagnostics before submitting.
+<table>
+  <tr>
+    <td width="50%" valign="top" align="center"><a href="docs/screenshots/gem-off.png"><img src="docs/screenshots/gem-off.png" width="220" alt="Thread: Look controls with the normal menu theme"></a><br><strong>Normal menu theme</strong></td>
+    <td width="50%" valign="top" align="center"><a href="docs/screenshots/gem-on.png"><img src="docs/screenshots/gem-on.png" width="220" alt="Thread: Look controls with the optional gem menu theme"></a><br><strong>Gem menu theme</strong></td>
+  </tr>
+</table>
 
-![THREAD Look with normal menu theme; authored fixture](docs/screenshots/gem-off.png)
-![THREAD Look with optional gem menu theme; authored fixture](docs/screenshots/gem-on.png)
+Screenshots use sample content.
 
-These are captures of the built local userscript on authored fixtures. Current native Reddit DOM inspection confirmed the account-marker and Grid-separator mismatches; the local candidate fixes those contracts and has regression coverage for account isolation, actual wrapper structure, distinct media sizes and native-view restoration. It has not been installed or retested against Reddit's live shadow rendering. Earlier native feed-action visibility and parent-preview findings remain outside this change. Mobile web and long-session performance remain unverified. API enrichment is explicitly unavailable until legitimate independent app access exists.
+All ExtraPotions menus share the same Core template. Open **System** for status, diagnostics, troubleshooting and Reset. Donations remain in the header heart.
 
-[Install Thread](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) · [Releases](https://github.com/ExtraPotions/Thread/releases) · [Support](https://github.com/ExtraPotions/Thread/issues)
+## Support
 
-See [development](docs/development.md) for commands, bounds and limitations, and [behavioral scope](docs/behavioral-spec-v3.txt) for the requirements. Tests and fixture sources are included in this repository.
+[Support development](https://ko-fi.com/expdare). Donations are optional. All features remain available without donating.
 
-Saved List preferences migrate to Compact Cards. Native, Cards, Compact Cards and Grid remain available, alongside Reddit's own sorting controls.
+## License
 
-Inline images and embedded players fit the post width without cropped content. Native video playback stays with Reddit and the original provider.
+**Code:** [PolyForm Noncommercial License 1.0.0](LICENSE-CODE.md)<br>
+**Artwork and documentation:** [CC BY-NC-SA 4.0](LICENSE-ASSETS.md)
+
+Thread is an independent project and is not affiliated with or endorsed by Reddit.

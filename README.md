@@ -4,6 +4,8 @@
 
 Reading, layout and filtering tools for modern Reddit by expDARE. The suite header is **Thread**, with the selected orange **Asscher** gem. This candidate is unpublished and has not replaced the previously installed build.
 
+Code, including bundled exp-core, uses [PolyForm Noncommercial 1.0.0](LICENSE-CODE.md). Original artwork and documentation use [CC BY-NC-SA 4.0](LICENSE-ASSETS.md). Copyright 2026 expDARE. See the [license index](LICENSE) and [licensing notice](NOTICE.md).
+
 Choose Cards, Compact Cards, Grid or List, filter posts/comments reversibly, keep private author tags/notes and navigate loaded discussions. Thread uses the actual shared ExtraPotions Core launcher and menu. Native account actions remain deliberate. Account switching is deferred.
 
 The small sticky feed strip holds the current content view and optional pinned/sort shortcuts. Sidebar settings and temporary collapse actions live in **Feed → Sidebars**. **Back to top** appears separately at the page edge after scrolling. Previous/Next controls appear only on discussion pages: All, OP, Moderator, Tagged and Unread choose **loaded comment jump targets**, without filtering comments or searching unloaded replies. Unread requires local read tracking.

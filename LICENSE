@@ -1,0 +1,10 @@
+# Thread Licensing
+
+Copyright 2026 expDARE.
+
+Thread uses the same split-license model as the ExtraPotions suite:
+
+- Software code, including bundled exp-core: PolyForm Noncommercial License 1.0.0. See LICENSE-CODE.md and https://polyformproject.org/licenses/noncommercial/1.0.0.
+- Original artwork and documentation: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). See LICENSE-ASSETS.md and https://creativecommons.org/licenses/by-nc-sa/4.0/.
+
+The applicable notices and scope are described in NOTICE.md. Third-party material, if any, retains its applicable license notices.

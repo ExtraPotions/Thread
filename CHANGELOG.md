@@ -1,3 +1,10 @@
+## 0.1.1 — 2026-10-20
+
+- Keep Show Diagnostics, Copy Diagnostics and Reset All Settings directly accessible in System.
+- Show real changelog and update information through the shared notice design.
+- Exclude profile artwork and count variants of the same image only once.
+- Show each parent comment text block once.
+
 ## 0.1.0 — 2026-10-20
 
 - Adds Cards, Compact Cards, Grid and List layouts, native sorting and sidebar controls for modern Reddit.

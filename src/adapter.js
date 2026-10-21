@@ -31,7 +31,9 @@ RC.Adapter=(()=>{
     const author=attr('author')||own(node,'a[href*="/user/"]')[0]?.getAttribute('href')?.split('/user/')[1]?.split('/')[0]||'';
     const href=attr('permalink','content-href')||own(node,'a[href*="/comments/"]')[0]?.getAttribute('href')||'';
     const url=link(href);
-    const copy=own(node,'[slot="comment"],[slot="text-body"],[slot="title"],h1,h2,h3,p').map(n=>n.textContent).join(' ').slice(0,4000);
+    const blocks=own(node,'[slot="comment"],[slot="text-body"],[slot="title"],h1,h2,h3,p');
+    // Slot containers already include their paragraphs; reading both repeats the parent preview.
+    const copy=blocks.filter(n=>!blocks.some(parent=>parent!==n&&parent.contains(n))).map(n=>n.textContent.replace(/\s+/g,' ').trim()).join('\n\n').slice(0,4000);
     const community=attr('subreddit-prefixed-name','subreddit-name').replace(/^r\//,'')||location.pathname.match(/^\/r\/([^/]+)/)?.[1]||'';
     const outbound=own(node,'a[href]') .map(a=>{try{return new URL(a.href);}catch{return null;}}).find(u=>u&&u.protocol==='https:'&&!u.hostname.endsWith('reddit.com'));
     return {node,kind,id:attr('thingid','thing-id','id')||url?.pathname||'',author:author==='[deleted]'?'[deleted]':author||'[unknown]',community,text:copy,title:attr('post-title')||own(node,'[slot="title"],h1,h2,h3')[0]?.textContent||'',domain:outbound?.hostname||'',flair:own(node,'[slot="post-flair"],[data-testid="post-flair"]')[0]?.textContent||'',url:url?.href||'',parent:attr('parentid','parent-id'),depth:Math.min(99,Math.max(0,Number(attr('depth'))||0)),score:Number(attr('score'))||0,op:node.hasAttribute('is-op'),mod:attr('distinguished')==='moderator',pinned:node.hasAttribute('stickied')||node.hasAttribute('is-stickied'),gated:node.hasAttribute('spoiler')||node.hasAttribute('nsfw')||node.hasAttribute('is-nsfw')};
@@ -49,6 +51,18 @@ RC.Adapter=(()=>{
   }
   function sortLinks(comment=false){return [...document.querySelectorAll('a[href]')].filter(n=>!owned(n)).map(a=>({a,u:link(a.getAttribute('href'))})).filter(({u})=>u&&(comment?u.searchParams.has('sort')&&u.pathname.includes('/comments/'):!u.pathname.includes('/comments/')&&/\/(best|hot|new|top|rising)\/?$/.test(u.pathname)));}
   function sortUrl(sort,comment,range){const match=sortLinks(comment).find(({u})=>comment?u.searchParams.get('sort')===sort:u.pathname.replace(/\/$/,'').endsWith('/'+sort));if(!match)return null;const u=new URL(match.u);if(sort==='top'&&!comment)u.searchParams.set('t',range);return u;}
-  function media(item){if(item.gated||item.node.querySelector('shreddit-blurred-container,[data-testid="nsfw-gate"],[data-testid="spoiler-gate"]'))return [];return own(item.node,'img').filter(n=>!n.closest('button')&&!n.hasAttribute('hidden')).map(n=>{try{const u=new URL(n.currentSrc||n.src);return u.protocol==='https:'&&['i.redd.it','preview.redd.it','www.redditstatic.com'].includes(u.hostname)?{src:u.href,alt:n.alt||'Post image'}:null;}catch{return null;}}).filter(Boolean).slice(0,20);}
+  function media(item){
+    if(item.gated||item.node.querySelector('shreddit-blurred-container,[data-testid="nsfw-gate"],[data-testid="spoiler-gate"]'))return [];
+    const images=new Map();
+    for(const n of own(item.node,'img')){
+      if(n.closest('button,a[href*="/user/"],[slot="author"],[slot="commentAvatar"],[data-testid*="avatar"]')||n.hasAttribute('hidden'))continue;
+      try{const u=new URL(n.currentSrc||n.src);if(u.protocol!=='https:'||!['i.redd.it','preview.redd.it'].includes(u.hostname))continue;
+        // Reddit renders several preview sizes plus an original for the same asset.
+        const key=u.pathname.split('/').pop().replace(/^.*-v\d+-/,'').replace(/\.[^.]+$/,'');
+        if(key&&(!images.has(key)||u.hostname==='i.redd.it'))images.set(key,{src:u.href,alt:n.alt||'Post image'});
+      }catch{}
+    }
+    return [...images.values()].slice(0,20);
+  }
   return {selector,nodes,own,owned,visible,nearby,link,account,item,action,loadControls,sortLinks,sortUrl,media};
 })();

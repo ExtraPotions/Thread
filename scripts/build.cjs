@@ -9,7 +9,10 @@ const manifest=JSON.parse(read('vendor/exp-core/manifest.json'));
 if(hash(core)!==manifest.bundleSha256)throw Error('Core bundle hash mismatch');
 const files=['model.js','regex.js','adapter.js','runtime.js','ui.js','main.js'];
 const css=read('src/style.css');
-const script=read('src/metadata.txt').trimEnd()+'\n\n(()=>{\n"use strict";\n'+core+'\nconst RC={VERSION:'+JSON.stringify(version)+',GEM:'+JSON.stringify(read('assets/thread-gem.svg'))+',CSS:'+JSON.stringify(css)+'};\n'+files.map(n=>read('src/'+n)).join('\n')+'\n})();\n';
+const notes=read('CHANGELOG.md').split(/^## /m).slice(1).find(section=>section.startsWith(version+' '));
+if(!notes)throw Error('Current release notes missing');
+const releaseNotes=notes.split('\n').filter(line=>line.startsWith('- ')).map(line=>line.slice(2));
+const script=read('src/metadata.txt').trimEnd()+'\n\n(()=>{\n"use strict";\n'+core+'\nconst RC={VERSION:'+JSON.stringify(version)+',NOTES:'+JSON.stringify(releaseNotes)+',GEM:'+JSON.stringify(read('assets/thread-gem.svg'))+',CSS:'+JSON.stringify(css)+'};\n'+files.map(n=>read('src/'+n)).join('\n')+'\n})();\n';
 new (require('node:vm').Script)(script);
 const target=path.join(root,'thread.user.js');
 if(process.argv.includes('--check')){if(!fs.existsSync(target)||fs.readFileSync(target,'utf8')!==script)throw Error('Stale local userscript');}

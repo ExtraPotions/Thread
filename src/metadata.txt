@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Thread
 // @namespace    expDARE.ExtraPotions.THREAD
-// @version      0.1.0
+// @version      0.1.1
 // @description  Your Reddit, refined. Reading, layout and local personal context for modern Reddit.
 // @author       expDARE
 // @license      PolyForm-Noncommercial-1.0.0
@@ -21,4 +21,6 @@
 // @grant        GM_listValues
 // @grant        GM_addValueChangeListener
 // @grant        GM_removeValueChangeListener
+// @grant        GM_xmlhttpRequest
+// @connect      api.github.com
 // ==/UserScript==

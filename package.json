@@ -1,9 +1,11 @@
 {
   "name": "extrapotions-thread",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "author": "expDARE",
-  "engines": {"node": ">=24"},
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "node scripts/build.cjs",
     "build:check": "node scripts/build.cjs --check",

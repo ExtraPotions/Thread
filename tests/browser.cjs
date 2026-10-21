@@ -5,6 +5,8 @@ const fixture=require('./fixture.cjs');const root=path.resolve(__dirname,'..'),w
 const output=path.join(workspace,'local-verification/suite-system-20261020/thread');fs.mkdirSync(output,{recursive:true});
 const captures=path.join(root,'.impeccable/review');fs.mkdirSync(captures,{recursive:true});
 const source=fs.readFileSync(path.join(root,'thread.user.js'),'utf8');
+const version=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version;
+const currentNote=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8').split(/^## /m).find(section=>section.startsWith(version+' ')).split('\n').find(line=>line.startsWith('- ')).slice(2);
 // Test instrumentation exposes lexical objects only in the test page, not the deliverable.
 const testedSource=source.replace('const ui=new RC.UI(runtime);','const ui=new RC.UI(runtime);window.__thread={RC,runtime,ui};');
 const checks=[],errors=[],requests=[];let browser;
@@ -20,7 +22,7 @@ async function pageAt(url='https://www.reddit.com/r/example/',viewport={width:14
  },settings);
  await page.addScriptTag({content:testedSource});await page.waitForFunction(()=>window.__thread?.runtime.items.size===5);return page;
 }
-async function openSystem(root,group){const tab=root.getByRole('tab',{name:'System',exact:true});if(await tab.getAttribute('aria-selected')!=='true')await tab.click();const summary=root.locator('summary').filter({hasText:new RegExp('^'+group+'$','i')});if(!await summary.evaluate(n=>n.parentElement.open))await summary.click();}
+async function openSystem(root,group){const tab=root.getByRole('tab',{name:'System',exact:true});if(await tab.getAttribute('aria-selected')!=='true')await tab.click();if(['support','reset'].includes(group))return;const summary=root.locator('summary').filter({hasText:new RegExp('^'+group+'$','i')});if(!await summary.evaluate(n=>n.parentElement.open))await summary.click();}
 async function settle(page){await page.waitForTimeout(400);}
 async function run(){
  browser=await chromium.launch({headless:true,executablePath:process.platform==='win32'?'C:/Users/OneDareAtHome/AppData/Local/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-win64/chrome-headless-shell.exe':undefined,args:['--js-flags=--expose-gc']});
@@ -50,7 +52,7 @@ async function run(){
  await check('feed strip stays sticky without post-jump controls; top action is separate and cleaned up',async()=>{
   const q=await pageAt();assert.equal(await q.locator('.rc-pagebar').getByRole('button',{name:/Previous|Next|Sidebars|Back to top/}).count(),0);await q.evaluate(()=>{const spacer=document.createElement('div');spacer.style.height='2500px';document.querySelector('main').append(spacer);scrollTo(0,600);});await settle(q);assert((await q.locator('.rc-pagebar').boundingBox()).y>=-1);assert.equal(await q.getByRole('button',{name:'Back to top',exact:true}).isVisible(),true);await q.getByRole('button',{name:'Back to top',exact:true}).click();await settle(q);assert.equal(await q.evaluate(()=>scrollY),0);await q.evaluate(()=>window.__thread.runtime.destroy());assert.equal(await q.locator('[data-rc-owned="back-top"]').count(),0);await q.close();
  });
- await check('actual shared Core registers THREAD and uses a single launcher',async()=>{assert.equal(await p.locator('#exp-thread-root').count(),1);assert.equal(await p.evaluate(()=>document.querySelector('[data-exp-suite-product="thread"]').dataset.expSuiteVersion),'0.1.0');});
+ await check('actual shared Core registers THREAD and uses a single launcher',async()=>{assert.equal(await p.locator('#exp-thread-root').count(),1);assert.equal(await p.evaluate(()=>document.querySelector('[data-exp-suite-product="thread"]').dataset.expSuiteVersion),version);});
  await check('built THREAD launcher docks below the native left-rail handle and opens adjacent by keyboard',async()=>{
   await settle(p);const root=p.locator('#exp-thread-root'),launcher=root.locator('.launcher');
   const rail=await p.locator('#left-sidebar-container').boundingBox(),handle=await p.locator('#native-collapse').boundingBox(),opener=await launcher.boundingBox();
@@ -60,6 +62,15 @@ async function run(){
   await p.locator('#native-collapse').click();assert.equal(await p.evaluate(()=>window.__nativeCollapse),1);
  });
  await check('native sorting and account actions are unchanged by default',async()=>{assert.deepEqual(await p.evaluate(()=>window.__native),{save:0,upvote:0,downvote:0,pages:0,replies:0});assert.equal(p.url(),'https://www.reddit.com/r/example/');assert.equal(await p.locator('shreddit-post[data-rc-view]').count(),0);});
+ await check('media discovery excludes profile avatars and badges while retaining attached images',async()=>{
+  const actual=await p.evaluate(()=>{const node=document.createElement('shreddit-comment');node.innerHTML='<a href="/user/example/"><span><img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_7.png"></span></a><img src="https://i.redd.it/content.png"><img src="https://www.redditstatic.com/gold/awards/icon.png">';return window.__thread.RC.Adapter.media({node,gated:false}).map(n=>n.src);});assert.deepEqual(actual,['https://i.redd.it/content.png']);
+ });
+ await check('comment text reads each slot once and excludes nested replies from parent context',async()=>{
+  const actual=await p.evaluate(()=>{const n=document.createElement('shreddit-comment');n.innerHTML='<div slot="comment"><p>Unique parent text.</p></div><shreddit-comment><p>Nested reply.</p></shreddit-comment>';return window.__thread.RC.Adapter.item(n).text;});assert.equal(actual,'Unique parent text.');
+ });
+ await check('image variants share one gallery entry and prefer the observed original without fetching',async()=>{
+  const actual=await p.evaluate(()=>{const n=document.createElement('shreddit-post');n.innerHTML='<img src="https://preview.redd.it/title-v0-asset123.jpeg?width=300"><img src="https://preview.redd.it/title-v0-asset123.jpeg?width=900"><img src="https://i.redd.it/asset123.jpeg"><img src="https://i.redd.it/another456.png">';return window.__thread.RC.Adapter.media({node:n,gated:false}).map(n=>n.src);});assert.deepEqual(actual,['https://i.redd.it/asset123.jpeg','https://i.redd.it/another456.png']);
+ });
  await check('Pear Crystal theme defaults off, persists, restores and stays inside THREAD',async()=>{
   assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.gemTheme),false);
   const pageColor=await p.locator('body').evaluate(n=>getComputedStyle(n).backgroundColor);
@@ -73,11 +84,19 @@ async function run(){
   await p.evaluate(()=>window.__thread.runtime.update({gemTheme:false}));
   assert.equal(await p.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').style.getPropertyValue('--theme-bg')),normal);
  });
- await check('version notice reuses Core theme and keeps unavailable release/install links hidden',async()=>{
+ await check('version notice reuses Core theme, actual release notes and published release link',async()=>{
   await p.evaluate(()=>{window.__thread.runtime.update({gemTheme:true});window.__thread.ui.product.open();window.__thread.ui.product.versionButton.click();});
-  await settle(p);const notice=p.locator('#exp-thread-root').locator('.update-notice');assert.equal(await notice.isVisible(),true);assert.match(await notice.innerText(),/Thread Changelog/);assert.equal(await notice.locator('.update-action').isVisible(),false);assert.equal(await notice.locator('.update-release').isVisible(),false);
+  await settle(p);const notice=p.locator('#exp-thread-root').locator('.update-notice');assert.equal(await notice.isVisible(),true);assert.match(await notice.innerText(),/Thread Changelog/);assert.ok((await notice.innerText()).includes(currentNote));assert.equal(await notice.locator('.update-action').isVisible(),false);assert.equal(await notice.locator('.update-release').isVisible(),true);assert.equal(await notice.locator('.update-release').getAttribute('href'),'https://github.com/ExtraPotions/Thread/releases/tag/v'+version);
   assert.equal(await notice.evaluate(n=>getComputedStyle(n).getPropertyValue('--theme-bg').trim()),'#1e1410');
   await p.evaluate(()=>{window.__thread.ui.notice.hide();window.__thread.runtime.update({gemTheme:false});window.__thread.ui.product.close();});
+ });
+ await check('release lifecycle uses shared notices for available, complete, disabled and failed checks',async()=>{
+  const q=await pageAt();await q.evaluate(()=>{GM_setValue('exp:v3:thread:installed-version','0.0.9');dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});await settle(q);
+  const notice=q.locator('#exp-thread-root .update-notice');assert.equal(await notice.getAttribute('data-notice-kind'),'complete');assert.match(await notice.innerText(),/Updated from v0.0.9/);
+  await q.evaluate(async()=>{window.__updateRequests=0;window.GM_xmlhttpRequest=o=>{window.__updateRequests++;queueMicrotask(()=>o.onload({status:200,responseText:JSON.stringify({tag_name:'v9.9.9',body:'## 9.9.9\n- New fixture feature.'})}));return{abort(){}};};await window.__thread.ui.checkUpdates(true);});await settle(q);
+  assert.equal(await notice.getAttribute('data-notice-kind'),'available');assert.equal(await notice.locator('.update-action').isVisible(),true);assert.equal(await notice.locator('.update-action').getAttribute('href'),'https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js');assert.equal(await notice.locator('.update-release').getAttribute('href'),'https://github.com/ExtraPotions/Thread/releases/tag/v9.9.9');assert.match(await notice.innerText(),/New fixture feature/);
+  await q.evaluate(async()=>{window.__thread.runtime.update({updateNotifications:false});await window.__thread.ui.checkUpdates();});assert.equal(await q.evaluate(()=>window.__updateRequests),1,'disabled notifications make no automatic request');
+  await q.evaluate(async()=>{window.GM_xmlhttpRequest=o=>{queueMicrotask(()=>o.onerror());return{abort(){}};};await window.__thread.ui.checkUpdates(true);});assert.match(await q.locator('#exp-thread-root .rc-menu-status').textContent(),/Update check failed/);await q.close();
  });
  await check('enabled switch indicators meet 3:1 contrast in light, dark and gem themes',async()=>{
   for(const [scheme,gem]of [['light',false],['dark',false],['dark',true]]){
@@ -132,7 +151,7 @@ async function run(){
   await menuRoot.getByRole('button',{name:'Copy Diagnostics',exact:true}).click();assert.equal(await uiPage.evaluate(()=>JSON.parse(window.__copied).product),'THREAD');
   assert.equal(await menuRoot.getByRole('button',{name:'Report a Problem',exact:true}).isDisabled(),false);
   await openSystem(menuRoot,'reset');await menuRoot.getByRole('button',{name:'Reset All Settings',exact:true}).click();assert.equal(await menuRoot.getByRole('button',{name:'Tap Again to Reset',exact:true}).isVisible(),true);assert.equal(await menuRoot.getByRole('dialog').isVisible(),true);
-  await menuRoot.locator('[data-exp-system-item="reset"]>summary').click();assert.equal(await menuRoot.getByRole('button',{name:'Tap Again to Reset',exact:true}).count(),0);
+  await menuRoot.getByRole('button',{name:'Hide Diagnostics',exact:true}).focus();assert.equal(await menuRoot.getByRole('button',{name:'Tap Again to Reset',exact:true}).count(),0);
  });
  await check('dependent settings stay conditional and all settings remain reachable without inline implementation paragraphs',async()=>{
   await menuRoot.getByRole('tab',{name:'Feed',exact:true}).click();

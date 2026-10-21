@@ -12,7 +12,7 @@ The small sticky feed strip holds the current content view and optional pinned/s
 
 Signed-in identity is detected from Reddit's native account components and canonical header profile links, without an API call. If those markers disagree or are unavailable, personal records stay isolated until identity is known. Basic view/layout tools remain available. Account switching itself remains deferred.
 
-The **Use gem menu theme** switch in Look is **off by default**. It colors only Thread's menu and notices. The normal menu follows native site/system colors; SHIFT keeps its page-theme role.
+The **Use gem menu theme** switch in Look is **off by default**. It colors only Thread's menu and notices. The normal menu follows native site/system colors; No separate page-theme userscript is required. SHIFT is retired; existing installations remain user-controlled.
 
 Open Thread from the circular gem button below the left navigation rail's collapse handle. Its diameter follows the native handle (32px on the inspected Reddit interface). The menu opens beside that anchor; narrow or missing rails retain a contained, reachable fallback. Co-installed products use the suite launcher.
 

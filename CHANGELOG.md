@@ -1,3 +1,9 @@
+## 0.2.6 — 2026-10-22
+
+- Cards and Grid switch Reddit's own View to Card, and Compact Cards to Compact, so posts arrive with the right media (one reload).
+- Choosing Card or Compact in Reddit's View menu now carries over to Thread's view.
+- A page that loads in the other layout corrects itself once and never reloads in a loop.
+
 ## 0.2.5 — 2026-10-22
 
 - Compact Cards on desktop and touch keep Thread actions in one footer icon, limit text previews to two lines and no longer cover Reddit's post menu.

@@ -1,3 +1,9 @@
+## 0.2.5 — 2026-10-22
+
+- Compact Cards on desktop and touch keep Thread actions in one footer icon, limit text previews to two lines and no longer cover Reddit's post menu.
+- Grid shows up to four readable columns and collapses Thread actions into the footer icon on every device.
+- The right rail handle now sits on an edge line matching Reddit's left navigation.
+
 ## 0.2.4 — 2026-10-22
 
 - Show the vote and share row beside the thumbnail in Compact rows on iPad widths.

@@ -1,12 +1,12 @@
 RC.Runtime=class {
   constructor(store){
     this.store=store;this.regex=new RC.Regex();this.items=new Map();this.revealed=new Set();this.manual=new Map();this.readTimers=new Map();this.regexErrors=new Map();this.collapsed=new Set();this.loadSeen=new WeakSet();this.loadCounts={post:0,comment:0};this.selected='';this.scope='all';this.route='';this.epoch=0;this.timer=0;this.destroyed=false;this.overlay=null;this.bar=null;this.account=null;this.verified=false;this.routeObserver=null;this.resize=()=>{this.layout();for(const record of this.items.values())this.positionHeaderMenu(record);};
-    this.scroll=()=>{this.captureFeedAnchor();this.schedule();};this.key=e=>this.onKey(e);this.dismissMenus=e=>this.dismissHeaderMenus(e);this.click=e=>{this.dismissHeaderMenus(e);this.onClick(e);};
+    this.scroll=()=>{this.captureFeedAnchor();this.schedule();};this.key=e=>this.onKey(e);this.dismissMenus=e=>this.dismissHeaderMenus(e);this.click=e=>{this.dismissHeaderMenus(e);this.onClick(e);};this.layoutClick=e=>this.followNativeLayout(e);
     this.style=document.createElement('style');this.style.dataset.rcOwned='style';this.style.textContent=RC.CSS;document.head.append(this.style);
     this.readObserver=new IntersectionObserver(entries=>this.observeRead(entries),{threshold:[0,.6]});
     this.observer=new MutationObserver(records=>{if(records.some(r=>!RC.Adapter.owned(r.target)&&((r.type==='attributes'&&(r.attributeName!=='href'||r.target.closest('header,[data-testid="user-menu"]')))||[...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1&&!RC.Adapter.owned(n)&&!n.hasAttribute('data-rc-owned')))))this.schedule();});
     this.observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['author','score','user-name','username','href','permalink','thingid','is-op','distinguished','spoiler','nsfw','comment-count','src','srcset','data-lazy-src','data-lazy-srcset','hidden']});
-    addEventListener('scroll',this.scroll,{passive:true});addEventListener('resize',this.resize,{passive:true});document.addEventListener('keydown',this.key);document.addEventListener('click',this.click);document.addEventListener('pointerdown',this.dismissMenus,true);
+    addEventListener('scroll',this.scroll,{passive:true});addEventListener('resize',this.resize,{passive:true});document.addEventListener('keydown',this.key);document.addEventListener('click',this.click);document.addEventListener('click',this.layoutClick,true);document.addEventListener('pointerdown',this.dismissMenus,true);
     this.routeObserver=ExtraPotionsCore.observeNavigation(()=>this.schedule());
     this.schedule();
   }
@@ -184,9 +184,24 @@ RC.Runtime=class {
         for(let depth=0;parent&&depth<5;depth++,parent=parent.parentElement){const posts=parent.querySelectorAll('shreddit-post');if(posts.length>1&&posts.length<1000){grids.add(parent);break;}}
       }
     }
-    this.adView(location.pathname.includes('/comments/')?'native':view);this.gridLayout(grids);
+    this.adView(location.pathname.includes('/comments/')?'native':view);this.gridLayout(grids);this.nativeLayout(view);
     // A chosen view settles in with a short fade from an already-visible feed; input is never blocked and a newer choice restarts it.
     if(this.viewFade){this.viewFade=false;const feed=document.querySelector('main shreddit-feed');if(feed&&typeof feed.animate==='function'&&!matchMedia('(prefers-reduced-motion: reduce)').matches){this.viewFadeAnimation?.cancel();this.viewFadeAnimation=feed.animate([{opacity:.35},{opacity:1}],{duration:180,easing:'cubic-bezier(.16,1,.3,1)'});}}
+  }
+  // Cards and Grid need Reddit's card markup (full media), Compact Cards its compact markup. Reddit's own View menu link switches
+  // the feed with one reload. A page that already asked for the wanted layout and still got the other is left alone, so it never loops.
+  nativeLayout(view){
+    const menu=document.querySelector('shreddit-sort-dropdown[sort-event="layout-view-change"]'),current=menu?.querySelector('data:has(li[rpl-selected])')?.getAttribute('value');
+    if(view==='native'||!current||location.pathname.includes('/comments/'))return;
+    const wanted=view==='compact'?'compactView':'cardView';if(current===wanted||this.layoutPending===wanted)return;
+    if(new URLSearchParams(location.search).get('feedViewType')===wanted)return;
+    const link=menu.querySelector('data[value="'+wanted+'"] a[href]');if(link){this.layoutPending=wanted;link.click();}
+  }
+  // A choice in Reddit's View menu carries over: Compact leads to Compact Cards, Card turns Compact Cards into Cards; Grid stays Grid on Card.
+  followNativeLayout(e){
+    if(!e.isTrusted)return;const link=e.composedPath().find(n=>n?.localName==='a'&&n.closest?.('shreddit-sort-dropdown[sort-event="layout-view-change"]')),wanted=link?.closest('data')?.getAttribute('value');
+    const view=this.viewOverride||this.settings.defaultView;if(!wanted||view==='native')return;
+    const next=wanted==='compactView'?'compact':view==='compact'?'cards':view;this.layoutPending=wanted;if(next!==view){this.viewOverride=null;this.update({defaultView:next});}
   }
   // Ads keep native markup; only Reddit's own view-type and the shared card frame follow the chosen view.
   adView(view){
@@ -330,5 +345,5 @@ RC.Runtime=class {
   clearNodes(){for(const [node,r]of this.items)this.release(node,r);this.adView('native');this.gridLayout(new Set());for(const n of document.querySelectorAll('[data-rc-post-read-hidden],[data-rc-sidebar-hidden],[data-rc-fill],[data-rc-secondary-hidden],[data-rc-layout],[data-rc-profile-simple],[data-rc-view-container],[data-rc-view-wrapper],[data-rc-view-aux],[data-rc-sort-row],shreddit-ad-post[data-rc-view]')){for(const a of [...n.attributes])if(a.name.startsWith('data-rc-'))n.removeAttribute(a.name);for(const name of ['--rc-width','--rc-offset','--rc-grid-span'])n.style.removeProperty(name);}}
   clearRoute(){this.saveFeedPosition();this.feedAnchor=null;this.pendingFeedRestore=null;this.feedRestoreRoute='';this.readGeneration=(this.readGeneration||0)+1;this.epoch++;this.regex.dispose();this.clearNodes();this.readObserver?.disconnect();this.readTimers.forEach(clearTimeout);this.readTimers.clear();this.closeOverlay();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.barState='';this.revealed.clear();this.manual.clear();this.collapsed.clear();this.selected='';this.scope='all';}
   diagnostics(){return {product:'THREAD',version:RC.VERSION,accountVerified:this.verified,loaded:this.items.size,readTimers:this.readTimers.size,regexWorkers:this.regex.pending.size,loadCounts:{...this.loadCounts},regexErrors:[...this.regexErrors.values()],storage:this.store.error||'available',api:'Unavailable: own registration and legitimate access required',liveContract:'native header and feed DOM observed; candidate installed behavior unverified'};}
-  destroy(){if(this.destroyed)return;this.destroyed=true;this.siteColors?.clear();clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
+  destroy(){if(this.destroyed)return;this.destroyed=true;this.siteColors?.clear();clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('click',this.layoutClick,true);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
 };

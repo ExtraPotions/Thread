@@ -16,7 +16,7 @@
 
 ## What you can do
 
-- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. On feeds, the view picker and Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards.
+- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. On feeds, the view picker and Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into up to four readable columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards.
 - **Read media comfortably:** use thumbnail previews in Compact Cards and open full media when you want it. Opened images and embedded players fit the post width while keeping the original player controls.
 - **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules, or a whole community with **Filter r/…** in a post's actions menu. Manage community filters in **Feed → Community filters**.
 - **Skip the blur:** turn on **Feed → Unblur spoilers** or **Unblur mature media**. Mature media unblurs only where Reddit already shows it to your signed-in account.
@@ -30,7 +30,7 @@
 
 Compact Cards shows thumbnail-and-text rows with two-line previews and a **Thread actions** disclosure. Promoted posts use Reddit's own compact layout. Full media stays collapsed until you tap the thumbnail (**Open media**) or Reddit's existing expand control. Opened images and players keep their full readable layout.
 
-On touch devices, open **Thread actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
+In Compact Cards and Grid, and in every view on touch devices, open **Thread actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
 
 In Compact Cards on tablet-width feeds, the vote, comment and share row sits beside the thumbnail, so rows with a thumbnail stay short. On phone widths the row spans the post below the thumbnail. Reddit continues to place native actions in its own overflow menu when they do not fit.
 

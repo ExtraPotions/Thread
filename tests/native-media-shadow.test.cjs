@@ -13,7 +13,7 @@ test('feed thumbnails retain native size while opened media gets the full post w
    await control.selectOption(view);await page.waitForFunction(view=>document.querySelector('shreddit-post').getAttribute('data-rc-view')===view,view);
    assert.equal(await page.locator('shreddit-post').getAttribute('view-type'),'compactView','the native renderer must retain its matching expando slot');
    const media=await page.locator('.native-thumb').evaluate(n=>({width:n.getBoundingClientRect().width,height:n.clientHeight,scroll:n.scrollHeight}));
-   if(view==='compact')await page.locator('.rc-compact-actions summary').click();
+   if(view!=='cards')await page.locator('.rc-compact-actions summary').click();
    assert.equal(await page.getByRole('button',{name:'Tag / note',exact:true}).isVisible(),true);
    assert.equal(Math.round(media.width),104,'feed thumbnail must retain its native width: '+JSON.stringify({width,view,media}));assert.equal(media.height,78,'feed thumbnail must retain its native height');
    assert.equal(await page.locator('#expando').isVisible(),false,'Thread must not open native gated/closed media');

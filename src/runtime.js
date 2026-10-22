@@ -248,7 +248,7 @@ RC.Runtime=class {
     const bar=record.tools;if(!bar)return;
     const previous=bar.querySelector(':scope > details.rc-compact-actions');
     const touch=matchMedia('(pointer:coarse)').matches;
-    const compact=(view==='compact'||touch)&&!record.item.node.hasAttribute('data-rc-treatment')&&!record.item.node.hasAttribute('data-rc-collapsed');
+    const compact=(view==='compact'||view==='grid'||touch)&&!record.item.node.hasAttribute('data-rc-treatment')&&!record.item.node.hasAttribute('data-rc-collapsed');
     this.attr(bar,'data-rc-feed-actions',touch?'1':null);
     if(!record.item.node.shadowRoot&&!touch){const post=record.item.node,focused=bar.contains(document.activeElement)?document.activeElement:null;if(compact&&bar!==post.lastElementChild)post.append(bar);else if(!compact&&bar!==post.firstElementChild)post.prepend(bar);focused?.focus({preventScroll:true});}
     if(compact&&!previous){
@@ -265,14 +265,15 @@ RC.Runtime=class {
   clearToolsLayout(record){const label=record.tools?.querySelector('summary');if(label?.querySelector('svg'))label.textContent='Thread actions';record.actionsSlot?.remove();record.actionsStyle?.remove();record.actionsRow?.removeAttribute('data-rc-header-row');if(record.headerContainer?.contains(record.tools))record.item.node.prepend(record.tools);record.headerContainer?.remove();record.tools?.removeAttribute('data-rc-header-actions');delete record.actionsSlot;delete record.actionsStyle;delete record.actionsRow;delete record.headerContainer;}
   nativeToolsLayout(record){
     const post=record.item.node,root=post.shadowRoot,bar=record.tools,summary=bar?.querySelector('summary');
-    if(!matchMedia('(pointer:coarse)').matches){this.clearToolsLayout(record);return '';}
+    // Collapsed tools (Compact and Grid on any pointer, every view on touch) become the footer icon; expanded desktop tools keep their own row.
+    if(!summary&&!matchMedia('(pointer:coarse)').matches){this.clearToolsLayout(record);return '';}
     if(!summary){
       if(record.actionsSlot?.dataset.rcRecovery&&record.actionsSlot.isConnected)return 'thread-feed-actions';
       this.clearToolsLayout(record);if(bar.parentElement!==post)post.prepend(bar);
       if(root){const projection=document.createElement('slot');projection.name='thread-feed-actions';projection.dataset.rcActionsSlot='1';projection.dataset.rcRecovery='1';root.prepend(projection);record.actionsSlot=projection;record.actionsRow=projection;return 'thread-feed-actions';}return '';
     }
-    // Touch: a native-sized icon at the right end of the native footer action row.
-    const actions=root?.querySelector('rpl-action-bar [data-testid="action-row"]')||root?.querySelector('slot[name="overflow-menu-bar"]')?.parentElement||null;
+    // A native-sized icon at the right end of the native footer action row. Compact cards have no action-row test id, so the row is also found by its share button.
+    const actions=root?.querySelector('rpl-action-bar [data-testid="action-row"]')||root?.querySelector('div:has(>slot[name="share-button"])')||root?.querySelector('slot[name="overflow-menu-bar"]')?.parentElement||null;
     const row=actions&&([...actions.children].filter(n=>n.localName==='div').pop()||actions);
     if(record.actionsRow!==row||row&&(!row.isConnected||!record.actionsSlot?.isConnected)){
       this.clearToolsLayout(record);
@@ -284,7 +285,7 @@ RC.Runtime=class {
       }
     }
     if(record.actionsSlot){if(bar.parentElement!==post)post.prepend(bar);}else if(bar!==post.lastElementChild){const focused=bar.contains(document.activeElement)?document.activeElement:null;post.append(bar);focused?.focus({preventScroll:true});}
-    const native=actions&&[...actions.querySelectorAll('button,a[href]'),...[...actions.querySelectorAll('slot:not([data-rc-actions-slot])')].flatMap(slot=>slot.assignedElements({flatten:true}).flatMap(n=>[n,...n.querySelectorAll('*')]).filter(n=>n.matches('button,a[href]')&&!RC.Adapter.owned(n)))].find(n=>RC.Adapter.visible(n)),box=native?.getBoundingClientRect(),height=box?.height;
+    const native=actions&&[...actions.querySelectorAll('button,a[href]'),...[...actions.querySelectorAll('slot:not([data-rc-actions-slot])')].flatMap(slot=>slot.assignedElements({flatten:true}).flatMap(n=>[n,...n.querySelectorAll('*')]).filter(n=>n.matches('button,a[href]')&&!RC.Adapter.owned(n)))].find(n=>n.getClientRects().length&&getComputedStyle(n).visibility!=='hidden'),box=native?.getBoundingClientRect(),height=box?.height;
     bar.style.setProperty('--rc-native-action-size',(height>=20&&height<=48?height:32)+'px');
     const tone=native&&getComputedStyle(native).backgroundColor;if(tone&&!/^(transparent|rgba\(0, 0, 0, 0\))$/.test(tone))bar.style.setProperty('--rc-native-action-bg',tone);
     bar.dataset.rcHeaderActions='1';

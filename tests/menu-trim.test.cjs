@@ -34,3 +34,12 @@ test('collapsing the right rail lets the feed column fill the free space and res
  const filled=await width();assert(filled>=1000,'the feed fills the main grid: '+filled);const handle=await p.locator('.rc-rail-handle').boundingBox();assert(handle.x>=Math.round(await p.evaluate(()=>document.querySelector('main').getBoundingClientRect().right)),'the collapsed handle does not cover the feed');
  await p.locator('.rc-rail-handle').click();await p.waitForFunction(()=>document.querySelector('#right-sidebar-container').getClientRects().length>0);assert.equal(await width(),native);assert.equal(await p.locator('[data-rc-fill]').count(),0);
 });
+test('site colors recolor Reddit variables on its theme containers, follow its dark class and clear completely',async t=>{
+ const browser=await launch();t.after(()=>browser.close());const p=await open(browser,'reader');
+ await p.evaluate(()=>{document.documentElement.classList.add('theme-dark');const st=document.createElement('style');st.textContent='.theme-rpl{--color-neutral-background:#0e1113}';document.head.append(st);document.querySelector('.main-container').classList.add('theme-rpl');});
+ const value=()=>p.evaluate(()=>getComputedStyle(document.querySelector('#t3_a')).getPropertyValue('--color-neutral-background').trim());assert.equal(await value(),'#0e1113');
+ await p.evaluate(()=>window.__thread.runtime.update({siteColors:'blue'}));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='blue-dark');assert.equal(await value(),'#0b1420');
+ await p.evaluate(()=>document.documentElement.classList.remove('theme-dark'));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='blue-light');assert.equal(await value(),'#e7f0fb');
+ await p.evaluate(()=>window.__thread.ui.openRoute('look'));assert.equal(await p.locator('#exp-thread-root').getByRole('combobox',{name:'Site colors',exact:true}).inputValue(),'blue');
+ await p.evaluate(()=>window.__thread.runtime.update({siteColors:'off'}));await p.waitForFunction(()=>!document.documentElement.hasAttribute('data-exp-site-colors'));assert.equal(await value(),'#0e1113');assert.equal(await p.locator('[id^="exp-site-colors"]').count(),0);
+});

@@ -2575,6 +2575,54 @@ const ExpMenuPreferences = (() => {
   return Object.freeze({menuSizePreference,setMenuSizePreference,bindMenuSize,createMenuSizeControls,menuSizeTokens:()=>sizes[menuSizePreference()]});
 })();
 
+/* Optional page colours for a product's own site. Core owns the palette list, the Site colors control
+   and one scoped style per product; each product maps the palette tokens onto its site's own surfaces. */
+const ExpSiteColors = (() => {
+  const base=Object.freeze({
+    dark:{bg:'#18181b',panel:'#202024',raised:'#2b2b31',inset:'#111114',line:'#85858f',text:'#f4f4f6',muted:'#b9b9c3',onAccent:'#111114'},
+    light:{bg:'#f4f4f6',panel:'#ffffff',raised:'#e9e9ee',inset:'#ededf1',line:'#777780',text:'#202024',muted:'#555560',onAccent:'#ffffff'},
+  });
+  // [id, name, dark accent, light accent, dark surfaces bg/panel/raised/inset, light surfaces bg/panel/raised/inset]
+  const table=[
+    ['default','Default','#c4c4cc','#50505c'],
+    ['indigo','Indigo','#b4a2ff','#5943b6',['#171222','#241c36','#34284a','#0f0b18'],['#eee8f7','#faf7ff','#e1d8ef','#e5ddf1']],
+    ['blue','Blue','#82b9ff','#155cad',['#0b1420','#132337','#1e324a','#070e18'],['#e7f0fb','#f6faff','#d7e6f7','#dce8f6']],
+    ['green','Green','#85c99e','#216b3c',['#0e1913','#162a1e','#203b2a','#07100b'],['#e8f3eb','#f5fcf7','#d5e8dc','#dcece2']],
+    ['red','Red','#f6a0a0','#a52b35',['#201214','#321d22','#452931','#160b0f'],['#f8eaec','#fff7f8','#f0d9df','#f1dfe4']],
+    ['gray','Gray','#aeb3b9','#4f5964',['#181a1c','#22262a','#30363b','#111315'],['#eceff1','#fafbfc','#dce2e6','#e1e6ea']],
+  ];
+  const surfaces=values=>values?{bg:values[0],panel:values[1],raised:values[2],inset:values[3]}:{};
+  const sitePalettes=Object.freeze(table.map(([id,name,darkAccent,lightAccent,dark,light])=>Object.freeze({id,name,
+    dark:Object.freeze({...base.dark,...surfaces(dark),accent:darkAccent}),light:Object.freeze({...base.light,...surfaces(light),accent:lightAccent})})));
+  function sitePalette(id,mode='dark',extra=[]){const palette=[...extra,...sitePalettes].find(item=>item.id===id);return palette?{id:palette.id,name:palette.name,mode:mode==='light'?'light':'dark',...palette[mode==='light'?'light':'dark']}:null;}
+  const systemMode=()=>matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+  function watchSystem(callback){const query=matchMedia('(prefers-color-scheme: light)');query.addEventListener('change',callback);return ()=>query.removeEventListener('change',callback);}
+  // mode() reads the site's current light/dark state; watch(callback) reports changes and returns a disposer.
+  function createSiteColors({product,css,mode=systemMode,watch=watchSystem,extra=[]}){
+    const attribute='data-exp-site-colors',scope=`html[${attribute}="${product}"]`,id='exp-site-colors-'+product;
+    let current='off',stopWatching=null,style=null;
+    function render(){
+      const palette=sitePalette(current,mode(),extra);if(!palette)return clear();
+      if(!style?.isConnected){style=document.getElementById(id)||document.createElement('style');style.id=id;style.dataset.expOwned='1';style.dataset.expSiteColors=product;(document.head||document.documentElement).append(style);}
+      const text=css(palette,scope);if(style.textContent!==text)style.textContent=text;
+      if(document.documentElement.getAttribute(attribute)!==product)document.documentElement.setAttribute(attribute,product);
+      document.documentElement.dataset.expSitePalette=palette.id+'-'+palette.mode;
+    }
+    function apply(next){current=next||'off';if(!sitePalette(current,'dark',extra))return clear();stopWatching??=watch(render);render();}
+    function clear(){current='off';stopWatching?.();stopWatching=null;style?.remove();document.getElementById(id)?.remove();style=null;
+      if(document.documentElement.getAttribute(attribute)===product){document.documentElement.removeAttribute(attribute);delete document.documentElement.dataset.expSitePalette;}}
+    return Object.freeze({apply,clear,refresh:()=>{if(current!=='off')render();},palette:()=>sitePalette(current,mode(),extra)});
+  }
+  function createSiteColorControl({value='off',onChange,offLabel='Site default',extra=[],help='Recolor this site’s pages with a palette. Follows the site’s light or dark mode. Menus keep their own theme.'}){
+    const row=document.createElement('label');row.className='row exp-site-colors';const copy=document.createElement('span');copy.className='copy';
+    const title=document.createElement('strong');title.textContent='Site colors';ExpMenuHelp.setMenuHelp(title,help);copy.append(title);
+    const select=document.createElement('select');select.setAttribute('aria-label','Site colors');select.dataset.expSiteColorsSelect='1';
+    for(const [id,name] of [['off',offLabel],...[...extra,...sitePalettes].map(item=>[item.id,item.name])]){const option=document.createElement('option');option.value=id;option.textContent=name;select.append(option);}
+    select.value=sitePalette(value,'dark',extra)?value:'off';select.addEventListener('change',()=>onChange?.(select.value));row.append(copy,select);return row;
+  }
+  return Object.freeze({sitePalettes,sitePalette,createSiteColors,createSiteColorControl});
+})();
+
 // Flyout launcher rules shared by every Core copy on a page. Each copy computes the same answer from the
 // launcher hosts' attributes alone, so products agree on one launcher without messaging each other.
 const ExpLauncherFlyout = (() => {
@@ -2605,7 +2653,7 @@ const ExpLauncherFlyout = (() => {
 // exp-core owns shared UI, launcher, diagnostics, update, and coordination behavior.
 const ExtraPotionsCore = (() => {
   'use strict';
-  const version = '3.9.10';
+  const version = '3.10.0';
   const sourceVersion = version; // Backward-compatible alias for Core's own foundation version.
   const SUPPORT_URL = 'https://ko-fi.com/expdare';
   const protocol = 'exp-core-coordination-v1';
@@ -5402,7 +5450,7 @@ const ExtraPotionsCore = (() => {
     return Object.freeze({ lifecycle, diagnostics, updates });
   }
 
-  const api = Object.freeze({...ExtraPotionsTools,setMenuHelp:ExpMenuHelp.setMenuHelp,...ExpMenuPreferences,normalizeHealth,createHealthControls,createRecoveryGuard,version,sourceVersion,protocol,gridProtocol,reference:CoreFoundation,css:canonicalCss,themes,create,createMenuController,createProduct,menuTemplate:ExpLeanMenu.template,setMenuStatus:ExpLeanMenu.setMenuStatus,createSupportControl,createProductNotice,createLifecycle:()=>createProductLifecycle(api),createProductServices,registerLauncher,setLauncherUpdate,setLauncherProgress,bindLauncherDrag,launcherPlacement,placeMenu,placeNotice,resetLauncherGrid,layout:layoutGrid,replaceMenuContent,createDisclosure,createSystemGrid,isOwnedSheet,menuWidth,cloneSettings,applyTextGradient,injectStyle,applyTheme,applyMatteToggleChrome,applyTwoColumnSettingsGrid,applyContentDrivenMenuLayout,createThemeSwatches,publishMenuPalette,createFloatingNotice,createMenuNotice,takeNoticeTurn,releaseNoticeTurn,createReleaseUpdateChecker,registerFloatingNotice,layoutFloatingNotices,claimNotice,consumeVersionChange,isQuietUpgrade,focusMenuSurface,registerDiagnosticsProduct,registerSuiteProduct,suiteContract,suiteSnapshot,hasProductCapability,capabilityProviders,emitSuiteEvent,publishSuiteState,suiteStateSnapshot,latestSuiteState,subscribeSuiteState,onSuiteEvent,suiteSitePaused,setSuiteSitePaused,pageContext,observeNavigation,navigationObserverState,suiteTrust:SUITE_TRUST,registerPresentationProvider,presentationProviders,suiteHealth,readPresentationState,setPresentationState,clearPresentationState,presentationStateChain,isPresentationSuppressed,presentationPhases:PRESENTATION_PHASES,presentationChannels:PRESENTATION_CHANNELS,observePresentationState,observePage,observePageBatch,pageObserverState,suiteProducts:SUITE_PRODUCTS,suitePriority:SUITE_PRIORITY,productCompatibility:productCompatibilityReport,createCompatibilityControls:createSuiteCompatibilityControls,bindDiagnosticsControls:ExtraPotionsDiagnostics.bindControls,createDiagnosticsReport,downloadDiagnostics,createDiagnosticsControls,mountMenuArrangement:ExpMenuArrangement.mount,mountSubmenuTabs:ExpMenuArrangement.mountTabs,menuCategories:ExpMenuArrangement.categories,categorizeMenuSections:ExpMenuArrangement.describe,createMenuCategoryDisclosure:(label,category,...contents)=>ExpMenuArrangement.createDisclosure({document,label,category,contents}),collapseMenuSubmenus:ExpMenuArrangement.collapseSubmenus,compareVersions:CoreFoundation.compareVersions});
+  const api = Object.freeze({...ExtraPotionsTools,setMenuHelp:ExpMenuHelp.setMenuHelp,...ExpMenuPreferences,...ExpSiteColors,normalizeHealth,createHealthControls,createRecoveryGuard,version,sourceVersion,protocol,gridProtocol,reference:CoreFoundation,css:canonicalCss,themes,create,createMenuController,createProduct,menuTemplate:ExpLeanMenu.template,setMenuStatus:ExpLeanMenu.setMenuStatus,createSupportControl,createProductNotice,createLifecycle:()=>createProductLifecycle(api),createProductServices,registerLauncher,setLauncherUpdate,setLauncherProgress,bindLauncherDrag,launcherPlacement,placeMenu,placeNotice,resetLauncherGrid,layout:layoutGrid,replaceMenuContent,createDisclosure,createSystemGrid,isOwnedSheet,menuWidth,cloneSettings,applyTextGradient,injectStyle,applyTheme,applyMatteToggleChrome,applyTwoColumnSettingsGrid,applyContentDrivenMenuLayout,createThemeSwatches,publishMenuPalette,createFloatingNotice,createMenuNotice,takeNoticeTurn,releaseNoticeTurn,createReleaseUpdateChecker,registerFloatingNotice,layoutFloatingNotices,claimNotice,consumeVersionChange,isQuietUpgrade,focusMenuSurface,registerDiagnosticsProduct,registerSuiteProduct,suiteContract,suiteSnapshot,hasProductCapability,capabilityProviders,emitSuiteEvent,publishSuiteState,suiteStateSnapshot,latestSuiteState,subscribeSuiteState,onSuiteEvent,suiteSitePaused,setSuiteSitePaused,pageContext,observeNavigation,navigationObserverState,suiteTrust:SUITE_TRUST,registerPresentationProvider,presentationProviders,suiteHealth,readPresentationState,setPresentationState,clearPresentationState,presentationStateChain,isPresentationSuppressed,presentationPhases:PRESENTATION_PHASES,presentationChannels:PRESENTATION_CHANNELS,observePresentationState,observePage,observePageBatch,pageObserverState,suiteProducts:SUITE_PRODUCTS,suitePriority:SUITE_PRIORITY,productCompatibility:productCompatibilityReport,createCompatibilityControls:createSuiteCompatibilityControls,bindDiagnosticsControls:ExtraPotionsDiagnostics.bindControls,createDiagnosticsReport,downloadDiagnostics,createDiagnosticsControls,mountMenuArrangement:ExpMenuArrangement.mount,mountSubmenuTabs:ExpMenuArrangement.mountTabs,menuCategories:ExpMenuArrangement.categories,categorizeMenuSections:ExpMenuArrangement.describe,createMenuCategoryDisclosure:(label,category,...contents)=>ExpMenuArrangement.createDisclosure({document,label,category,contents}),collapseMenuSubmenus:ExpMenuArrangement.collapseSubmenus,compareVersions:CoreFoundation.compareVersions});
   return api;
 })();
 
@@ -5410,10 +5458,10 @@ const RC={VERSION:"0.2.3",NOTES:["Collapse the right sidebar with a handle at it
 // Original local reading model. Copyright expDARE.
 RC.Model=(()=>{
   const PREFIX='exp:v1:thread:';
-  const defaults=Object.freeze({enabled:true,hideDecorations:false,unblurSpoilers:false,unblurMature:false,updateNotifications:true,gemTheme:false,defaultView:'native',shortcuts:[],defaultSort:'native',rememberSort:false,sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,flair:true,awards:'show',highlights:false,recommendations:false,hover:false,author:true,selectText:false,expandText:false,saveVisibility:'native',trackRead:false,trackPosts:false,hideReadPosts:false,markScrolled:false,restoreFeed:false,readingFont:'native',lineHeight:0,paragraphGap:0,density:'compact',parentContext:true,keyboard:false,navButtons:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',rememberCommentSort:false,commentSortButtons:false,related:false,stickyBar:false,shareContext:false,dimNegative:false,collapsePinned:false,collapseAutoMod:false,commentSave:true,collapseDepth:99,left:true,right:true,wide:false,feedWidth:800,commentWidth:800,offset:0,contentFont:14,uiFont:12,redirect:'off',simplifyProfile:false,historyCapacity:100,retentionDays:30,theme:'native',nicknameMode:'both',nicknameMax:24,keys:{next:'j',previous:'k',open:'o',collapse:'',save:'',hide:'',upvote:'',downvote:''}});
+  const defaults=Object.freeze({enabled:true,siteColors:'off',hideDecorations:false,unblurSpoilers:false,unblurMature:false,updateNotifications:true,gemTheme:false,defaultView:'native',shortcuts:[],defaultSort:'native',rememberSort:false,sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,flair:true,awards:'show',highlights:false,recommendations:false,hover:false,author:true,selectText:false,expandText:false,saveVisibility:'native',trackRead:false,trackPosts:false,hideReadPosts:false,markScrolled:false,restoreFeed:false,readingFont:'native',lineHeight:0,paragraphGap:0,density:'compact',parentContext:true,keyboard:false,navButtons:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',rememberCommentSort:false,commentSortButtons:false,related:false,stickyBar:false,shareContext:false,dimNegative:false,collapsePinned:false,collapseAutoMod:false,commentSave:true,collapseDepth:99,left:true,right:true,wide:false,feedWidth:800,commentWidth:800,offset:0,contentFont:14,uiFont:12,redirect:'off',simplifyProfile:false,historyCapacity:100,retentionDays:30,theme:'native',nicknameMode:'both',nicknameMax:24,keys:{next:'j',previous:'k',open:'o',collapse:'',save:'',hide:'',upvote:'',downvote:''}});
   // Settings without a menu control keep one fixed behaviour; stored values for them are ignored.
   const fixed=Object.freeze({shortcuts:[],defaultSort:'native',sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,hover:false,selectText:false,expandText:false,markScrolled:false,restoreFeed:true,density:'compact',parentContext:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',commentSortButtons:false,stickyBar:false,shareContext:false,dimNegative:false,commentSave:true,left:true,wide:false,offset:0,uiFont:12,simplifyProfile:false,historyCapacity:100,retentionDays:30,nicknameMax:24});
-  const enumValues={readingFont:['native','sans','serif'],defaultView:['native','cards','compact','grid'],defaultSort:['native','best','hot','new','top','rising'],topRange:['hour','day','week','month','year','all'],awards:['show','upvoted','collapse','off'],saveVisibility:['native','always','upvoted','off'],density:['standard','compact','mini'],commentSort:['native','confidence','top','new','controversial','old','qa'],redirect:['off','suggest','redirect'],theme:['native','contrast','thread'],nicknameMode:['profile','nickname','both']};
+  const enumValues={siteColors:['off','default','indigo','blue','green','red','gray'],readingFont:['native','sans','serif'],defaultView:['native','cards','compact','grid'],defaultSort:['native','best','hot','new','top','rising'],topRange:['hour','day','week','month','year','all'],awards:['show','upvoted','collapse','off'],saveVisibility:['native','always','upvoted','off'],density:['standard','compact','mini'],commentSort:['native','confidence','top','new','controversial','old','qa'],redirect:['off','suggest','redirect'],theme:['native','contrast','thread'],nicknameMode:['profile','nickname','both']};
   const ranges={lineHeight:[0,220],paragraphGap:[0,24],loadBudget:[1,5],collapseDepth:[0,99],feedWidth:[320,1600],commentWidth:[320,1600],offset:[-400,400],contentFont:[12,24],uiFont:[12,18],historyCapacity:[0,500],retentionDays:[1,90],nicknameMax:[4,40]};
   const plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
   const text=(v,max=160)=>typeof v==='string'?v.slice(0,max):'';
@@ -5581,7 +5629,7 @@ RC.Runtime=class {
     if(this.route!==route){this.clearRoute();this.route=route;this.loadCounts={post:0,comment:0};this.loadSeen=new WeakSet();this.viewOverride=null;this.refreshSettings();if(!this.verified){this.people={};this.rules=[];this.visits={};}this.previousVisit=this.visits[this.threadKey()]||null;if(this.settings.trackRead&&this.verified&&location.pathname.includes('/comments/')){const old=this.previousVisit||{read:[],last:'',count:0};this.visits[this.threadKey()]={...old,at:Date.now(),count:this.nativeCommentCount()??old.count};this.store.set('visits',this.visits);}this.sortDefault();}
     if(changed)this.ui?.refresh();if(location.hostname==='old.reddit.com')return;
     const epoch=++this.epoch;
-    if(!this.settings.enabled||ExtraPotionsCore.suiteSitePaused()){this.clearNodes();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.closeOverlay();return;}
+    if(!this.settings.enabled||ExtraPotionsCore.suiteSitePaused()){this.siteColors?.clear();this.clearNodes();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.closeOverlay();return;}
     this.pageBar();this.layout();
     const all=RC.Adapter.nodes().slice(0,2000),readHidden=this.filterReadPosts(all);const nodes=all.filter(n=>!readHidden.has(n)&&RC.Adapter.nearby(n)).slice(0,250);const keep=new Set(nodes);
     for(const [node,record]of this.items)if(!keep.has(node))this.release(node,record);
@@ -5691,13 +5739,20 @@ RC.Runtime=class {
     const comment=location.pathname.includes('/comments/');if(comment?new URL(location.href).searchParams.has('sort'):/\/(best|hot|new|top|rising)\/?$/.test(location.pathname))return;
     const sort=(this.verified&&(comment?this.settings.rememberCommentSort:this.settings.rememberSort)?this.store.get('sorts',{})?.[this.sortKey(comment)]:null)||(comment?this.settings.commentSort:this.settings.defaultSort);if(sort==='native'||!sort)return;const url=RC.Adapter.sortUrl(sort,comment,this.settings.topRange);if(url&&url.href!==location.href)location.replace(url.href);
   }
-  layout(){if(!this.settings?.enabled)return;const s=this.settings;for(const n of document.querySelectorAll('#right-sidebar-container')){this.attr(n,'data-rc-sidebar-hidden',s.right?null:'1');if(n.parentElement?.matches('.main-container'))this.attr(n.parentElement,'data-rc-fill',s.right?null:'1');}this.sidebarHandle();
+  layout(){if(!this.settings?.enabled)return;const s=this.settings;this.applySiteColors();for(const n of document.querySelectorAll('#right-sidebar-container')){this.attr(n,'data-rc-sidebar-hidden',s.right?null:'1');if(n.parentElement?.matches('.main-container'))this.attr(n.parentElement,'data-rc-fill',s.right?null:'1');}this.sidebarHandle();
     const header=document.querySelector('header');const top=header?Math.max(0,Math.min(160,header.getBoundingClientRect().bottom)):0;if(this.bar)this.bar.style.setProperty('--rc-sticky-top',top+'px');
     if(s.scrollTop){if(!this.topButton){this.topButton=RC.button('Top',()=>scrollTo({top:0,behavior:'instant'}));this.topButton.className='rc-back-top';this.topButton.dataset.rcOwned='back-top';this.topButton.setAttribute('aria-label','Back to top');document.body.append(this.topButton);}this.topButton.hidden=scrollY<300;}else{this.topButton?.remove();this.topButton=null;}
     const main=document.querySelector('main');if(main){this.attr(main,'data-rc-layout',s.wide||s.feedWidth!==800||s.commentWidth!==800||s.offset?'1':null);const width=s.wide?Math.max(320,innerWidth-32):(location.pathname.includes('/comments/')?s.commentWidth:s.feedWidth);main.style.setProperty('--rc-width',width+'px');main.style.setProperty('--rc-offset',Math.max(-Math.max(0,(innerWidth-width-32)/2),Math.min(s.offset,Math.max(0,(innerWidth-width-32)/2)))+'px');}
     const groups=[['shreddit-community-highlights',s.highlights],['[data-testid="recommendations"]',s.recommendations],['[data-testid="related-posts"]',s.related],['shreddit-post-sticky-header',s.stickyBar]];
     for(const [query,hidden]of groups)for(const n of document.querySelectorAll(query))this.attr(n,'data-rc-secondary-hidden',hidden?'1':null);
     for(const n of document.querySelectorAll('[data-testid="profile-menu"]'))this.attr(n,'data-rc-profile-simple',s.simplifyProfile?'1':null);
+  }
+  // Site colors recolor Reddit through its own colour variables, which reach inside post components. Reddit redeclares
+  // them on its theme containers, so the override covers those too. Brand, vote and status colours stay native.
+  applySiteColors(){
+    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',mode:()=>document.documentElement.classList.contains('theme-dark')?'dark':'light',
+      watch:render=>{const observer=new MutationObserver(render);observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});return ()=>observer.disconnect();},css:RC.siteColorCss});
+    this.siteColors.apply(this.settings.siteColors);
   }
   // A handle on the right rail mirroring Reddit's left navigation collapse control; the choice persists.
   sidebarHandle(){
@@ -5852,6 +5907,7 @@ RC.Runtime=class {
   nativeMediaLayout(record,view){
     const post=record.item.node,root=post.shadowRoot;
     this.attr(post,'data-rc-compact-card-layout',view==='compact'&&root?.querySelector('slot[name="post-media-container"]')?'1':null);
+    this.compactRow(record,view);
     const headerSlot=this.nativeToolsLayout(record),toolsSlot=record.actionsRow?headerSlot:(view!=='native'&&root?.querySelector('slot[name="desktop-cta-row"]')?'desktop-cta-row':'');
     this.attr(post,'data-rc-compact-native-layout',view==='compact'&&matchMedia('(pointer:coarse)').matches&&root?.querySelector('slot[name="expando-content"]')?'1':null);
     if(record.tools&&record.tools.getAttribute('slot')!==toolsSlot){if(toolsSlot)record.tools.setAttribute('slot',toolsSlot);else record.tools.removeAttribute('slot');}this.positionHeaderMenu(record);
@@ -5864,12 +5920,23 @@ RC.Runtime=class {
     style.textContent+=':host([data-rc-compact-native-layout]) div:has(>div>slot[name="thumbnail"]){grid-template-columns:88px minmax(0,1fr)!important}:host([data-rc-compact-native-layout]) div:has(>slot[name="thumbnail"]){grid-row:2/3!important;align-self:start;margin:2px 8px 0 0!important;width:80px;height:60px;overflow:hidden}:host([data-rc-compact-native-layout]) div:has(>slot[name="overflow-menu-bar"]){grid-column:1/-1!important;margin-block:2px!important}';
     root.append(style);record.mediaStyle=style;
   }
-  restoreView(record){record.compactPreview?.remove();delete record.compactPreview;delete record.compactFull;delete record.compactMediaOpen;record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}
+  // Reddit's compact card puts vote/comments/share below the 104x78 thumbnail. From 600px the thumbnail
+  // column gives the action row's height back and the row reserves the thumbnail's width, so the row sits
+  // beside the thumbnail; narrower feeds keep the full-width row because the controls would not fit.
+  compactRow(record,view){
+    const post=record.item.node,root=post.shadowRoot,active=view==='compact'&&!!root?.querySelector('div:has(>slot[name="share-button"])')&&!!root.querySelector('div:has(>slot[name="thumbnail"])');
+    if(!active){record.rowStyle?.remove();delete record.rowStyle;return;}
+    if(record.rowStyle?.isConnected&&record.rowStyle.getRootNode()===root)return;
+    record.rowStyle?.remove();const style=document.createElement('style');style.dataset.rcCompactRow='1';
+    style.textContent='@media(min-width:600px){:host([data-rc-view="compact"][data-rc-compact-has-thumb]:not([data-rc-compact-media-open])) div:has(>slot[name="thumbnail"]){margin-bottom:-40px!important}:host([data-rc-view="compact"][data-rc-compact-has-thumb]:not([data-rc-compact-media-open])) div:has(>slot[name="share-button"]){padding-inline-end:112px!important;box-sizing:border-box}}';
+    root.append(style);record.rowStyle=style;
+  }
+  restoreView(record){record.rowStyle?.remove();delete record.rowStyle;record.compactPreview?.remove();delete record.compactPreview;delete record.compactFull;delete record.compactMediaOpen;record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}
   release(node,record){clearTimeout(record.postReadTimer);this.clearToolsLayout(record);this.restoreView(record);clearTimeout(record.hoverTimer);this.readObserver.unobserve(node);clearTimeout(this.readTimers.get(node));this.readTimers.delete(node);record.tools?.remove();if(node.dataset.rcTabindex==='1')node.removeAttribute('tabindex');for(const a of [...node.attributes])if(a.name.startsWith('data-rc-'))node.removeAttribute(a.name);node.style.removeProperty('--rc-content-font');for(const name of ['--rc-reading-font','--rc-line-height','--rc-paragraph-gap'])node.style.removeProperty(name);this.items.delete(node);}
   clearNodes(){for(const [node,r]of this.items)this.release(node,r);this.adView('native');this.gridLayout(new Set());for(const n of document.querySelectorAll('[data-rc-post-read-hidden],[data-rc-sidebar-hidden],[data-rc-fill],[data-rc-secondary-hidden],[data-rc-layout],[data-rc-profile-simple],[data-rc-view-container],[data-rc-view-wrapper],[data-rc-view-aux],[data-rc-sort-row],shreddit-ad-post[data-rc-view]')){for(const a of [...n.attributes])if(a.name.startsWith('data-rc-'))n.removeAttribute(a.name);for(const name of ['--rc-width','--rc-offset','--rc-grid-span'])n.style.removeProperty(name);}}
   clearRoute(){this.saveFeedPosition();this.feedAnchor=null;this.pendingFeedRestore=null;this.feedRestoreRoute='';this.readGeneration=(this.readGeneration||0)+1;this.epoch++;this.regex.dispose();this.clearNodes();this.readObserver?.disconnect();this.readTimers.forEach(clearTimeout);this.readTimers.clear();this.closeOverlay();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.barState='';this.revealed.clear();this.manual.clear();this.collapsed.clear();this.selected='';this.scope='all';}
   diagnostics(){return {product:'THREAD',version:RC.VERSION,accountVerified:this.verified,loaded:this.items.size,readTimers:this.readTimers.size,regexWorkers:this.regex.pending.size,loadCounts:{...this.loadCounts},regexErrors:[...this.regexErrors.values()],storage:this.store.error||'available',api:'Unavailable: own registration and legitimate access required',liveContract:'native header and feed DOM observed; candidate installed behavior unverified'};}
-  destroy(){if(this.destroyed)return;this.destroyed=true;clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
+  destroy(){if(this.destroyed)return;this.destroyed=true;this.siteColors?.clear();clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
 };
 
 // Original local reading tools. Copyright expDARE.
@@ -6035,6 +6102,18 @@ RC.el=(tag,attrs={},text='')=>{const n=document.createElement(tag);for(const [k,
 RC.button=(label,fn)=>{const n=RC.el('button',{type:'button'},label);n.addEventListener('click',fn);return n;};
 RC.select=(label,value,options,fn)=>{const n=RC.el('select',{'aria-label':label});const names={native:'Reddit default',best:'Best',hot:'Hot',new:'New',top:'Top',rising:'Rising',hour:'Past hour',day:'Past day',week:'Past week',month:'Past month',year:'Past year',all:label==='Top time range'?'All time':'All',show:'Always',upvoted:'When upvoted',collapse:'Collapsed',off:'Off',always:'Always',standard:'Standard',compact:'Compact',mini:'Mini',confidence:'Best',controversial:'Controversial',old:'Old',qa:'Q&A',suggest:'Suggest modern Reddit',redirect:'Open modern Reddit',profile:'Profile name',nickname:'Local nickname',both:'Both',post:'Posts',comment:'Comments',text:'Text',title:'Title',domain:'Domain',community:'Community',author:'Author',flair:'Flair',hide:'Hide',dim:'Dim',blur:'Blur'};for(const choice of options){const [v,t]=Array.isArray(choice)?choice:[choice,names[choice]||choice];n.append(RC.el('option',{value:v},t));}n.value=value;n.addEventListener('change',()=>fn(n.value));return n;};
 // Authored stroke icons shared by the feed controls; one 20px grid and stroke weight.
+// Maps a Core site palette onto Reddit's neutral colour variables.
+RC.siteColorCss=(p,scope)=>{
+  const mix=(a,b,pct)=>`color-mix(in srgb,${a} ${pct}%,${b})`,hover=mix(p.raised,p.text,88),active=mix(p.raised,p.text,78);
+  const vars={bg:['neutral-background','neutral-background-pinned','neutral-background-strong'],panel:['neutral-background-canvas','neutral-background-container','neutral-background-highlighted','neutral-background-gilded','neutral-background-medium','neutral-background-hover','neutral-background-weak-hover'],inset:['neutral-background-weak'],raised:['neutral-background-container-hover','neutral-background-container-strong','neutral-background-strong-hover','secondary-background','button-secondary-background','button-secondary-background-focus','input-secondary'],
+    [hover]:['neutral-background-container-strong-hover','neutral-background-selected','neutral-background-highlighted-strong','neutral-background-gilded-hover','secondary-background-hover','button-secondary-background-hover','button-plain-background-hover','input-secondary-hover'],
+    [active]:['secondary-background-selected','button-secondary-background-activated','button-plain-background-activated'],
+    text:['neutral-content-strong','secondary','secondary-plain','secondary-hover','secondary-plain-hover','button-plain-text','button-plain-text-hover','button-secondary-text','input-secondary-text','input-text','input-bordered-text'],
+    muted:['neutral-content'],[mix(p.muted,p.bg,78)]:['neutral-content-weak','secondary-weak','secondary-plain-weak','button-plain-text-weak'],
+    [mix(p.line,'transparent',45)]:['neutral-border'],[mix(p.line,'transparent',25)]:['neutral-border-weak'],[mix(p.line,p.bg,40)]:['neutral-border-divider'],line:['neutral-border-medium'],[p.text]:['neutral-border-strong'],accent:['primary-plain','interactive-focused']};
+  const body=Object.entries(vars).map(([token,names])=>names.map(name=>`--color-${name}:${p[token]||token}!important`).join(';')).join(';');
+  return `${scope},${scope} :is(.theme-rpl,.theme-beta,.theme-dark,.theme-light){${body}}${scope}{color-scheme:${p.mode};background-color:${p.bg}!important}${scope} ::selection{background:${mix(p.accent,'transparent',35)}}`;
+};
 RC.icon=name=>{const ns='http://www.w3.org/2000/svg',icon=document.createElementNS(ns,'svg');icon.setAttribute('viewBox','0 0 20 20');icon.setAttribute('aria-hidden','true');icon.setAttribute('class','rc-icon rc-icon-'+name);for(const [tag,attrs] of {sliders:[['path',{d:'M3 5h8M15 5h2M3 10h2M9 10h8M3 15h10'}],['circle',{cx:13,cy:5,r:2}],['circle',{cx:7,cy:10,r:2}],['circle',{cx:15,cy:15,r:2}]],chevron:[['path',{d:'M6 8l4 4 4-4'}]]}[name]){const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);icon.append(n);}return icon;};
 RC.switch=(label,value,fn,help)=>{const row=RC.el('div',{class:'setting-row'}),copy=RC.el('span',{},label),button=RC.el('button',{type:'button',class:'toggleSwitch','role':'switch','aria-checked':String(value),'aria-label':label});button.addEventListener('click',()=>{const v=button.getAttribute('aria-checked')!=='true';button.setAttribute('aria-checked',String(v));fn(v);});ExtraPotionsCore.setMenuHelp(copy,help);row.append(copy,button);return row;};
 RC.HELP={
@@ -6052,6 +6131,7 @@ RC.HELP={
   "nicknameMode": "Choose how locally saved nicknames appear beside authors.",
   "readingStyle": "Font, size and spacing for post and comment text. Code and native controls keep their own fonts.",
   "feedWidth": "Maximum feed and discussion width. 800 keeps Reddit’s width; with the right sidebar collapsed the feed fills the free space.",
+  "siteColors": "Recolor Reddit with a palette. Follows Reddit’s light or dark mode; brand, vote and warning colors stay as they are. Choose Reddit to keep its own colors.",
   "menuTheme": "Colors for Thread’s menus and notices only. Reddit follows the site; Gem uses the Pear Crystal facets.",
   "updateNotifications": "Show a notice when a new Thread release is available.",
   "redirect": "Open old.reddit.com pages on modern Reddit."
@@ -6141,7 +6221,7 @@ RC.UI=class {
     }
     if(id==='look'){
       const preset=Object.entries(RC.PRESETS).find(([,p])=>Object.entries(p).every(([k,v])=>set[k]===v))?.[0]||'custom';
-      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),choose('Menu theme',set.gemTheme?'gem':set.theme,[['native','Reddit'],['contrast','High contrast'],['gem','Gem']],v=>this.r.update({gemTheme:v==='gem',theme:v==='contrast'?'contrast':'native'}),RC.HELP.menuTheme),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),this.row('Check for updates now',RC.button('Check now',()=>this.checkUpdates(true))));
+      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),ExtraPotionsCore.createSiteColorControl({value:set.siteColors,offLabel:'Reddit',onChange:v=>this.r.update({siteColors:v}),help:RC.HELP.siteColors}),choose('Menu theme',set.gemTheme?'gem':set.theme,[['native','Reddit'],['contrast','High contrast'],['gem','Gem']],v=>this.r.update({gemTheme:v==='gem',theme:v==='contrast'?'contrast':'native'}),RC.HELP.menuTheme),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),this.row('Check for updates now',RC.button('Check now',()=>this.checkUpdates(true))));
     }
     if(id==='system')add(RC.switch('Open old Reddit links on modern Reddit',set.redirect==='redirect',v=>this.r.update({redirect:v?'redirect':'off'}),RC.HELP.redirect),this.system());
     return root;

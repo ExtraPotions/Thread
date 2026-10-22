@@ -22,7 +22,7 @@ RC.Runtime=class {
     if(this.route!==route){this.clearRoute();this.route=route;this.loadCounts={post:0,comment:0};this.loadSeen=new WeakSet();this.viewOverride=null;this.refreshSettings();if(!this.verified){this.people={};this.rules=[];this.visits={};}this.previousVisit=this.visits[this.threadKey()]||null;if(this.settings.trackRead&&this.verified&&location.pathname.includes('/comments/')){const old=this.previousVisit||{read:[],last:'',count:0};this.visits[this.threadKey()]={...old,at:Date.now(),count:this.nativeCommentCount()??old.count};this.store.set('visits',this.visits);}this.sortDefault();}
     if(changed)this.ui?.refresh();if(location.hostname==='old.reddit.com')return;
     const epoch=++this.epoch;
-    if(!this.settings.enabled||ExtraPotionsCore.suiteSitePaused()){this.clearNodes();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.closeOverlay();return;}
+    if(!this.settings.enabled||ExtraPotionsCore.suiteSitePaused()){this.siteColors?.clear();this.clearNodes();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.closeOverlay();return;}
     this.pageBar();this.layout();
     const all=RC.Adapter.nodes().slice(0,2000),readHidden=this.filterReadPosts(all);const nodes=all.filter(n=>!readHidden.has(n)&&RC.Adapter.nearby(n)).slice(0,250);const keep=new Set(nodes);
     for(const [node,record]of this.items)if(!keep.has(node))this.release(node,record);
@@ -132,13 +132,20 @@ RC.Runtime=class {
     const comment=location.pathname.includes('/comments/');if(comment?new URL(location.href).searchParams.has('sort'):/\/(best|hot|new|top|rising)\/?$/.test(location.pathname))return;
     const sort=(this.verified&&(comment?this.settings.rememberCommentSort:this.settings.rememberSort)?this.store.get('sorts',{})?.[this.sortKey(comment)]:null)||(comment?this.settings.commentSort:this.settings.defaultSort);if(sort==='native'||!sort)return;const url=RC.Adapter.sortUrl(sort,comment,this.settings.topRange);if(url&&url.href!==location.href)location.replace(url.href);
   }
-  layout(){if(!this.settings?.enabled)return;const s=this.settings;for(const n of document.querySelectorAll('#right-sidebar-container')){this.attr(n,'data-rc-sidebar-hidden',s.right?null:'1');if(n.parentElement?.matches('.main-container'))this.attr(n.parentElement,'data-rc-fill',s.right?null:'1');}this.sidebarHandle();
+  layout(){if(!this.settings?.enabled)return;const s=this.settings;this.applySiteColors();for(const n of document.querySelectorAll('#right-sidebar-container')){this.attr(n,'data-rc-sidebar-hidden',s.right?null:'1');if(n.parentElement?.matches('.main-container'))this.attr(n.parentElement,'data-rc-fill',s.right?null:'1');}this.sidebarHandle();
     const header=document.querySelector('header');const top=header?Math.max(0,Math.min(160,header.getBoundingClientRect().bottom)):0;if(this.bar)this.bar.style.setProperty('--rc-sticky-top',top+'px');
     if(s.scrollTop){if(!this.topButton){this.topButton=RC.button('Top',()=>scrollTo({top:0,behavior:'instant'}));this.topButton.className='rc-back-top';this.topButton.dataset.rcOwned='back-top';this.topButton.setAttribute('aria-label','Back to top');document.body.append(this.topButton);}this.topButton.hidden=scrollY<300;}else{this.topButton?.remove();this.topButton=null;}
     const main=document.querySelector('main');if(main){this.attr(main,'data-rc-layout',s.wide||s.feedWidth!==800||s.commentWidth!==800||s.offset?'1':null);const width=s.wide?Math.max(320,innerWidth-32):(location.pathname.includes('/comments/')?s.commentWidth:s.feedWidth);main.style.setProperty('--rc-width',width+'px');main.style.setProperty('--rc-offset',Math.max(-Math.max(0,(innerWidth-width-32)/2),Math.min(s.offset,Math.max(0,(innerWidth-width-32)/2)))+'px');}
     const groups=[['shreddit-community-highlights',s.highlights],['[data-testid="recommendations"]',s.recommendations],['[data-testid="related-posts"]',s.related],['shreddit-post-sticky-header',s.stickyBar]];
     for(const [query,hidden]of groups)for(const n of document.querySelectorAll(query))this.attr(n,'data-rc-secondary-hidden',hidden?'1':null);
     for(const n of document.querySelectorAll('[data-testid="profile-menu"]'))this.attr(n,'data-rc-profile-simple',s.simplifyProfile?'1':null);
+  }
+  // Site colors recolor Reddit through its own colour variables, which reach inside post components. Reddit redeclares
+  // them on its theme containers, so the override covers those too. Brand, vote and status colours stay native.
+  applySiteColors(){
+    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',mode:()=>document.documentElement.classList.contains('theme-dark')?'dark':'light',
+      watch:render=>{const observer=new MutationObserver(render);observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});return ()=>observer.disconnect();},css:RC.siteColorCss});
+    this.siteColors.apply(this.settings.siteColors);
   }
   // A handle on the right rail mirroring Reddit's left navigation collapse control; the choice persists.
   sidebarHandle(){
@@ -293,6 +300,7 @@ RC.Runtime=class {
   nativeMediaLayout(record,view){
     const post=record.item.node,root=post.shadowRoot;
     this.attr(post,'data-rc-compact-card-layout',view==='compact'&&root?.querySelector('slot[name="post-media-container"]')?'1':null);
+    this.compactRow(record,view);
     const headerSlot=this.nativeToolsLayout(record),toolsSlot=record.actionsRow?headerSlot:(view!=='native'&&root?.querySelector('slot[name="desktop-cta-row"]')?'desktop-cta-row':'');
     this.attr(post,'data-rc-compact-native-layout',view==='compact'&&matchMedia('(pointer:coarse)').matches&&root?.querySelector('slot[name="expando-content"]')?'1':null);
     if(record.tools&&record.tools.getAttribute('slot')!==toolsSlot){if(toolsSlot)record.tools.setAttribute('slot',toolsSlot);else record.tools.removeAttribute('slot');}this.positionHeaderMenu(record);
@@ -305,10 +313,21 @@ RC.Runtime=class {
     style.textContent+=':host([data-rc-compact-native-layout]) div:has(>div>slot[name="thumbnail"]){grid-template-columns:88px minmax(0,1fr)!important}:host([data-rc-compact-native-layout]) div:has(>slot[name="thumbnail"]){grid-row:2/3!important;align-self:start;margin:2px 8px 0 0!important;width:80px;height:60px;overflow:hidden}:host([data-rc-compact-native-layout]) div:has(>slot[name="overflow-menu-bar"]){grid-column:1/-1!important;margin-block:2px!important}';
     root.append(style);record.mediaStyle=style;
   }
-  restoreView(record){record.compactPreview?.remove();delete record.compactPreview;delete record.compactFull;delete record.compactMediaOpen;record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}
+  // Reddit's compact card puts vote/comments/share below the 104x78 thumbnail. From 600px the thumbnail
+  // column gives the action row's height back and the row reserves the thumbnail's width, so the row sits
+  // beside the thumbnail; narrower feeds keep the full-width row because the controls would not fit.
+  compactRow(record,view){
+    const post=record.item.node,root=post.shadowRoot,active=view==='compact'&&!!root?.querySelector('div:has(>slot[name="share-button"])')&&!!root.querySelector('div:has(>slot[name="thumbnail"])');
+    if(!active){record.rowStyle?.remove();delete record.rowStyle;return;}
+    if(record.rowStyle?.isConnected&&record.rowStyle.getRootNode()===root)return;
+    record.rowStyle?.remove();const style=document.createElement('style');style.dataset.rcCompactRow='1';
+    style.textContent='@media(min-width:600px){:host([data-rc-view="compact"][data-rc-compact-has-thumb]:not([data-rc-compact-media-open])) div:has(>slot[name="thumbnail"]){margin-bottom:-40px!important}:host([data-rc-view="compact"][data-rc-compact-has-thumb]:not([data-rc-compact-media-open])) div:has(>slot[name="share-button"]){padding-inline-end:112px!important;box-sizing:border-box}}';
+    root.append(style);record.rowStyle=style;
+  }
+  restoreView(record){record.rowStyle?.remove();delete record.rowStyle;record.compactPreview?.remove();delete record.compactPreview;delete record.compactFull;delete record.compactMediaOpen;record.mediaStyle?.remove();delete record.mediaStyle;if(record.nativeViewApplied!==undefined&&record.item.node.getAttribute('view-type')===record.nativeViewApplied)this.attr(record.item.node,'view-type',record.nativeView);delete record.nativeViewApplied;delete record.nativeView;}
   release(node,record){clearTimeout(record.postReadTimer);this.clearToolsLayout(record);this.restoreView(record);clearTimeout(record.hoverTimer);this.readObserver.unobserve(node);clearTimeout(this.readTimers.get(node));this.readTimers.delete(node);record.tools?.remove();if(node.dataset.rcTabindex==='1')node.removeAttribute('tabindex');for(const a of [...node.attributes])if(a.name.startsWith('data-rc-'))node.removeAttribute(a.name);node.style.removeProperty('--rc-content-font');for(const name of ['--rc-reading-font','--rc-line-height','--rc-paragraph-gap'])node.style.removeProperty(name);this.items.delete(node);}
   clearNodes(){for(const [node,r]of this.items)this.release(node,r);this.adView('native');this.gridLayout(new Set());for(const n of document.querySelectorAll('[data-rc-post-read-hidden],[data-rc-sidebar-hidden],[data-rc-fill],[data-rc-secondary-hidden],[data-rc-layout],[data-rc-profile-simple],[data-rc-view-container],[data-rc-view-wrapper],[data-rc-view-aux],[data-rc-sort-row],shreddit-ad-post[data-rc-view]')){for(const a of [...n.attributes])if(a.name.startsWith('data-rc-'))n.removeAttribute(a.name);for(const name of ['--rc-width','--rc-offset','--rc-grid-span'])n.style.removeProperty(name);}}
   clearRoute(){this.saveFeedPosition();this.feedAnchor=null;this.pendingFeedRestore=null;this.feedRestoreRoute='';this.readGeneration=(this.readGeneration||0)+1;this.epoch++;this.regex.dispose();this.clearNodes();this.readObserver?.disconnect();this.readTimers.forEach(clearTimeout);this.readTimers.clear();this.closeOverlay();this.bar?.remove();this.bar=null;this.topButton?.remove();this.topButton=null;this.railHandle?.remove();this.railHandle=null;this.barState='';this.revealed.clear();this.manual.clear();this.collapsed.clear();this.selected='';this.scope='all';}
   diagnostics(){return {product:'THREAD',version:RC.VERSION,accountVerified:this.verified,loaded:this.items.size,readTimers:this.readTimers.size,regexWorkers:this.regex.pending.size,loadCounts:{...this.loadCounts},regexErrors:[...this.regexErrors.values()],storage:this.store.error||'available',api:'Unavailable: own registration and legitimate access required',liveContract:'native header and feed DOM observed; candidate installed behavior unverified'};}
-  destroy(){if(this.destroyed)return;this.destroyed=true;clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
+  destroy(){if(this.destroyed)return;this.destroyed=true;this.siteColors?.clear();clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
 };

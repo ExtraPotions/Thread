@@ -32,7 +32,7 @@ Compact Cards shows thumbnail-and-text rows with two-line previews and a **Threa
 
 On touch devices, open **Thread actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
 
-Compact Cards on touch devices keeps Reddit's native compact footer on one row, with 80 × 60 thumbnails and the footer spanning the post width. Reddit continues to place native actions in its own overflow menu when they do not fit.
+In Compact Cards on tablet-width feeds, the vote, comment and share row sits beside the thumbnail, so rows with a thumbnail stay short. On phone widths the row spans the post below the thumbnail. Reddit continues to place native actions in its own overflow menu when they do not fit.
 
 Native galleries retain Reddit's slide sizing and navigation. **View media** shows one image per gallery slide in order, without feed thumbnails or decorative background copies.
 

@@ -1,3 +1,8 @@
+## 0.2.2 — 2026-10-21
+
+- Place the compact Thread actions text button immediately left of the native post-header three-dot menu on touch devices, matching its height.
+- Open actions in a floating panel without resizing cards or occupying native footer controls; preserve the gem launcher and media controls.
+
 ## 0.2.1 — 2026-10-21
 
 - Keep native compact post controls beside Thread actions on touch devices instead of forcing an extra footer row.

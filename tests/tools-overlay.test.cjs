@@ -9,6 +9,6 @@ test('iPad taps reach Thread controls above a native full-post-link overlay in e
   await page.addScriptTag({content:source});const select=page.getByRole('combobox',{name:'Content view',exact:true});await select.waitFor();await select.selectOption(view);await page.waitForFunction(v=>(document.querySelector('#t3_one').getAttribute('data-rc-view')||'native')===v,view);
   const post=page.locator('#t3_one'),target=post.locator('summary');await target.scrollIntoViewIfNeeded();assert.equal(await target.evaluate(n=>{const r=n.getBoundingClientRect();return n.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),true,'native post overlay intercepts the visible tool');
   await target.tap();await post.getByRole('button',{name:'Tag / note',exact:true}).tap();await page.locator('.rc-popover').waitFor();assert.equal(await page.evaluate(()=>location.hash),'');await page.locator('.rc-popover').getByRole('button',{name:'Close',exact:true}).tap();
-  const title=await post.locator('[slot="title"]').boundingBox();await page.touchscreen.tap(title.x+title.width-4,title.y+title.height/2);assert.equal(await page.evaluate(()=>location.hash),'#native-post','the native post link outside tools remains usable');await context.close();
+  await target.press('Escape');const title=await post.locator('[slot="title"]').boundingBox();await page.touchscreen.tap(title.x+title.width-4,title.y+title.height/2);assert.equal(await page.evaluate(()=>location.hash),'#native-post','the native post link outside tools remains usable');await context.close();
  }
 });

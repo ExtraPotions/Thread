@@ -75,5 +75,5 @@ RC.Adapter=(()=>{
     }
     return [...images.values()].slice(0,20);
   }
-  return {selector,nodes,own,owned,visible,nearby,link,account,item,action,loadControls,sortLinks,sortUrl,media};
+  return {selector,nodes,own,owned,visible,nearby,link,account,item,action,controls,loadControls,sortLinks,sortUrl,media};
 })();

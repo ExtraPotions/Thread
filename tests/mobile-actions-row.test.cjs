@@ -25,12 +25,12 @@ test('touch feed actions sit left of native controls outside the desktop CTA and
   await summary.press('Space');assert.equal(await post.locator('details').evaluate(n=>n.open),false);await summary.press('Enter');assert.equal(await post.locator('details').evaluate(n=>n.open),true);await summary.tap();await check();
   await summary.focus();await page.evaluate(()=>window.__actionsRuntime.contentView());assert.equal(await summary.evaluate(n=>n===document.activeElement),true,'routine Native and custom view refreshes retain focus');
   await post.evaluate(n=>{const row=n.shadowRoot.querySelector('.row'),replacement=row.cloneNode(true);replacement.querySelector('[data-rc-actions-slot]')?.remove();replacement.removeAttribute('data-rc-actions-row');row.replaceWith(replacement);n.setAttribute('comment-count','13');});
-  await page.waitForFunction(()=>document.querySelector('#t3_one').shadowRoot.querySelector('.row>[data-rc-actions-slot]'));await check();
+  await page.waitForFunction(()=>document.querySelector('#t3_one').shadowRoot.querySelector('[data-rc-header-row]>[data-rc-actions-slot]'));await check();
   await post.locator('#expand').tap();await post.getByRole('button',{name:'Save post',exact:true}).tap();assert.equal(await page.evaluate(()=>window.__nativeTap),2);assert.equal(await page.evaluate(()=>window.__nativeButtons.every(n=>n.isConnected)),true);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   if(process.env.THREAD_ACTIONS_EVIDENCE&&view==='compact'&&viewport.width!==390)await page.screenshot({path:process.env.THREAD_ACTIONS_EVIDENCE+'-'+viewport.width+'.png'});
   const title=await post.locator('[slot="title"]').boundingBox();await page.touchscreen.tap(title.x+title.width-5,title.y+title.height/2);assert.equal(await page.evaluate(()=>location.hash),'#native-post');
-  await page.evaluate(()=>window.__actionsRuntime.destroy());assert.equal(await post.locator('[data-rc-owned]').count(),0);assert.equal(await post.evaluate(n=>n.shadowRoot.querySelectorAll('[data-rc-actions-row],[data-rc-actions-slot]').length),0);assert.equal(await post.locator('#expand').isVisible(),true,'disabling Thread restores native controls');
+  await page.evaluate(()=>window.__actionsRuntime.destroy());assert.equal(await post.locator('[data-rc-owned]').count(),0);assert.equal(await post.evaluate(n=>n.shadowRoot.querySelectorAll('[data-rc-header-row],[data-rc-actions-slot]').length),0);assert.equal(await post.locator('#expand').isVisible(),true,'disabling Thread restores native controls');
   await context.close();
  }
 });

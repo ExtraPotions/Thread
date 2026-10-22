@@ -28,7 +28,7 @@
 
 Compact Cards shows thumbnail-and-text rows with two-line previews and a **Thread actions** disclosure. Full media stays collapsed until you choose **Open media** or Reddit's existing expand control. Opened images and players keep their full readable layout. Enable **Feed → Post presentation → Expand long text** to show the full text.
 
-On touch devices, **Thread actions** sits to the left of Reddit's post controls in every feed view. The row wraps when space is tight, and opening Thread actions keeps Reddit's controls accessible.
+On touch devices, open **Thread actions** using the compact **Thread actions** button immediately left of the post header's three-dot menu. It matches the native button height and opens a floating panel without resizing the card or occupying the voting/share row. Renderers without a header menu keep the button in the metadata header.
 
 Compact Cards on touch devices keeps Reddit's native compact footer on one row, with 80 × 60 thumbnails and the footer spanning the post width. Reddit continues to place native actions in its own overflow menu when they do not fit.
 
@@ -57,7 +57,7 @@ Account switching and Reddit API enrichment are unavailable. See [development](d
 
 Screenshots use sample content.
 
-<a href="docs/screenshots/compact-native-ipad.png"><img src="docs/screenshots/compact-native-ipad.png" width="660" alt="Thread: compact native footer in a sidebar-constrained iPad landscape feed"></a>
+<a href="docs/screenshots/header-actions-ipad.png"><img src="docs/screenshots/header-actions-ipad.png" width="660" alt="Thread: native-height Thread actions text button immediately left of the post header three-dot menu on iPad"></a>
 
 <table>
   <tr>

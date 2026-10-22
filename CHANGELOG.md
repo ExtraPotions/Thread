@@ -1,3 +1,10 @@
+## 0.2.3 — 2026-10-22
+
+- Collapse the right sidebar with a handle at its edge, like the left navigation rail; its arrow shows which way it will move, the feed widens into the free space, and the choice is remembered.
+- Hide, dim or blur posts from a whole community with Filter r/… in a post’s actions menu, and add Unblur spoilers and Unblur mature media toggles; mature media unblurs only where Reddit already shows it to your signed-in account.
+- Put the view picker in Reddit’s sort row, keep whole images in Cards, pack Grid without gaps, show promoted posts in the chosen view, and open Thread actions as a list with subtle motion.
+- Trim the menu to one control per behaviour; removed settings keep one fixed behaviour.
+
 ## 0.2.2 — 2026-10-21
 
 - Place the compact Thread actions text button immediately left of the native post-header three-dot menu on touch devices, matching its height.

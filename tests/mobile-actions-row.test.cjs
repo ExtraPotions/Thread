@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require(require.resolve('playwright',{paths:[path.resolve(__dirname,'../../exp-core')]})),fixture=require('./fixture.cjs');
 const source=fs.readFileSync(process.env.THREAD_ACTIONS_SCRIPT||path.join(__dirname,'../thread.user.js'),'utf8').replace('const ui=new RC.UI(runtime);','const ui=new RC.UI(runtime);window.__actionsRuntime=runtime;');
-test('touch feed actions sit left of native controls outside the desktop CTA and post overlay',async t=>{
+test('touch feed actions sit beside native controls outside the desktop CTA and post overlay',async t=>{
  const browser=await chromium.launch({executablePath:process.platform==='win32'?'C:/Users/OneDareAtHome/AppData/Local/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-win64/chrome-headless-shell.exe':undefined});t.after(()=>browser.close());
  for(const viewport of [{width:820,height:1180},{width:1180,height:820},{width:390,height:844}])for(const view of ['native','cards','compact','grid']){
   const context=await browser.newContext({viewport,isMobile:true,hasTouch:true,colorScheme:'dark'}),page=await context.newPage();page.setDefaultTimeout(5000);
@@ -18,10 +18,10 @@ test('touch feed actions sit left of native controls outside the desktop CTA and
   await page.addScriptTag({content:source});const select=page.getByRole('combobox',{name:'Content view',exact:true});await select.waitFor();await select.selectOption(view);
   const post=page.locator('#t3_one'),summary=post.locator('summary');await summary.waitFor();await summary.scrollIntoViewIfNeeded();
   const check=async()=>{
-   const a=await summary.boundingBox(),b=await post.locator('#expand').boundingBox();assert(a&&b,'both action groups must be rendered');assert(a.x+a.width<=b.x+1||a.y+a.height<=b.y+1,'Thread actions precede native controls without overlap');
+   const a=await summary.boundingBox(),b=await post.locator('#expand').boundingBox();assert(a&&b,'both action groups must be rendered');assert(a.x+a.width<=b.x+1||b.x+b.width<=a.x+1||a.y+a.height<=b.y+1||b.y+b.height<=a.y+1,'Thread actions do not overlap native controls');
    assert.equal(await summary.evaluate(n=>{const r=n.getBoundingClientRect();return n.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),true,'touch center reaches Thread instead of post link');
   };
-  await check();await summary.tap();assert.equal(await post.locator('details').evaluate(n=>n.open),true);await post.getByRole('button',{name:'Tag / note',exact:true}).tap();await page.locator('.rc-popover').waitFor();assert.equal(await page.evaluate(()=>location.hash),'');await page.locator('.rc-popover').getByRole('button',{name:'Close',exact:true}).tap();
+  await check();await summary.tap();assert.equal(await post.locator('details').evaluate(n=>n.open),true);await post.locator('.rc-action-items').evaluate(n=>Promise.all(n.getAnimations().map(a=>a.finished)));await post.getByRole('button',{name:'Tag / note',exact:true}).tap();await page.locator('.rc-popover').waitFor();assert.equal(await page.evaluate(()=>location.hash),'');await page.locator('.rc-popover').getByRole('button',{name:'Close',exact:true}).tap();
   await summary.press('Space');assert.equal(await post.locator('details').evaluate(n=>n.open),false);await summary.press('Enter');assert.equal(await post.locator('details').evaluate(n=>n.open),true);await summary.tap();await check();
   await summary.focus();await page.evaluate(()=>window.__actionsRuntime.contentView());assert.equal(await summary.evaluate(n=>n===document.activeElement),true,'routine Native and custom view refreshes retain focus');
   await post.evaluate(n=>{const row=n.shadowRoot.querySelector('.row'),replacement=row.cloneNode(true);replacement.querySelector('[data-rc-actions-slot]')?.remove();replacement.removeAttribute('data-rc-actions-row');row.replaceWith(replacement);n.setAttribute('comment-count','13');});

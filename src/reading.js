@@ -1,4 +1,5 @@
 // Original local reading tools. Copyright expDARE.
+RC.PRESETS={native:{readingFont:'native',lineHeight:0,paragraphGap:0,contentFont:14},comfortable:{readingFont:'sans',contentFont:18,lineHeight:170,paragraphGap:12},dense:{readingFont:'sans',contentFont:15,lineHeight:140,paragraphGap:6},book:{readingFont:'serif',contentFont:18,lineHeight:180,paragraphGap:14}};
 Object.assign(RC.Runtime.prototype,{
   readingPopover(title,content){this.popover(title,content);this.overlay.node.classList.add('rc-reading-panel');},
   readingState(){
@@ -107,8 +108,7 @@ Object.assign(RC.Runtime.prototype,{
     this.refreshCommentSearch();this.restoreFeedPosition();
   },
   readingPreset(name){
-    const presets={native:{readingFont:'native',lineHeight:0,paragraphGap:0,contentFont:14},comfortable:{readingFont:'sans',contentFont:18,lineHeight:170,paragraphGap:12},dense:{readingFont:'sans',contentFont:15,lineHeight:140,paragraphGap:6},book:{readingFont:'serif',contentFont:18,lineHeight:180,paragraphGap:14}};
-    if(presets[name])this.update(presets[name]);
+    if(RC.PRESETS[name])this.update(RC.PRESETS[name]);
   },
   navigateThread(mode,direction=1){
     let comments=[...this.items.values()].map(r=>r.item).filter(i=>i.kind==='comment'&&i.node.isConnected&&i.node.getClientRects().length&&!i.node.hasAttribute('data-rc-treatment'));

@@ -1,3 +1,8 @@
+## 0.2.4 — 2026-10-22
+
+- Show the vote and share row beside the thumbnail in Compact rows on iPad widths.
+- Add Site colors in Look: six optional Reddit palettes that follow Reddit light or dark mode.
+
 ## 0.2.3 — 2026-10-22
 
 - Collapse the right sidebar with a handle at its edge, like the left navigation rail; its arrow shows which way it will move, the feed widens into the free space, and the choice is remembered.

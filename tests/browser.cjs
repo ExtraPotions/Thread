@@ -112,7 +112,7 @@ async function run(){
    await p.emulateMedia({colorScheme:scheme});await p.evaluate(gem=>{window.__thread.runtime.update({gemTheme:gem});window.__thread.ui.openRoute('look');},gem);
    // Enable a boolean row to sample the actual shared Core thumb, regardless of gem setting.
    await p.evaluate(()=>window.__thread.ui.openRoute('feed'));
-   const colors=await p.locator('#exp-thread-root').getByRole('switch',{name:'Enable Thread',exact:true}).evaluate(n=>({track:getComputedStyle(n).backgroundColor,thumb:getComputedStyle(n,'::after').backgroundColor}));
+   const colors=await p.locator('#exp-thread-root').getByRole('switch',{name:'Enable Thread',exact:true}).evaluate(n=>({track:getComputedStyle(n,'::before').backgroundColor,thumb:getComputedStyle(n,'::after').backgroundColor}));
    const lum=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];};
    const a=lum(colors.track),b=lum(colors.thumb),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);assert(ratio>=3,JSON.stringify({scheme,gem,colors,ratio}));
   }
@@ -143,8 +143,8 @@ async function run(){
  await check('SHIFT-style menu has six primary sections, Support/Reset inside System and a native-size circular rail launcher',async()=>{
   const launcher=menuRoot.locator('.launcher'),box=await launcher.boundingBox();assert.equal(box.width,32);assert.equal(box.height,32);assert.equal(await launcher.evaluate(n=>getComputedStyle(n).borderRadius),'50%');
   await launcher.click();await settle(uiPage);
-  assert.equal(await menuRoot.locator('[data-exp-part=subtitle]').innerText(),'Your Reddit, refined.');
-  assert.deepEqual(await menuRoot.getByRole('tab').allTextContents(),['Feed','Read','Look','Filters','People','System']);
+  assert.equal(await menuRoot.locator('[data-exp-part=subtitle]').count(),0);
+  assert.deepEqual(await menuRoot.getByRole('tab').allTextContents(),['Feed','Read','Filters','People','Look','System']);
   assert.equal(await menuRoot.locator('[data-exp-menu-shortcut="support"],[data-exp-menu-shortcut="reset"]').count(),0);
   assert.equal(await menuRoot.locator('[data-section="donations"],[data-section="support"],[data-section="reset"]').count(),0);
   await menuRoot.getByRole('button',{name:'Support Thread',exact:true}).click();assert.equal(await menuRoot.locator('#exp-support-popover').isVisible(),true);
@@ -176,7 +176,7 @@ async function run(){
  await check('Thread hover and keyboard help remain inside the menu at desktop, 390px and 320px with native and gem themes',async()=>{
   for(const width of [1440,390,320])for(const gem of [false,true]){
    await uiPage.setViewportSize({width,height:800});await uiPage.evaluate(gem=>{window.__thread.runtime.update({gemTheme:gem});window.__thread.ui.openRoute('look');},gem);await settle(uiPage);
-   const label=menuRoot.locator('[data-exp-help]').filter({hasText:'Menu theme'});await label.hover();const tip=menuRoot.getByRole('tooltip');await tip.waitFor({state:'visible'});assert.match(await tip.innerText(),/Pear Crystal/);
+   const label=menuRoot.getByRole('combobox',{name:'Menu theme',exact:true});await label.hover();const tip=menuRoot.getByRole('tooltip');await tip.waitFor({state:'visible'});assert.match(await tip.innerText(),/Pear Crystal/);
    await label.focus();assert.equal(await tip.isVisible(),true);
    await settle(uiPage);const t=await tip.boundingBox(),m=await menuRoot.getByRole('dialog').boundingBox();await uiPage.screenshot({path:path.join(output,'tooltip-'+width+'-'+gem+'.png'),fullPage:false});assert(t.x>=m.x&&t.x+t.width<=m.x+m.width+1&&t.y>=m.y&&t.y+t.height<=m.y+m.height+1,'tooltip contained '+JSON.stringify({width,gem,t,m}));
    await uiPage.keyboard.press('Escape');assert.equal(await tip.isVisible(),false);assert.equal(await menuRoot.getByRole('dialog').isVisible(),true);
@@ -200,22 +200,15 @@ async function run(){
  await check('repeated routes/insert/remove retain bounded runtime resources and teardown restores focus attributes',async()=>{for(let i=0;i<12;i++){await thread.evaluate(i=>{history.pushState({},'','/r/example/?test='+i);const n=document.createElement('shreddit-post');n.id='transient'+i;n.setAttribute('post-title','Transient');document.querySelector('shreddit-feed').append(n);n.remove();},i);await thread.waitForTimeout(180);}const counts=await thread.evaluate(()=>{window.gc?.();const r=window.__thread.runtime;return {items:r.items.size,timers:r.readTimers.size,workers:r.regex.pending.size,listeners:window.__listeners.size,heap:performance.memory?.usedJSHeapSize};});fs.writeFileSync(path.join(output,'route-counters.json'),JSON.stringify(counts,null,2));assert(counts.items<=250);assert(counts.timers<=250);assert.equal(counts.workers,0);assert.equal(counts.listeners,10);await thread.evaluate(()=>window.__thread.runtime.destroy());assert.equal(await thread.locator('[data-rc-owned],#exp-thread-root').count(),0);assert.equal(await thread.evaluate(()=>window.__listeners.size),0);});
  await thread.close();
  // Real suite builds forced onto the authored Reddit fixture: this is coexistence proof, not metadata/site support proof.
- await check('five built products coexist in both load orders with SHIFT themes and a single flyout',async()=>{
-  for(const order of [['thread','dropper','shift','prisma','ward'],['ward','prisma','shift','dropper','thread']]){
+ await check('four maintained userscripts coexist in both load orders with native/gem themes and a single flyout',async()=>{
+  for(const order of [['thread','dropper','prisma','ward'],['ward','prisma','dropper','thread']]){
    const page=await pageAt('https://www.reddit.com/r/example/',{width:1280,height:1000});
    // pageAt supplied THREAD first; remove it and bootstrap in the declared order.
    await page.evaluate(()=>window.__thread.runtime.destroy());
-   for(const id of order){if(id==='thread')await page.addScriptTag({content:testedSource});else {const repo={dropper:'Dropper',shift:'SHIFT',prisma:'PRISMA',ward:'WARD'}[id];await page.addScriptTag({content:fs.readFileSync(path.join(workspace,repo,id+'.user.js'),'utf8')});}}
+   for(const id of order){if(id==='thread')await page.addScriptTag({content:testedSource});else {const repo={dropper:'Dropper',prisma:'PRISMA',ward:'WARD'}[id];await page.addScriptTag({content:fs.readFileSync(path.join(workspace,repo,id+'.user.js'),'utf8')});}}
    await page.waitForTimeout(1200);
    for(const id of order){const host=id==='dropper'?'#tdh-root':'#exp-'+id+'-root';assert.equal(await page.locator(host).count(),1,id+' registered');}
    assert.equal(await page.evaluate(()=>[...document.querySelectorAll('[data-exp-product-launcher="1"]')].map(h=>h.shadowRoot?.querySelector('[data-exp-part="flyout-hub"]')).filter(Boolean).length),1);
-   const shift=page.locator('#exp-shift-root');
-   await shift.locator('.launcher').evaluate(n=>n.click());
-   await shift.locator('[data-section="appearance"]').evaluate(n=>n.click());
-   for(const theme of ['blue','red','gray']){
-    await shift.locator('[data-shift-theme="'+theme+'"]').click();
-    await page.waitForTimeout(250);
-    assert.equal(await page.evaluate(()=>GM_getValue('exp:v3:shift:settings',{}).theme),theme,'actual SHIFT preference changed');
     for(const enabled of [false,true,false]){
      await page.evaluate(enabled=>{window.__thread.runtime.update({defaultView:'compact',gemTheme:enabled});window.__thread.ui.product.open();},enabled);await settle(page);
      assert.equal(await page.locator('#exp-thread-root').getByRole('dialog').isVisible(),true);
@@ -223,9 +216,6 @@ async function run(){
      assert.equal(palette,enabled?'thread-gem':'reddit-native');
      await page.evaluate(()=>window.__thread.ui.product.close());
     }
-    await shift.locator('.launcher').evaluate(n=>n.click());
-    await shift.locator('[data-section="appearance"]').evaluate(n=>{if(n.getAttribute('aria-expanded')!=='true')n.click();});
-   }
    await page.close();
   }
  });

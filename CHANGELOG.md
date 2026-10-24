@@ -1,3 +1,8 @@
+## 0.2.7 — 2026-10-24
+
+- Use compact rows and clearer filter and reading labels.
+- Keep all themes and color modes at the original three menu widths.
+
 ## 0.2.6 — 2026-10-22
 
 - Cards and Grid switch Reddit's own View to Card, and Compact Cards to Compact, so posts arrive with the right media (one reload).

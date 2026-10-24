@@ -68,6 +68,8 @@ Screenshots use sample content.
   </tr>
 </table>
 
+![Thread Look menu at iPad dimensions](docs/screenshots/menu-look-ipad.png)
+
 Layout captures use iPad portrait and landscape dimensions with touch emulation. They show the built userscript on authored sample pages, not an installed iPad browser.
 
 All ExtraPotions menus share the same Core template. Open **System** for status, diagnostics, troubleshooting and Reset. Donations remain in the header heart.

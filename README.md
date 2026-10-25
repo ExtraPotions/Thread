@@ -8,6 +8,12 @@
 [![Code: PolyForm Noncommercial 1.0.0](docs/badges/code.svg)](LICENSE-CODE.md)
 [![Artwork and documentation: CC BY-NC-SA 4.0](docs/badges/assets.svg)](LICENSE-ASSETS.md)
 
+## Latest changes
+
+- Use compact filters and open collection-management fields only when needed.
+- Import account data together with preserved backups and clear save failures.
+- Apply suite pause immediately without keyboard or layout bypasses.
+
 ## Get started
 
 1. Install a userscript manager such as [Violentmonkey](https://violentmonkey.github.io/get-it/) or [Tampermonkey](https://www.tampermonkey.net/).

@@ -37,13 +37,30 @@ RC.Model=(()=>{
 RC.Store=class {
   constructor(){this.account='guest';this.error='';this.listeners=[];}
   key(name){return RC.Model.PREFIX+this.account+':'+name;}
-  get(name,fallback){try {const v=GM_getValue(this.key(name),fallback);return v===undefined?fallback:structuredClone(v);}catch{this.error='Local storage is unavailable. Changes are not saved.';return structuredClone(fallback);}}
-  set(name,value){try {GM_setValue(this.key(name),structuredClone(value));return true;}catch{this.error='Local storage is full or unavailable. Export or free space, then retry.';return false;}}
+  documentField(name){return ['settings','rules','people','library'].includes(name);}
+  document(){const value=GM_getValue(this.key('account-data'),undefined);if(value===undefined)return null;if(value?.schema!==1||!RC.Model.plain(value.data))throw Error('Invalid account data');return value;}
+  get(name,fallback){try {const data=this.documentField(name)?this.document()?.data:null;const v=data&&Object.hasOwn(data,name)?data[name]:GM_getValue(this.key(name),fallback);return v===undefined?fallback:structuredClone(v);}catch{this.error='Local storage is unavailable. Changes are not saved.';return structuredClone(fallback);}}
+  writeVerified(key,value){GM_setValue(key,structuredClone(value));if(JSON.stringify(GM_getValue(key,undefined))!==JSON.stringify(value))throw Error('Write not confirmed');}
+  set(name,value){try {const saved=this.documentField(name)?this.document():null;if(saved)this.writeVerified(this.key('account-data'),{schema:1,data:{...saved.data,[name]:structuredClone(value)}});else this.writeVerified(this.key(name),value);this.error='';return true;}catch{this.error='Local storage is full or unavailable. Export or free space, then retry.';return false;}}
+  importData(value,account){
+    if(account!==this.account){this.error='Account changed. Validate the import again.';return false;}
+    try{
+      const saved=this.document(),data={};
+      for(const name of ['settings','rules','people','library']){
+        const current=saved?.data&&Object.hasOwn(saved.data,name)?saved.data[name]:GM_getValue(this.key(name),undefined);
+        if(current!==undefined)data[name]=structuredClone(current);
+      }
+      // Backup failure leaves all live records intact. One verified document commits every imported field.
+      this.writeVerified(this.key('import-backup:'+Date.now()+':'+Math.random().toString(36).slice(2)),{schema:1,data});
+      this.writeVerified(this.key('account-data'),{schema:1,data:{...data,...structuredClone(value)}});
+      this.error='';return true;
+    }catch{this.error='Import not confirmed. Saved records remain together; retry or export.';return false;}
+  }
   remove(name){try{GM_deleteValue(this.key(name));}catch{this.error='Could not delete local data.';}}
   people(){const raw=this.get('people',{});return RC.Model.plain(raw)?Object.fromEntries(Object.entries(raw).filter(([user,value])=>RC.Model.validUser(user)&&RC.Model.plain(value)).slice(0,1000).map(([user,value])=>[user.toLowerCase(),RC.Model.person(value)])):{};}
   person(user){return RC.Model.person(this.people()[user.toLowerCase()]);}
   setPerson(user,value){if(!RC.Model.validUser(user))return false;const people=this.people();if(!Object.hasOwn(people,user.toLowerCase())&&Object.keys(people).length>=1000){this.error='People capacity reached (1,000). Export or remove a record.';return false;}const p=RC.Model.person(value);if(!p.tag&&!p.note&&!p.nickname&&!p.ignore)delete people[user.toLowerCase()];else people[user.toLowerCase()]=p;return this.set('people',people);}
-  listen(fn){this.unlisten();if(typeof GM_addValueChangeListener==='function')for(const n of ['settings','rules','people','history','visits','sorts','collapse','library','postReads','feedPositions']){const id=GM_addValueChangeListener(this.key(n),(_k,_old,_new,remote)=>{if(remote)fn(n);});this.listeners.push(id);}}
+  listen(fn){this.unlisten();if(typeof GM_addValueChangeListener==='function')for(const n of ['account-data','settings','rules','people','history','visits','sorts','collapse','library','postReads','feedPositions']){const id=GM_addValueChangeListener(this.key(n),(_k,_old,_new,remote)=>{if(remote)fn(n);});this.listeners.push(id);}}
   unlisten(){if(typeof GM_removeValueChangeListener==='function')this.listeners.forEach(id=>GM_removeValueChangeListener(id));this.listeners=[];}
-  reset(){for(const name of ['settings','rules','people','history','visits','sorts','collapse','library','postReads','feedPositions'])this.remove(name);}
+  reset(){for(const name of ['account-data','settings','rules','people','history','visits','sorts','collapse','library','postReads','feedPositions'])this.remove(name);}
 };

@@ -1,3 +1,9 @@
+## 0.2.8 — 2026-10-25
+
+- Use compact filters and open collection-management fields only when needed.
+- Import account data together with preserved backups and clear save failures.
+- Apply suite pause immediately without keyboard or layout bypasses.
+
 ## 0.2.7 — 2026-10-24
 
 - Use compact rows and clearer filter and reading labels.

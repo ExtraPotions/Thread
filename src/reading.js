@@ -31,7 +31,7 @@ Object.assign(RC.Runtime.prototype,{
     const controls=RC.el('div',{class:'rc-reading-controls'});controls.append(search,filter);panel.append(controls,status,list);
     const paint=()=>{
       const query=search.value.trim().toLocaleLowerCase(),rows=this.library.filter(row=>(filter.value===''||row.collection===filter.value)&&[row.title,row.note,row.collection].join(' ').toLocaleLowerCase().includes(query));
-      status.textContent=rows.length+' local bookmarks · '+this.library.length+'/500';list.replaceChildren();rename.disabled=!filter.value;renameButton.disabled=!filter.value;moveButton.disabled=!filter.value;
+      status.textContent=rows.length+' local bookmarks · '+this.library.length+'/500';list.replaceChildren();rename.disabled=!filter.value;renameButton.disabled=!filter.value;renameStart.disabled=!filter.value;moveButton.disabled=!filter.value;
       for(const row of rows.slice().reverse()){
         const entry=RC.el('article',{class:'rc-library-entry'}),link=RC.el('a',{href:row.url},row.title);entry.append(link,RC.el('p',{},row.collection));if(row.note)entry.append(RC.el('p',{},row.note));
         entry.append(RC.button('Edit bookmark',()=>this.saveToCollection({url:row.url,title:row.title})),RC.button('Remove bookmark',()=>{if(this.persistLibrary(this.library.filter(r=>r.url!==row.url))){this.libraryUndo={row,account:this.account};this.collections();}}));list.append(entry);
@@ -40,8 +40,8 @@ Object.assign(RC.Runtime.prototype,{
     };
     search.addEventListener('input',paint);
     const rename=RC.el('input',{'aria-label':'New collection name',maxlength:'40',placeholder:'New collection name'});
-    const renameButton=RC.button('Rename selected collection',()=>{const name=rename.value.trim();if(!name){status.textContent='Enter a new collection name.';rename.focus();return;}if(this.persistLibrary(this.library.map(row=>row.collection===filter.value?{...row,collection:name}:row)))this.collections();else status.textContent=this.store.error||'Could not update local collection.';});
-    const moveButton=RC.button('Move selected collection to Read later',()=>{if(this.persistLibrary(this.library.map(row=>row.collection===filter.value?{...row,collection:'Read later'}:row)))this.collections();else status.textContent=this.store.error||'Could not update local collection.';});panel.append(rename,renameButton,moveButton);
+    rename.hidden=true;const renameButton=RC.button('Save name',()=>{const name=rename.value.trim();if(!name){status.textContent='Enter a new collection name.';rename.focus();return;}if(this.persistLibrary(this.library.map(row=>row.collection===filter.value?{...row,collection:name}:row)))this.collections();else status.textContent=this.store.error||'Could not update local collection.';});
+    const moveButton=RC.button('Move to Read later',()=>{if(this.persistLibrary(this.library.map(row=>row.collection===filter.value?{...row,collection:'Read later'}:row)))this.collections();else status.textContent=this.store.error||'Could not update local collection.';});renameButton.hidden=true;const renameStart=RC.button('Rename',()=>{rename.hidden=false;renameButton.hidden=false;rename.focus();});const manage=RC.el('details');manage.append(RC.el('summary',{},'Manage collection'),renameStart,rename,renameButton,moveButton);panel.append(manage);filter.addEventListener('change',()=>{rename.hidden=true;renameButton.hidden=true;});
     if(this.libraryUndo?.account===this.account)panel.append(RC.button('Undo bookmark removal',()=>{const row=this.libraryUndo.row;if(this.library.length>=500)return this.notify('Local collection capacity reached (500).');if(this.persistLibrary([...this.library,row])){this.libraryUndo=null;this.collections();}}));
     this.readingPopover('Local collections',panel);paint();
   },
@@ -66,12 +66,12 @@ Object.assign(RC.Runtime.prototype,{
   observePostReads(entries){
     for(const entry of entries){const record=this.items.get(entry.target);if(record?.item.kind!=='post')continue;
       clearTimeout(record.postReadTimer);delete record.postReadTimer;
-      if(!this.settings?.trackPosts||!this.settings.markScrolled||!this.verified||this.overlay||record.item.gated||document.visibilityState!=='visible'||entry.intersectionRatio<.6||entry.target.matches('[data-rc-treatment],[data-rc-collapsed],[data-rc-post-read-hidden]'))continue;
-      const account=this.account;record.postReadTimer=setTimeout(()=>{delete record.postReadTimer;if(!this.destroyed&&this.settings.enabled&&this.settings.trackPosts&&this.settings.markScrolled&&this.account===account&&document.visibilityState==='visible'&&!this.overlay&&entry.target.isConnected&&RC.Adapter.visible(entry.target)&&!entry.target.matches('[data-rc-treatment],[data-rc-collapsed]'))this.markPostRead(record.item);},1200);
+      if(!this.canRun()||!this.settings?.trackPosts||!this.settings.markScrolled||!this.verified||this.overlay||record.item.gated||document.visibilityState!=='visible'||entry.intersectionRatio<.6||entry.target.matches('[data-rc-treatment],[data-rc-collapsed],[data-rc-post-read-hidden]'))continue;
+      const account=this.account;record.postReadTimer=setTimeout(()=>{delete record.postReadTimer;if(this.canRun()&&this.settings.trackPosts&&this.settings.markScrolled&&this.account===account&&document.visibilityState==='visible'&&!this.overlay&&entry.target.isConnected&&RC.Adapter.visible(entry.target)&&!entry.target.matches('[data-rc-treatment],[data-rc-collapsed]'))this.markPostRead(record.item);},1200);
     }
   },
   captureFeedAnchor(){
-    if(!this.settings?.enabled||!this.settings.restoreFeed||!this.verified||this.overlay||this.pendingFeedRestore||location.pathname.includes('/comments/'))return;
+    if(!this.canRun()||!this.settings.restoreFeed||!this.verified||this.overlay||this.pendingFeedRestore||location.pathname.includes('/comments/'))return;
     const top=(document.querySelector('header')?.getBoundingClientRect().bottom||0)+20;
     const item=[...this.items.values()].map(r=>r.item).find(i=>i.kind==='post'&&RC.Adapter.visible(i.node)&&i.node.getBoundingClientRect().bottom>top&&!i.node.hasAttribute('data-rc-post-read-hidden'));
     if(item)this.feedAnchor={route:location.pathname+location.search,id:item.id,offset:Math.round(item.node.getBoundingClientRect().top),at:Date.now()};
@@ -81,7 +81,7 @@ Object.assign(RC.Runtime.prototype,{
     return Object.fromEntries(Object.entries(raw).filter(([path,row])=>path.startsWith('/')&&path.length<=240&&RC.Model.plain(row)&&typeof row.id==='string'&&row.id.length<=120&&Number.isFinite(row.offset)&&Math.abs(row.offset)<=50000&&Number.isFinite(row.at)&&row.at>Date.now()-this.settings.retentionDays*86400000).sort((a,b)=>a[1].at-b[1].at).slice(-100));
   },
   saveFeedPosition(){
-    if(!this.settings?.enabled||!this.settings.restoreFeed||!this.verified||!this.feedAnchor)return;
+    if(!this.canRun()||!this.settings.restoreFeed||!this.verified||!this.feedAnchor)return;
     const {route,...anchor}=this.feedAnchor;const next=this.cleanFeedPositions({...this.feedPositions,[route]:anchor});
     if(this.store.set('feedPositions',next))this.feedPositions=next;
   },

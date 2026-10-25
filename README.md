@@ -74,7 +74,7 @@ Screenshots use sample content.
   </tr>
 </table>
 
-![Thread Look menu at iPad dimensions](docs/screenshots/menu-look-ipad.png)
+![Thread Look menu at iPad dimensions](docs/screenshots/menu-look-ipad.gif)
 
 Layout captures use iPad portrait and landscape dimensions with touch emulation. They show the built userscript on authored sample pages, not an installed iPad browser.
 

@@ -1,3 +1,9 @@
+## 0.2.9 — 2026-10-26
+
+- Remove the unused Reddit API access entry and stale API plans.
+- Restore rounded-square header buttons.
+- Shorten the README, retain the usage guide and remove unused repository assets.
+
 ## 0.2.8 — 2026-10-25
 
 - Use compact filters and open collection-management fields only when needed.

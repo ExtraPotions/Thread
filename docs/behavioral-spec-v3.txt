@@ -51,21 +51,11 @@ an explicit recoverable error. Arbitrary regex evaluation must be isolated and
 time-bounded, not run unchecked on the main thread or retain every page node.
 History capacity zero disables recording; deleting history does not delete tags.
 
-People: custom tags/notes, optional user karma and account-age badge, nickname
-profile/nickname/both and maximum length. Prefer native page data; enrichment is
-off until legitimate API access is verified. Unknown/deleted users are distinct
-from a newly created user. Do not invent karma, badges or resolved nicknames.
+People: custom tags/notes and local nicknames. Use native page data only.
+Do not invent karma, badges or resolved nicknames.
 
-System: working app name, independent registered API identity, request-limit
-warnings, bounded retention, diagnostics, local version/changelog. Names alone
-provide no authentication. Do not impersonate another app or borrow its identity.
-Read X-Ratelimit-Used/Remaining/Reset when API access is implemented; pause optional
-enrichment and show retry timing on limits. No credentials in diagnostics.
-Official Reddit Data API Wiki, updated May11,2026: authenticated eligible clients
-have100 requests per minute per OAuth client ID, averaged over10 minutes.
-Unauthenticated traffic is blocked. The reference's100 total/10min claim is not
-the current official contract. Verify current terms/access before implementation.
-Source: https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki
+System: bounded retention, diagnostics and local version/changelog. No Reddit
+API integration, API credentials or request-budget controls.
 
 Support and Donations are different destinations. Support contains help,
 privacy-safe diagnostics and reports. The donation heart opens Donations only.
@@ -76,10 +66,9 @@ Working on authored sample data: feed sort/default, controls visibility,
 sidebars, literal post filtering, treatment/history, read/navigation/actions,
 bounded sample pagination and visible reply loading, diagrams/lightbox and zoom,
 theme/density/text/page dimensions, highlights/recommendations, separate routes.
-Planned/configuration-only: regex execution and comment filtering, API user/flair
-enrichment, real API app registration/rate budget, actual redirects, native profile
-integration, authenticated saves/votes and production persistence. No API request,
-real account change, installed-script edit or published update is demonstrated.
+Planned/configuration-only: regex execution and comment filtering, actual redirects,
+native profile integration, authenticated saves/votes and production persistence.
+No real account change, installed-script edit or published update is demonstrated.
 
 Support boundary
 Desktop current Reddit first, with narrow/short window support. Determine and

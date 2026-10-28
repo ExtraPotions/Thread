@@ -50,6 +50,8 @@ Set **Feed → Read posts** to **Mark** to mark posts when opening them or using
 
 ## Comment navigation
 
+Discussion navigation stays on one row; swipe sideways or use Tab to reach more controls. Each comment’s **Thread actions** icon shares Reddit’s native footer. Open it for local tags, parent context, collapse and other comment actions.
+
 On discussion pages, use **Next top-level thread**, **Next sibling comment** or **Collapse / expand loaded replies** while keeping the parent available. **Search loaded comments** outlines matching comments and offers Previous/Next; hidden, collapsed, gated and unloaded content is excluded.
 
 ## Returning to a feed

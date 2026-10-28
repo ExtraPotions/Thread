@@ -30,6 +30,8 @@ Thread uses native page data. Personal records stay in local userscript storage 
 
 ![Reading styles](docs/screenshots/reading-presets-ipad.png)
 
+![Discussion navigation and comment actions](docs/screenshots/discussion-tools-ipad.png)
+
 ![Menu walkthrough](docs/screenshots/menu-look-ipad.gif)
 
 </details>

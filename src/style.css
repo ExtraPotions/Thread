@@ -56,7 +56,7 @@ shreddit-ad-post[data-rc-view="compact"]{padding-inline:0!important}
 .rc-tools[data-rc-header-actions],[data-rc-compact-flat]>.rc-tools[data-rc-header-actions]{display:flex;flex:0 0 auto;width:fit-content;order:initial!important;align-self:center;margin:0 0 0 auto!important;padding:0!important;border:0!important;pointer-events:auto}
 .rc-tools[data-rc-header-actions],.rc-tools[data-rc-header-actions]>details{background:transparent!important}
 .rc-tools[data-rc-header-actions]>details{display:block;padding:0!important;margin:0!important;border:0!important;border-radius:0}
-.rc-tools[data-rc-header-actions] summary{display:flex;align-items:center;justify-content:center;list-style:none;width:var(--rc-native-action-size,32px);min-width:var(--rc-native-action-size,32px);height:var(--rc-native-action-size,32px);min-height:0!important;padding:0;border:0;background:var(--rc-native-action-bg,transparent);color:inherit;border-radius:8px;cursor:pointer}
+.rc-tools[data-rc-header-actions] summary{display:flex;align-items:center;justify-content:center;list-style:none;width:var(--rc-native-action-size,32px);min-width:var(--rc-native-action-size,32px);height:var(--rc-native-action-size,32px);min-height:0!important;margin:0!important;padding:0;border:0;background:var(--rc-native-action-bg,transparent);color:inherit;border-radius:8px;cursor:pointer}
 .rc-tools[data-rc-header-actions] summary svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
 .rc-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .rc-tools[data-rc-header-actions] summary::-webkit-details-marker{display:none}
@@ -100,6 +100,8 @@ shreddit-ad-post[data-rc-view="compact"]{padding-inline:0!important}
 [data-rc-layout]{width:min(100%,var(--rc-width,800px))!important;max-width:100%!important;margin-inline:auto!important;translate:var(--rc-offset,0px) 0}
 .rc-pagebar{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:4px 0;margin:4px 0;position:sticky;top:var(--rc-sticky-top,0px);z-index:10;border-bottom:1px solid var(--rc-line)}
 .rc-pagebar[data-rc-page-type="feed"]{position:static;z-index:auto}
+.rc-pagebar[data-rc-page-type="comments"]{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:thin;scroll-padding-inline:4px}
+.rc-pagebar[data-rc-page-type="comments"]>*{flex:0 0 auto;margin:0}
 .rc-pagebar:empty{display:none}
 /* Inside Reddit's sort row the controls read as native plain buttons: no strip, no box, same 32px rhythm. */
 [data-rc-sort-row]{display:flex;flex-wrap:wrap;align-items:center;column-gap:4px}

@@ -68,8 +68,10 @@ RC.Runtime=class {
   recordHidden(item,reason){if(!this.settings.historyCapacity)return;if(this.history.some(v=>v.id===item.id))return;this.history=RC.Model.prune([...this.history,{id:item.id,at:Date.now(),reason}],this.settings.historyCapacity,this.settings.retentionDays);this.store.set('history',this.history);}
   tools(record,reason,treatment,collapsed,person){
     const {item}=record;const previous=record.tools;const focused=previous?.contains(document.activeElement)?document.activeElement?.textContent:null;
+    delete record.discussionFocus;
     const bar=RC.el('div',{class:'rc-tools','data-rc-owned':'tools'});bar.style.setProperty('--rc-ui-font',this.settings.uiFont+'px');
     this.guardToolEvents(bar);
+    if(item.kind==='comment'){bar.addEventListener('focusin',e=>{record.discussionFocus=e.target;});bar.addEventListener('focusout',()=>{queueMicrotask(()=>{if(bar.isConnected&&!bar.contains(document.activeElement))delete record.discussionFocus;});});}
     const button=(label,fn)=>{const b=RC.button(label,fn);bar.append(b);return b;};
     if(treatment){bar.append(RC.el('small',{},this.revealed.has(item.id)?'Revealed · '+reason:reason));button(this.revealed.has(item.id)?'Apply treatment':'Reveal',()=>{if(this.revealed.has(item.id))this.revealed.delete(item.id);else this.revealed.add(item.id);this.schedule();});}
     if(collapsed)button('Reveal collapsed content',()=>{this.revealed.add('collapse:'+item.id);this.collapsed.delete(item.id);this.saveCollapse(item.id,false);this.schedule();});
@@ -177,7 +179,9 @@ RC.Runtime=class {
     const grids=new Set();
     for(const record of this.items.values()){
       const {item}=record;
-      if(item.kind!=='post'||location.pathname.includes('/comments/'))continue;
+      if(item.kind==='comment'){this.compactTools(record,'compact');this.discussionToolsLayout(record);continue;}
+      if(location.pathname.includes('/comments/')){this.compactTools(record,'compact');this.nativeToolsLayout(record);continue;}
+      if(item.kind!=='post')continue;
       if(view==='native')this.restoreView(record);else{if(record.nativeViewApplied===undefined)record.nativeView=item.node.getAttribute('view-type');else if(item.node.getAttribute('view-type')!==record.nativeViewApplied)record.nativeView=item.node.getAttribute('view-type');const type=item.node.querySelector(':scope > [slot="expando-content"]')?'compactView':item.node.querySelector(':scope > [slot="post-media-container"]')?'cardView':['compactView','cardView'].includes(record.nativeView)?record.nativeView:['cards','grid'].includes(view)?'cardView':'compactView';this.attr(item.node,'view-type',type);record.nativeViewApplied=type;}
       this.attr(item.node,'data-rc-view',view==='native'?null:view);
       this.compactTools(record,view);
@@ -269,7 +273,7 @@ RC.Runtime=class {
     const touch=matchMedia('(pointer:coarse)').matches;
     const compact=(view==='compact'||view==='grid'||touch)&&!record.item.node.hasAttribute('data-rc-treatment')&&!record.item.node.hasAttribute('data-rc-collapsed');
     this.attr(bar,'data-rc-feed-actions',touch?'1':null);
-    if(!record.item.node.shadowRoot&&!touch){const post=record.item.node,focused=bar.contains(document.activeElement)?document.activeElement:null;if(compact&&bar!==post.lastElementChild)post.append(bar);else if(!compact&&bar!==post.firstElementChild)post.prepend(bar);focused?.focus({preventScroll:true});}
+    if(record.item.kind==='post'&&!location.pathname.includes('/comments/')&&!record.item.node.shadowRoot&&!touch){const post=record.item.node,focused=bar.contains(document.activeElement)?document.activeElement:null;if(compact&&bar!==post.lastElementChild)post.append(bar);else if(!compact&&bar!==post.firstElementChild)post.prepend(bar);focused?.focus({preventScroll:true});}
     if(compact&&!previous){
       const details=RC.el('details',{class:'rc-compact-actions'}),summary=RC.el('summary',{},'Thread actions'),actions=RC.el('div',{class:'rc-action-items'});
       const focused=bar.contains(document.activeElement)?document.activeElement:null;
@@ -282,6 +286,21 @@ RC.Runtime=class {
     }
   }
   clearToolsLayout(record){const label=record.tools?.querySelector('summary');if(label?.querySelector('svg'))label.textContent='Thread actions';record.actionsSlot?.remove();record.actionsStyle?.remove();record.actionsRow?.removeAttribute('data-rc-header-row');if(record.headerContainer?.contains(record.tools))record.item.node.prepend(record.tools);record.headerContainer?.remove();record.tools?.removeAttribute('data-rc-header-actions');delete record.actionsSlot;delete record.actionsStyle;delete record.actionsRow;delete record.headerContainer;}
+  discussionToolsLayout(record){
+    const node=record.item.node,bar=record.tools,summary=bar?.querySelector('summary');
+    if(!bar)return;
+    const focused=!bar.isConnected&&bar.contains(record.discussionFocus)&&document.activeElement===document.body?record.discussionFocus:null;
+    if(!bar.isConnected)delete record.discussionFocus;
+    if(!summary){this.clearToolsLayout(record);if(bar.parentElement!==node)node.prepend(bar);return;}
+    const row=[...node.querySelectorAll('[slot="actionRow"]')].find(n=>n.closest('shreddit-comment')===node);
+    if(record.actionsRow!==row){this.clearToolsLayout(record);record.actionsRow=row;}
+    if(row){row.dataset.rcHeaderRow='1';if(bar.parentElement!==row)row.append(bar);}else if(bar!==node.lastElementChild)node.append(bar);
+    bar.dataset.rcHeaderActions='1';
+    if(!summary.querySelector('svg'))summary.replaceChildren(RC.icon('sliders'),RC.el('span',{class:'rc-sr'},'Thread actions'));
+    summary.title='Thread actions';
+    this.positionHeaderMenu(record);
+    if(focused)focused.focus({preventScroll:true});
+  }
   nativeToolsLayout(record){
     const post=record.item.node,root=post.shadowRoot,bar=record.tools,summary=bar?.querySelector('summary');
     // Collapsed tools (Compact and Grid on any pointer, every view on touch) become the footer icon; expanded desktop tools keep their own row.

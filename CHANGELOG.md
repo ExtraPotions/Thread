@@ -1,3 +1,9 @@
+## 0.2.10 — 2026-10-28
+
+- Place comment actions in native comment footers without adding a separate toolbar row.
+- Keep discussion navigation in one horizontally scrollable row.
+- Preserve keyboard focus when a native comment footer is replaced.
+
 ## 0.2.9 — 2026-10-26
 
 - Remove the unused Reddit API access entry and stale API plans.

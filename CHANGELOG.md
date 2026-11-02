@@ -1,3 +1,10 @@
+## 0.2.11 — 2026-11-02
+
+- Add Mark on scroll and Mark on scroll and hide options to Feed Read posts.
+- Keep only the five most recent import backups per account and clear backups on reset.
+- Cache unchanged item metadata, media lookups and regex batches across scans.
+- Dismiss unfocused hover and focus popovers with Escape and re-index rules on removal.
+
 ## 0.2.10 — 2026-10-28
 
 - Place comment actions in native comment footers without adding a separate toolbar row.

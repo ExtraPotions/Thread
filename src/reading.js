@@ -105,7 +105,7 @@ Object.assign(RC.Runtime.prototype,{
       item.node.style.setProperty('--rc-reading-font',font);item.node.style.setProperty('--rc-line-height',this.settings.lineHeight?String(this.settings.lineHeight/100):'normal');item.node.style.setProperty('--rc-paragraph-gap',this.settings.paragraphGap?this.settings.paragraphGap+'px':'revert');
       this.attr(item.node,'data-rc-reading-font',this.settings.readingFont!=='native'?'1':null);this.attr(item.node,'data-rc-reading-line',this.settings.lineHeight?'1':null);this.attr(item.node,'data-rc-reading-gap',this.settings.paragraphGap?'1':null);
     }
-    this.refreshCommentSearch();this.restoreFeedPosition();
+    this.refreshCommentSearch();this.restoreFeedPosition();this.captureFeedAnchor();
   },
   readingPreset(name){
     if(RC.PRESETS[name])this.update(RC.PRESETS[name]);

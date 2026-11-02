@@ -17,11 +17,9 @@ Thread uses native page data. Personal records stay in local userscript storage 
 
 ## Screenshots
 
-<img src="docs/screenshots/menu-light.png" width="324" alt="Thread Light menu with expandable groups closed">
-
-<img src="docs/screenshots/menu-dark.png" width="324" alt="Thread Dark menu with expandable groups closed">
-
-<img src="docs/screenshots/changelog.png" width="324" alt="Thread changelog notice with the current version and release notes">
+| Light | Dark | Changelog |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/menu-light.png" width="324" alt="Thread Light menu with expandable groups closed"> | <img src="docs/screenshots/menu-dark.png" width="324" alt="Thread Dark menu with expandable groups closed"> | <img src="docs/screenshots/changelog.png" width="324" alt="Thread changelog notice with the current version and release notes"> |
 
 ---
 

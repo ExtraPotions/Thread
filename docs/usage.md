@@ -10,7 +10,7 @@
 
 ## Features and controls
 
-- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid. On feeds, the view picker and Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into up to four readable columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards. Cards and Grid set Reddit's own View menu to Card and Compact Cards sets it to Compact, so posts arrive with the right media; the feed reloads once when that changes. Choosing Compact or Card in Reddit's View menu switches Thread to match.
+- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid in **Feed → Content view**. On feeds, Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into up to four readable columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards. Cards and Grid set Reddit's own View menu to Card and Compact Cards sets it to Compact, so posts arrive with the right media; the feed reloads once when that changes. Choosing Compact or Card in Reddit's View menu switches Thread to match.
 - **Read media comfortably:** use thumbnail previews in Compact Cards and open full media when you want it. Opened images and embedded players fit the post width while keeping the original player controls.
 - **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules, or a whole community with **Filter r/…** in a post's actions menu. Manage community filters in **Feed → Community filters**.
 - **Skip the blur:** turn on **Feed → Unblur spoilers** or **Unblur mature media**. Mature media unblurs only where Reddit already shows it to your signed-in account.
@@ -42,11 +42,11 @@ Previews recover when Reddit refreshes a post or loads its media later. Hide, bl
 
 ## Local collections
 
-Use **Save to collection** in Thread actions, or beside a comment. Open **Local collections** beside the view picker or **Read → Local collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
+Use **Save to collection** in Thread actions, or beside a comment. Open **Local collections** in the feed bar or **Read → Local collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
 
 ## Read tracking
 
-Set **Feed → Read posts** to **Mark** to mark posts when opening them or using **Mark read**, or **Mark and hide** to also hide them. **Show read posts** and **Undo read change** stay beside the view picker. Read markers expire after 30 days.
+Set **Feed → Read posts** to **Mark** to mark posts when opening them or using **Mark read**, or **Mark and hide** to also hide them. **Show read posts** and **Undo read change** stay in the feed bar. Read markers expire after 30 days.
 
 ## Comment navigation
 

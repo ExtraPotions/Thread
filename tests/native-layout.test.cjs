@@ -14,8 +14,9 @@ test('Thread views switch Reddit\'s native Card/Compact layout, follow Reddit\'s
   addEventListener('DOMContentLoaded',()=>{const s=document.createElement('script');s.textContent=source;document.head.append(s);});},source);
  const served=()=>page.evaluate(()=>document.querySelector('shreddit-sort-dropdown data:has(li[rpl-selected])').getAttribute('value'));
  const view=()=>page.evaluate(()=>document.querySelector('#t3_one').getAttribute('data-rc-view')||'native');
- const pick=async(v,search)=>{await Promise.all([search?page.waitForURL(u=>u.search===search):Promise.resolve(),page.getByRole('combobox',{name:'Content view',exact:true}).selectOption(v)]);await page.getByRole('combobox',{name:'Content view',exact:true}).waitFor();};
- await page.goto('https://www.reddit.com/r/example/');await page.getByRole('combobox',{name:'Content view',exact:true}).waitFor();
+ const pick=async(v,search)=>{await page.evaluate(()=>{const s=document.querySelector('#exp-thread-root').shadowRoot;if(s.querySelector('aside').hidden)s.querySelector('.launcher').click();const b=s.querySelector('[data-section="feed"]');if(b.getAttribute('aria-expanded')!=='true')b.click();});await Promise.all([search?page.waitForURL(u=>u.search===search):Promise.resolve(),page.locator('#exp-thread-root').getByRole('combobox',{name:'Content view',exact:true}).selectOption(v)]);await page.locator('#exp-thread-root').waitFor({state:'attached'});await page.evaluate(()=>{const s=document.querySelector('#exp-thread-root')?.shadowRoot;if(s&&!s.querySelector('aside').hidden)s.querySelector('.close').click();});};
+ await page.goto('https://www.reddit.com/r/example/');await page.locator('#exp-thread-root').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('#t3_one .rc-tools'));
+ assert.equal(await page.locator('.rc-pagebar select,.rc-pagebar .rc-view-picker').count(),0,'no in-page view picker in the sort row');
  assert.equal(await view(),'native');assert.equal(loads.length,1,'Native view leaves Reddit\'s layout alone');
  await pick('compact','?feedViewType=compactView');await page.waitForFunction(()=>document.querySelector('#t3_one')?.getAttribute('data-rc-view')==='compact');
  assert.equal(await served(),'compactView','Compact Cards switches Reddit to its compact layout');

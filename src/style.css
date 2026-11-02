@@ -2,7 +2,7 @@
 [data-rc-owned]{--rc-bg:var(--color-neutral-background,#fff);--rc-surface:var(--color-neutral-background-weak,#f4f6f7);--rc-text:var(--color-neutral-content-strong,#182126);--rc-muted:var(--color-neutral-content,#4e606a);--rc-line:#71828c;--rc-blue:#174c99;color:var(--rc-text);background:var(--rc-bg);font:400 var(--rc-ui-font,12px)/1.5 "Segoe UI",system-ui,sans-serif;box-sizing:border-box;letter-spacing:normal;overflow-wrap:anywhere;color-scheme:light dark}
 @media(prefers-color-scheme:dark){[data-rc-owned]{--rc-bg:var(--color-neutral-background,#0e1113);--rc-surface:var(--color-neutral-background-weak,#181c1f);--rc-text:var(--color-neutral-content-strong,#edf1f3);--rc-muted:var(--color-neutral-content,#b4c1c8);--rc-blue:#90baff}}
 [data-rc-owned] *{box-sizing:border-box}
-[data-rc-owned] :is(button,input,select,textarea){font:inherit;max-width:100%;min-width:0;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;letter-spacing:normal}
+[data-rc-owned] :is(button,input,select,textarea){font:inherit;max-width:100%;min-width:0;margin:0;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;letter-spacing:normal}
 [data-rc-owned] button{cursor:pointer}
 [data-rc-owned] button:disabled{opacity:.6;cursor:default}
 [data-rc-owned] :is(button,a,input,select,textarea,summary):focus-visible,[data-rc-selected]{outline:2px solid var(--rc-blue,#1768b5)!important;outline-offset:2px}
@@ -108,12 +108,7 @@ shreddit-ad-post[data-rc-view="compact"]{padding-inline:0!important}
 .rc-pagebar[data-rc-inline]{flex:1 1 auto;position:static;z-index:auto;margin:0;padding:0;border:0;gap:2px;background:transparent;color:var(--color-neutral-content-weak,var(--rc-muted));font-size:12px;font-weight:600}
 .rc-pagebar[data-rc-inline] :is(button,select,a){height:32px;min-height:0;margin:0;padding:0 10px;border:0;border-radius:8px;background:transparent;color:inherit;font-weight:inherit;line-height:32px;text-decoration:none}
 .rc-pagebar[data-rc-inline] a{display:inline-block}
-.rc-pagebar[data-rc-inline] :is(button,select,a):hover,.rc-view-picker:hover>select{background:var(--color-neutral-background-hover,var(--rc-surface))}
-.rc-pagebar .rc-view-picker{position:relative;display:flex;align-items:center;height:32px;margin:0}
-.rc-view-picker .rc-icon{position:absolute;pointer-events:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.rc-view-picker .rc-icon-sliders{left:9px}.rc-view-picker .rc-icon-chevron{right:7px}
-.rc-pagebar .rc-view-picker>select{appearance:none;-webkit-appearance:none;field-sizing:content;padding-inline:31px 27px;cursor:pointer}
-.rc-pagebar:not([data-rc-inline]) .rc-view-picker>select{min-height:32px}
+.rc-pagebar[data-rc-inline] :is(button,select,a):hover{background:var(--color-neutral-background-hover,var(--rc-surface))}
 .rc-pagebar label{display:flex;align-items:center;gap:6px}
 .rc-back-top{position:fixed;right:16px;bottom:80px;z-index:20;border:1px solid var(--rc-line);border-radius:6px;padding:7px 10px;min-height:34px;cursor:pointer}
 .rc-back-top[hidden]{display:none}

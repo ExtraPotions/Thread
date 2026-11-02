@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Thread for Reddit
 // @namespace    expDARE.ExtraPotions.THREAD
-// @version      0.2.11
+// @version      0.3.0
 // @description  Your Reddit, refined. Reading, layout and local personal context for modern Reddit.
 // @author       expDARE
 // @license      PolyForm-Noncommercial-1.0.0
@@ -31,23 +31,19 @@
 const CoreFoundation = (() => {
 const LAUNCHER_ORDER_KEY = "exp:v3:launcher-order";
 const LAUNCHER_GRID_DELTA_KEY = "exp:v3:launcher-grid-delta";
-const PRIDE_RAINBOW = "linear-gradient(90deg,#c84e66,#d07840,#be9f37,#3b8a5f,#3d79a6,#7455a4)";
-
-const PRIDE_RAINBOW_VERTICAL = "linear-gradient(180deg,#c84e66,#d07840,#be9f37,#3b8a5f,#3d79a6,#7455a4)";
-
-const CRIMSON_THEME = Object.freeze({ id:"crimson", name:"Crimson", swatch:"linear-gradient(135deg,#0c0508 0 38%,#941f2f 38% 69%,#2f746e 69% 100%)", canvas:"#0c0508", surface:"#1d090f", primary:"#941f2f", companion:"#5e2144", counterpoint:"#2f746e", interactive:"#b63243", bg:"#0c0508", panel:"#1d090f", line:"#4a1b28", text:"#e5d2d7", muted:"#ae8b94", accent:"#941f2f", accent2:"#b63243", skin:"linear-gradient(135deg,#941f2f 0%,#5e2144 52%,#2f746e 100%)", skinVertical:"linear-gradient(180deg,#941f2f 0%,#5e2144 52%,#2f746e 100%)" });
-
-const UI_THEMES = Object.freeze([
-    { id:"ember", name:"Ember", swatch:"linear-gradient(135deg,#120807 0 38%,#c9512c 38% 69%,#b68a32 69% 100%)", canvas:"#120807", surface:"#24100c", primary:"#c9512c", companion:"#8f2d3f", counterpoint:"#b68a32", interactive:"#e16a3b", bg:"#120807", panel:"#24100c", line:"#4e2a22", text:"#f1ddd2", muted:"#b99787", accent:"#c9512c", accent2:"#e16a3b", skin:"linear-gradient(135deg,#c9512c 0%,#8f2d3f 52%,#b68a32 100%)", skinVertical:"linear-gradient(180deg,#c9512c 0%,#8f2d3f 52%,#b68a32 100%)" },
-    { id:"midnight", name:"Midnight", swatch:"linear-gradient(135deg,#050a12 0 38%,#3563a3 38% 69%,#348f8b 69% 100%)", canvas:"#050a12", surface:"#0c1726", primary:"#3563a3", companion:"#65558f", counterpoint:"#348f8b", interactive:"#477abd", bg:"#050a12", panel:"#0c1726", line:"#26364b", text:"#d4deeb", muted:"#91a2b7", accent:"#3563a3", accent2:"#477abd", skin:"linear-gradient(135deg,#3563a3 0%,#65558f 52%,#348f8b 100%)", skinVertical:"linear-gradient(180deg,#3563a3 0%,#65558f 52%,#348f8b 100%)" },
-    { id:"glacier", name:"Glacier", swatch:"linear-gradient(135deg,#061216 0 38%,#4a9eaa 38% 69%,#92b85b 69% 100%)", canvas:"#061216", surface:"#0d252a", primary:"#4a9eaa", companion:"#5c76a4", counterpoint:"#92b85b", interactive:"#67b7c1", bg:"#061216", panel:"#0d252a", line:"#29464b", text:"#d8ebee", muted:"#8fa9ae", accent:"#4a9eaa", accent2:"#67b7c1", skin:"linear-gradient(135deg,#4a9eaa 0%,#5c76a4 52%,#92b85b 100%)", skinVertical:"linear-gradient(180deg,#4a9eaa 0%,#5c76a4 52%,#92b85b 100%)" },
-    { id:"contrast", name:"High contrast", swatch:"linear-gradient(135deg,#000000 0 48%,#ffffff 48% 78%,#ffd400 78% 100%)", canvas:"#000000", surface:"#0a0a0a", primary:"#ffffff", companion:"#bfbfbf", counterpoint:"#ffd400", interactive:"#ffd400", bg:"#000000", panel:"#0a0a0a", line:"#ffffff", text:"#ffffff", muted:"#e0e0e0", accent:"#ffffff", accent2:"#ffd400", skin:"linear-gradient(135deg,#ffffff 0%,#bfbfbf 55%,#ffd400 100%)", skinVertical:"linear-gradient(180deg,#ffffff 0%,#bfbfbf 55%,#ffd400 100%)" },
-    { id:"verdant", name:"Verdant", swatch:"linear-gradient(135deg,#06110d 0 38%,#318c61 38% 69%,#2f7f86 69% 100%)", canvas:"#06110d", surface:"#0d2218", primary:"#318c61", companion:"#667c3c", counterpoint:"#2f7f86", interactive:"#49a879", bg:"#06110d", panel:"#0d2218", line:"#28483a", text:"#d7e9df", muted:"#93aa9e", accent:"#318c61", accent2:"#49a879", skin:"linear-gradient(135deg,#318c61 0%,#667c3c 52%,#2f7f86 100%)", skinVertical:"linear-gradient(180deg,#318c61 0%,#667c3c 52%,#2f7f86 100%)" },
-    { id:"pride", name:"Pride", swatch:"linear-gradient(135deg,#c84e66 0%,#d07840 16.6%,#be9f37 33.3%,#3b8a5f 50%,#3d79a6 66.6%,#7455a4 100%)", canvas:"#100a12", surface:"#1d1222", primary:"#c34f7d", companion:"#7555a6", counterpoint:"#328c82", interactive:"#dd6793", bg:"#100a12", panel:"#1d1222", line:"#4a2b50", text:"#f0ddea", muted:"#b89db4", accent:"#c34f7d", accent2:"#dd6793", skin:PRIDE_RAINBOW, skinVertical:PRIDE_RAINBOW_VERTICAL },
-    { id:"twitch", name:"Twitch", swatch:"linear-gradient(135deg,#18181b 0 48%,#9147ff 48% 78%,#bf94ff 78% 100%)", canvas:"#111114", surface:"#19191e", primary:"#9147ff", companion:"#772ce8", counterpoint:"#bf94ff", interactive:"#bf94ff", bg:"#111114", panel:"#19191e", line:"#34343b", text:"#efeff1", muted:"#adadb8", accent:"#9147ff", accent2:"#bf94ff", skin:"linear-gradient(135deg,#9147ff,#bf94ff)", skinVertical:"linear-gradient(180deg,#9147ff,#bf94ff)", skinMode:"flat" },
-    { id:"dropper", name:"Dropper gem", swatch:"linear-gradient(135deg,#0b0713 0 38%,#7a46c8 38% 69%,#2a8c9b 69% 100%)", canvas:"#0b0713", surface:"#171025", primary:"#7a46c8", companion:"#b14589", counterpoint:"#2a8c9b", interactive:"#9864dc", bg:"#0b0713", panel:"#171025", line:"#3c2850", text:"#e8ddf2", muted:"#aa98bb", accent:"#7a46c8", accent2:"#9864dc", skin:"linear-gradient(135deg,#7a46c8 0%,#b14589 52%,#2a8c9b 100%)", skinVertical:"linear-gradient(180deg,#7a46c8 0%,#b14589 52%,#2a8c9b 100%)" }
-  ]);
-const SHARED_UI_THEMES = Object.freeze(UI_THEMES.slice(0, 6));
+const THEME_MODES = Object.freeze(['light', 'dark', 'system']);
+const normalizeThemeMode = value => THEME_MODES.includes(value) ? value : 'system';
+const systemThemeMode = () => typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+const SLATE_BLUE = Object.freeze({
+  light: Object.freeze({bg:'#f4f6fa',panel:'#ffffff',raised:'#e6ecf5',inset:'#edf1f7',line:'#718096',text:'#182230',muted:'#4c5d73',accent:'#2459b8',accent2:'#2459b8',link:'#2459b8',focus:'#2459b8',onAccent:'#ffffff'}),
+  dark: Object.freeze({bg:'#111720',panel:'#1b2430',raised:'#283547',inset:'#0c121a',line:'#8293ab',text:'#edf2f8',muted:'#afbed1',accent:'#8cb7ff',accent2:'#8cb7ff',link:'#8cb7ff',focus:'#8cb7ff',onAccent:'#111720'}),
+});
+function resolveTheme(value) {
+  const id=normalizeThemeMode(value),mode=id==='system'?systemThemeMode():id,p=SLATE_BLUE[mode];
+  return {...p,id,mode,name:id[0].toUpperCase()+id.slice(1),swatch:p.accent,canvas:p.bg,surface:p.panel,primary:p.accent,companion:p.accent,counterpoint:p.accent,interactive:p.accent,skin:p.accent,skinVertical:p.accent,skinMode:'flat'};
+}
+const UI_THEMES = Object.freeze(THEME_MODES.map(id=>Object.freeze(resolveTheme(id))));
+const SHARED_UI_THEMES = UI_THEMES;
 
 // A support control carries these styles into native and custom Shadow DOM shells.
 function supportControlCss() {
@@ -55,14 +51,14 @@ function supportControlCss() {
       .support-wrap { position:static; }
       .support-button {
         width:30px; height:30px; min-width:30px; padding:0;
-        border:1px solid #3a3a42; border-radius:8px; background:#151519; color:#b8b8c0;
+        border:1px solid var(--theme-line); border-radius:8px; background:var(--theme-panel); color:var(--theme-muted);
         cursor:pointer;
       }
       .support-button { box-sizing:border-box; display:grid; place-items:center; }
       .support-button svg { width:15px; height:15px; fill:currentColor; }
       .support-button:hover,
       .support-button:focus-visible {
-        border-color:var(--theme-accent); color:var(--theme-accent2); background:#211b2b; outline:none;
+        border-color:var(--theme-accent); color:var(--theme-accent2); background:var(--theme-raised); outline:none;
       }
       .support-popover {
         position:absolute; z-index:14; top:35px; right:0;
@@ -98,7 +94,7 @@ function css() {
         position: fixed; right: 12px; z-index: 2147483600;
         display: flex; flex-direction: column-reverse; align-items: flex-end;
         width: max-content; max-width: calc(100vw - 24px); gap: 8px;
-        --theme-bg:#111114; --theme-panel:#19191e; --theme-raised:#2a2a31; --theme-inset:#0e0e10; --theme-line:#34343b; --theme-text:#efeff1; --theme-muted:#adadb8; --theme-accent:#9147ff; --theme-accent2:#bf94ff; --theme-link:#c6a4ff; --theme-focus:#bf94ff; --theme-onAccent:#111114; --theme-skin:linear-gradient(135deg,#d9b5ff,#9b5af9,#7428e8); --theme-skin-vertical:linear-gradient(180deg,#d9b5ff,#9b5af9,#7428e8); --exp-ui-opacity:1; --exp-menu-width:260px;
+        --exp-ui-opacity:1; --exp-menu-width:260px;
         font: 13px/1.42 ui-sans-serif, system-ui, "Segoe UI", sans-serif; color: var(--theme-text);
       }
       .exp-core-theme.open-up { flex-direction: column; }
@@ -137,11 +133,6 @@ function css() {
       .queue-switches>.fl-switch>span:first-child{display:block;flex:1 1 auto;width:auto!important;min-width:0!important;min-height:0!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;line-height:1.25;text-align:left}
       .queue-switches>.fl-switch>.toggleSwitch{flex:0 0 34px;margin-left:auto}
       .appearance-separator{grid-column:1/-1;width:100%;border:0;border-top:1px solid var(--theme-line,#34343b);margin:3px 0 1px}
-      .opacity-row{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(72px,1fr) auto;align-items:center;gap:6px;min-width:0;padding:4px 0;border-top:1px solid #26262b}
-      .opacity-row[hidden]{display:none!important}
-      .opacity-row>span{font-size:var(--exp-font-size-body,13px);line-height:1.25;white-space:nowrap}
-      [data-exp-part="opacity-range"]{width:100%;min-width:0;accent-color:var(--theme-accent)}
-      [data-exp-part="opacity-value"]{min-width:34px;text-align:right;font-size:var(--exp-font-size-small,11px);font-weight:800;color:var(--theme-muted)}
 
       [data-exp-part="launcher"]:hover {
         border-color:color-mix(in srgb,var(--theme-accent) 58%,transparent);
@@ -297,19 +288,6 @@ function css() {
       .update-release:focus-visible {
         background:color-mix(in srgb,var(--theme-panel) 88%,var(--theme-accent) 12%);
       }
-            .exp-core-theme[data-theme-skin="gradient"] .update-notice {
-        border:1px solid transparent;
-        background-image:linear-gradient(var(--theme-panel),var(--theme-panel)),var(--theme-skin);
-        background-origin:border-box;
-        background-clip:padding-box,border-box;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] .update-version,
-      .exp-core-theme[data-theme-skin="gradient"] .update-action {
-        border-color:transparent;
-        background-image:linear-gradient(var(--theme-panel),var(--theme-panel)),var(--theme-skin);
-        background-origin:border-box;
-        background-clip:padding-box,border-box;
-      }
       .toast { margin-bottom:7px; padding:6px 8px; border:1px solid #34343b; border-radius:8px; background:#18181b; color:#efeff1; font-size:var(--exp-font-size-small,11px); box-shadow:0 8px 24px #0006; }
       .toast[hidden] { display:none; }
       .fl-tool-panel { position:relative; margin-top:5px; border:1px solid #27272d; background:#19191e; border-radius:9px; overflow:visible; }
@@ -397,10 +375,6 @@ function css() {
       .auth-input { width:100%; min-height:30px; border:1px solid var(--theme-line); border-radius:6px; background:var(--theme-inset); color:var(--theme-text); padding:6px 8px; font-size:var(--exp-font-size-body,13px); }
       .auth-input:focus { outline:2px solid var(--theme-focus); outline-offset:2px; border-color:var(--theme-focus); }
       .theme-row { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:28px; padding:6px 0; font-size:var(--exp-font-size-body,13px); }
-      .exp-theme-swatch{box-sizing:border-box!important;flex:0 0 22px!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;max-width:22px!important;max-height:22px!important;padding:0!important;border-radius:5px!important}
-      .exp-theme-swatches { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-      .exp-theme-swatch { appearance:none; width:18px; height:18px; min-width:18px; padding:0; border:2px solid var(--theme-line); border-radius:4px; box-sizing:border-box; cursor:pointer; }
-      .exp-theme-swatch.is-on { border-color:var(--theme-text); box-shadow:0 0 0 2px var(--theme-accent); }
       .fl-tool-panel { border-color:var(--theme-line); background:var(--theme-panel); }
       .fl-tool-body { border-color:var(--theme-line); background:var(--theme-bg); color:var(--theme-text); }
       .select-lite,
@@ -417,83 +391,6 @@ function css() {
         .toggleSwitch::after { border-color:CanvasText; background:CanvasText; }
         .toggleSwitch[aria-checked="true"] { border-color:Highlight; background:Highlight; }
         .toggleSwitch[aria-checked="true"]::after { border-color:HighlightText; background:HighlightText; }
-      }
-            .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="dock"]:not([data-exp-menu-layout="lean"]) {
-        border:1px solid transparent !important;
-        background-origin:border-box !important;
-        background-clip:padding-box, border-box !important;
-        background-image:linear-gradient(var(--theme-bg),var(--theme-bg)),var(--theme-skin) !important;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="launcher"] {
-        border-color:color-mix(in srgb,var(--theme-accent) 30%,transparent) !important;
-        background:var(--theme-panel) !important;
-        background-image:none !important;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="launcher"]:hover {
-        border-color:color-mix(in srgb,var(--theme-accent) 58%,transparent) !important;
-        background:color-mix(in srgb,var(--theme-panel) 96%,var(--theme-accent) 4%) !important;
-        background-image:none !important;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="launcher"][aria-expanded="true"] {
-        border:1px solid transparent !important;
-        background-image:linear-gradient(var(--theme-panel),var(--theme-panel)),var(--theme-skin) !important;
-        background-origin:border-box !important;
-        background-clip:padding-box,border-box !important;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="version"] {
-        border:1px solid var(--theme-line);
-        background:var(--theme-bg);
-        color:var(--theme-text);
-        border-radius:6px;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="version"]:hover,
-      .exp-core-theme[data-theme-skin="gradient"] [data-exp-part="version"]:focus-visible {
-        border-color:transparent;
-        background-image:linear-gradient(var(--theme-panel),var(--theme-panel)),var(--theme-skin);
-        background-origin:border-box;
-        background-clip:padding-box,border-box;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] .header-divider {
-        height:2px;
-        border-radius:2px;
-        opacity:.9;
-        background:var(--theme-skin);
-        -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 16%,#000 84%,transparent 100%);
-        mask-image:linear-gradient(90deg,transparent 0%,#000 16%,#000 84%,transparent 100%);
-      }
-      .exp-core-theme[data-theme-skin="gradient"]:not([data-ui-theme="contrast"]) .toggleSwitch[aria-checked="true"] {
-        border-color:color-mix(in srgb,var(--theme-line) 52%,var(--theme-accent) 48%);
-        background:color-mix(in srgb,var(--theme-panel) 72%,var(--theme-accent) 28%);
-      }
-      .exp-core-theme[data-theme-skin="gradient"] .exp-theme-swatch.is-on {
-        border-color:var(--theme-text);
-        box-shadow:0 0 0 2px var(--theme-accent2);
-      }
-      .exp-core-theme[data-theme-skin="gradient"] :is(.fl-tool-header,.life-btn).last-opened {
-        box-shadow:none;
-        position:relative;
-      }
-      .exp-core-theme[data-theme-skin="gradient"] :is(.fl-tool-header,.life-btn).last-opened::before {
-        content:"";
-        position:absolute;
-        left:0;
-        top:4px;
-        bottom:4px;
-        width:2px;
-        border-radius:2px;
-        background:var(--theme-skin-vertical);
-      }
-      .exp-core-theme[data-theme-skin="gradient"] .fl-tool-header:hover,
-      .exp-core-theme[data-theme-skin="gradient"] .fl-tool-header:focus-visible,
-      .exp-core-theme[data-theme-skin="gradient"] .fl-tool-header[aria-expanded="true"] {
-        background:color-mix(in srgb,var(--theme-panel) 88%,var(--theme-accent) 12%);
-      }
-      .exp-core-theme[data-theme-skin="gradient"] :is(.life-btn,.select-lite,.auth-input):focus-visible {
-        outline:2px solid transparent !important;
-        border-color:transparent !important;
-        background-origin:border-box !important;
-        background-clip:padding-box,border-box !important;
-        background-image:linear-gradient(var(--theme-bg),var(--theme-bg)),var(--theme-skin) !important;
       }
       .exp-core-theme[data-ui-theme="warm"] [data-exp-part="dock"]:not([data-exp-menu-layout="lean"]) {
         border:1px solid color-mix(in srgb,var(--theme-line) 84%,var(--theme-accent) 16%) !important;
@@ -646,7 +543,7 @@ function compareVersions(a, b) {
     }
     return 0;
   }
-return Object.freeze({ PRIDE_RAINBOW, PRIDE_RAINBOW_VERTICAL, CRIMSON_THEME, UI_THEMES, SHARED_UI_THEMES, css, supportControlCss, protectLauncherHost, compareVersions });
+return Object.freeze({ THEME_MODES, SLATE_BLUE, normalizeThemeMode, resolveTheme, UI_THEMES, SHARED_UI_THEMES, css, supportControlCss, protectLauncherHost, compareVersions });
 })();
 
 /* Local diagnostic capture shared at build time by ExtraPotions products. */
@@ -2429,13 +2326,10 @@ const ExpMenuLayout = (() => {
   return Object.freeze({css,mount});
 })();
 
-// Layout and surfaces from the approved Lean menu, with product-specific colors.
+// Layout and surfaces from the approved Lean menu, with the shared Slate Blue palette.
 const ExpLeanMenu = (() => {
   // The shell is shared by existing products and new createProduct/createMenuController consumers.
   const template=Object.freeze({id:'extrapotions-menu',version:1,layout:'sidebar',systemLayout:'grouped',supportNavigation:'system',resetNavigation:'system',donations:'header-heart'});
-  const twitch=Object.freeze({bg:'#18181b',panel:'#1f1f23',raised:'#3a3a3d',inset:'#0e0e10',line:'#848494',text:'#efeff1',muted:'#adadb8',hover:'#53535f',accent:'#9146ff',accent2:'#bf94ff',link:'#bf94ff',focus:'#bf94ff',onAccent:'#ffffff'});
-  // THREAD supplies its native/default and opt-in gem palette through Core.applyTheme.
-  const palettes=Object.freeze({dropper:twitch});
   const sectionIcons = Object.freeze({campaigns:'gift',settings:'system',drops:'gift',streams:'screen',appearance:'brush',advanced:'sliders',system:'system',highlights:'sparkle',protection:'shield',amazon:'bag'});
   // Scoped switches outrank the older product gradient rules.
   const SWITCH='[data-exp-menu-layout="lean"][data-exp-menu-layout="lean"][data-exp-menu-layout="lean"] .toggleSwitch[role="switch"]';
@@ -2450,22 +2344,16 @@ const ExpLeanMenu = (() => {
   function mount({shadow,panel}) {
     const document=panel.ownerDocument,host=shadow.host;
     const id=host?.dataset.productId||host?.id.replace(/^(exp-)|(\-root)$/g,'').replace(/^tdh$/,'dropper');
-    const palette=palettes[id],saved=new Map();panel.dataset.expMenuLayout='lean';panel.dataset.expMenuTemplate=template.id+'-v'+template.version;
-    const themeRoot=shadow.querySelector('.exp-core-theme,.cluster');
-    const properties=['bg','panel','line','text','muted','accent','accent2','link','focus'].map(key=>'--theme-'+key).concat('--exp-menu-hover','background-image');
+    const saved=new Map();panel.dataset.expMenuLayout='lean';panel.dataset.expMenuTemplate=template.id+'-v'+template.version;
+    const properties=['--exp-menu-hover','background-image'];
     for(const property of properties)saved.set(property,[panel.style.getPropertyValue(property),panel.style.getPropertyPriority(property)]);
     function applyPalette(){
-      const selected=themeRoot?.dataset.uiTheme;
       for(const[key,[value,priority]]of saved){if(value)panel.style.setProperty(key,value,priority);else panel.style.removeProperty(key);}
       panel.style.setProperty('background-image','none','important');
       panel.style.setProperty('--exp-menu-hover','color-mix(in srgb,var(--theme-accent) 12%,var(--theme-panel))');
-      if(palette&&selected!=='contrast'){
-        for(const[key,value]of Object.entries(palette)){const property=key==='hover'?'--exp-menu-hover':'--theme-'+key;panel.style.setProperty(property,value);themeRoot?.style.setProperty(property,value);}
-        if(themeRoot)themeRoot.dataset.themeSkin='flat';
-      }
+
     }
     applyPalette();
-    const themeObserver=new MutationObserver(applyPalette);if(themeRoot)themeObserver.observe(themeRoot,{attributes:true,attributeFilter:['data-ui-theme']});
     const style=document.createElement('style');style.dataset.expLeanMenu='1';style.textContent=css;shadow.append(style);const disposeLayout=ExpMenuLayout.mount({panel});
     const status=document.createElement('div');status.dataset.expPart='status';status.setAttribute('role','status');
     const dot=document.createElement('span');dot.className='exp-status-dot';const statusText=document.createElement('span');statusText.className='exp-status-text';status.append(dot,statusText);
@@ -2513,7 +2401,7 @@ const ExpLeanMenu = (() => {
       }
     }
     decorate();const observer=new MutationObserver(decorate);observer.observe(panel,{childList:true,subtree:true});
-    return ()=>{disposeLayout();visibility.disconnect();visibilityResize.disconnect();clearInterval(statusTimer);statusPanels.get(id)?.delete(refreshStatus);status.remove();delete panel.dataset.expMenuStatus;themeObserver.disconnect();observer.disconnect();icons.forEach(icon=>icon.remove());style.remove();for(const[key,[value,priority]]of saved){if(value)panel.style.setProperty(key,value,priority);else panel.style.removeProperty(key);}delete panel.dataset.expMenuLayout;delete panel.dataset.expMenuTemplate;};
+    return ()=>{disposeLayout();visibility.disconnect();visibilityResize.disconnect();clearInterval(statusTimer);statusPanels.get(id)?.delete(refreshStatus);status.remove();delete panel.dataset.expMenuStatus;observer.disconnect();icons.forEach(icon=>icon.remove());style.remove();for(const[key,[value,priority]]of saved){if(value)panel.style.setProperty(key,value,priority);else panel.style.removeProperty(key);}delete panel.dataset.expMenuLayout;delete panel.dataset.expMenuTemplate;};
   }
   return Object.freeze({mount,setMenuStatus,template});
 })();
@@ -2645,36 +2533,18 @@ const ExpMenuPreferences = (() => {
   return Object.freeze({menuSizePreference,setMenuSizePreference,bindMenuSize,createMenuSizeControls,menuSizeTokens:()=>sizes[menuSizePreference()]});
 })();
 
-/* Optional page colours for a product's own site. Core owns the palette list, the Site colors control
-   and one scoped style per product; each product maps the palette tokens onto its site's own surfaces. */
+// Slate Blue site paint shares the menu palette and device-mode resolver.
 const ExpSiteColors = (() => {
-  const base=Object.freeze({
-    dark:{bg:'#18181b',panel:'#202024',raised:'#2b2b31',inset:'#111114',line:'#85858f',text:'#f4f4f6',muted:'#b9b9c3',onAccent:'#111114'},
-    light:{bg:'#f4f4f6',panel:'#ffffff',raised:'#e9e9ee',inset:'#ededf1',line:'#777780',text:'#202024',muted:'#555560',onAccent:'#ffffff'},
-  });
-  // [id, name, dark accent, light accent, dark surfaces bg/panel/raised/inset, light surfaces bg/panel/raised/inset]
-  const table=[
-    ['default','Default','#c4c4cc','#50505c'],
-    ['indigo','Indigo','#b4a2ff','#5943b6',['#171222','#241c36','#34284a','#0f0b18'],['#eee8f7','#faf7ff','#e1d8ef','#e5ddf1']],
-    ['blue','Blue','#82b9ff','#155cad',['#0b1420','#132337','#1e324a','#070e18'],['#e7f0fb','#f6faff','#d7e6f7','#dce8f6']],
-    ['green','Green','#85c99e','#216b3c',['#0e1913','#162a1e','#203b2a','#07100b'],['#e8f3eb','#f5fcf7','#d5e8dc','#dcece2']],
-    ['red','Red','#f6a0a0','#a52b35',['#201214','#321d22','#452931','#160b0f'],['#f8eaec','#fff7f8','#f0d9df','#f1dfe4']],
-    ['gray','Gray','#aeb3b9','#4f5964',['#181a1c','#22262a','#30363b','#111315'],['#eceff1','#fafbfc','#dce2e6','#e1e6ea']],
-  ];
-  const surfaces=values=>values?{bg:values[0],panel:values[1],raised:values[2],inset:values[3]}:{};
-  const sitePalettes=Object.freeze(table.map(([id,name,darkAccent,lightAccent,dark,light])=>Object.freeze({id,name,
-    dark:Object.freeze({...base.dark,...surfaces(dark),accent:darkAccent}),light:Object.freeze({...base.light,...surfaces(light),accent:lightAccent})})));
-  function sitePalette(id,mode='dark',extra=[]){const palette=[...extra,...sitePalettes].find(item=>item.id===id);return palette?{id:palette.id,name:palette.name,mode:mode==='light'?'light':'dark',...palette[mode==='light'?'light':'dark']}:null;}
-  const systemMode=()=>matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
-  function watchSystem(callback){const query=matchMedia('(prefers-color-scheme: light)');query.addEventListener('change',callback);return ()=>query.removeEventListener('change',callback);}
-  // mode() reads the site's current light/dark state; watch(callback) reports changes and returns a disposer.
-  // Products with manager style grants can supply their lifecycle's CSP-aware injector.
-  function createSiteColors({product,css,mode=systemMode,watch=watchSystem,extra=[],inject}){
+  const {THEME_MODES,normalizeThemeMode,resolveTheme}=CoreFoundation;
+  const sitePalettes=Object.freeze(THEME_MODES.map(id=>Object.freeze({id,name:id[0].toUpperCase()+id.slice(1)})));
+  const sitePalette = id => resolveTheme(id);
+  function watchSystem(callback){const query=matchMedia('(prefers-color-scheme: dark)');query.addEventListener('change',callback);return ()=>query.removeEventListener('change',callback);}
+  function createSiteColors({product,css,inject}){
     const attribute='data-exp-site-colors',scope=`html[${attribute}="${product}"]`,id='exp-site-colors-'+product;
-    let current='off',stopWatching=null,style=null;
+    let current='system',active=false,stopWatching=null,style=null;
     function render(){
-      const palette=sitePalette(current,mode(),extra);if(!palette)return clear();
-      const text=css(palette,scope);
+      if(!active)return;
+      const palette=resolveTheme(current),text=css(palette,scope);
       if(!style?.isConnected){
         style?.remove();
         style=document.getElementById(id)||(inject?inject(text,{expSiteColors:product}):document.createElement('style'));
@@ -2683,21 +2553,24 @@ const ExpSiteColors = (() => {
       }
       if(style.textContent!==text)style.textContent=text;
       if(document.documentElement.getAttribute(attribute)!==product)document.documentElement.setAttribute(attribute,product);
-      document.documentElement.dataset.expSitePalette=palette.id+'-'+palette.mode;
+      document.documentElement.dataset.expSitePalette='slate-blue-'+palette.mode;
     }
-    function apply(next){current=next||'off';if(!sitePalette(current,'dark',extra))return clear();stopWatching??=watch(render);render();}
-    function clear(){current='off';stopWatching?.();stopWatching=null;style?.remove();document.getElementById(id)?.remove();style=null;
+    function apply(next){current=normalizeThemeMode(next);active=true;stopWatching??=watchSystem(()=>{if(current==='system')render();});render();}
+    function clear(){active=false;stopWatching?.();stopWatching=null;style?.remove();document.getElementById(id)?.remove();style=null;
       if(document.documentElement.getAttribute(attribute)===product){document.documentElement.removeAttribute(attribute);delete document.documentElement.dataset.expSitePalette;}}
-    return Object.freeze({apply,clear,refresh:()=>{if(current!=='off')render();},palette:()=>sitePalette(current,mode(),extra)});
+    return Object.freeze({apply,clear,refresh:render,palette:()=>active?resolveTheme(current):null});
   }
-  function createSiteColorControl({value='off',onChange,offLabel='Site default',extra=[],help='Recolor this site’s pages with a palette. Follows the site’s light or dark mode. Menus keep their own theme.'}){
+  function createThemeModeControl({value='system',onChange,label='Menu theme'}){
     const row=document.createElement('label');row.className='row exp-site-colors';const copy=document.createElement('span');copy.className='copy';
-    const title=document.createElement('strong');title.textContent='Site colors';ExpMenuHelp.setMenuHelp(title,help);copy.append(title);
-    const select=document.createElement('select');select.setAttribute('aria-label','Site colors');select.dataset.expSiteColorsSelect='1';
-    for(const [id,name] of [['off',offLabel],...[...extra,...sitePalettes].map(item=>[item.id,item.name])]){const option=document.createElement('option');option.value=id;option.textContent=name;select.append(option);}
-    select.value=sitePalette(value,'dark',extra)?value:'off';select.addEventListener('change',()=>onChange?.(select.value));row.append(copy,select);return row;
+    const title=document.createElement('strong');title.textContent=label;copy.append(title);
+    const select=document.createElement('select');select.setAttribute('aria-label',label);select.dataset.expThemeMode='1';
+    if(label==='Site theme')select.dataset.expSiteColorsSelect='1';
+    for(const {id,name} of sitePalettes){const option=document.createElement('option');option.value=id;option.textContent=name;select.append(option);}
+    ExpMenuHelp.setMenuHelp(select,'Light and Dark use Slate Blue. System follows your device’s appearance.');
+    select.value=normalizeThemeMode(value);select.addEventListener('change',()=>onChange?.(select.value));row.append(copy,select);return row;
   }
-  return Object.freeze({sitePalettes,sitePalette,createSiteColors,createSiteColorControl});
+  const createSiteColorControl = options => createThemeModeControl({...options,label:'Site theme'});
+  return Object.freeze({sitePalettes,sitePalette,createSiteColors,createSiteColorControl,createThemeModeControl,normalizeThemeMode,resolveTheme});
 })();
 
 // Flyout launcher rules shared by every Core copy on a page. Each copy computes the same answer from the
@@ -2730,7 +2603,7 @@ const ExpLauncherFlyout = (() => {
 // exp-core owns shared UI, launcher, diagnostics, update, and coordination behavior.
 const ExtraPotionsCore = (() => {
   'use strict';
-  const version = '3.10.5';
+  const version = '3.11.0';
   const sourceVersion = version; // Backward-compatible alias for Core's own foundation version.
   const SUPPORT_URL = 'https://ko-fi.com/expdare';
   const protocol = 'exp-core-coordination-v1';
@@ -4664,31 +4537,8 @@ const ExtraPotionsCore = (() => {
     registrations.set(host, dispose);
     return dispose;
   }
-  function themes(productTheme) {
-    return Object.freeze([productTheme || CoreFoundation.UI_THEMES.at(-1)].map(t => { const theme = semanticTheme(t); return Object.freeze({ ...theme, vars: Object.fromEntries(tokenNames.map(k => [k, theme[k]])) }); }));
-  }
-  function createThemeSwatches({ container, themes: choices, value, label = 'Menu Theme', onChange = () => {} }) {
-    const root = resolveShadowRoot(container);
-    if (root && !root.querySelector('style[data-exp-theme-swatches]')) {
-      injectStyle(root, '.exp-theme-swatches{display:flex;align-items:center;gap:6px;min-height:28px;flex-wrap:wrap}.exp-theme-swatch{appearance:none;box-sizing:border-box!important;flex:0 0 22px!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;max-width:22px!important;max-height:22px!important;padding:0!important;border:2px solid var(--theme-line,var(--line,#41434d));border-radius:5px!important;cursor:pointer}.exp-theme-swatch:hover,.exp-theme-swatch:focus-visible{outline:2px solid var(--theme-accent,var(--accent,#8b5cf6));outline-offset:2px}.exp-theme-swatch.is-on{border-color:var(--theme-text,var(--text,#fff));box-shadow:0 0 0 2px var(--theme-accent,var(--accent,#8b5cf6))}', { expThemeSwatches: '1' });
-      applyMatteToggleChrome(root);
-    }
-    container.classList.add('exp-theme-swatches'); container.setAttribute('role', 'radiogroup'); container.setAttribute('aria-label', label);
-    const buttons = choices.map(theme => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'exp-theme-swatch';
-      for (const property of ['width','height','min-width','min-height','max-width','max-height']) button.style.setProperty(property, '22px', 'important');
-      button.style.setProperty('border-radius', '5px', 'important');
-      button.style.setProperty('padding', '0', 'important');
-      button.style.setProperty('box-sizing', 'border-box', 'important');
-      button.style.setProperty('flex', '0 0 22px', 'important');
-      button.setAttribute('role', 'radio'); button.setAttribute('aria-label', theme.name); button.title = theme.name;
-      button.dataset.theme = button.dataset.swatch = theme.id; button.style.background = theme.swatch;
-      button.addEventListener('click', () => { paint(theme.id); onChange(theme.id); }); container.append(button); return button;
-    });
-    function paint(next) { value = next; buttons.forEach((b,i) => { const on = choices[i].id === value; b.classList.toggle('is-on', on); b.setAttribute('aria-checked', String(on)); b.setAttribute('aria-pressed', String(on)); b.tabIndex = on || !choices.some(t => t.id === value) && i === 0 ? 0 : -1; }); }
-    const keyboard = event => { const current = buttons.indexOf(event.target); if (current < 0 || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(event.key)) return; event.preventDefault(); const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (current + (['ArrowRight','ArrowDown'].includes(event.key) ? 1 : -1) + buttons.length) % buttons.length; buttons[next].click(); buttons[next].focus(); };
-    container.addEventListener('keydown', keyboard); paint(value);
-    return { setValue: paint, destroy() { container.removeEventListener('keydown', keyboard); buttons.forEach(b => b.remove()); } };
+  function themes() {
+    return Object.freeze(CoreFoundation.THEME_MODES.map(id => Object.freeze(semanticTheme(CoreFoundation.resolveTheme(id)))));
   }
   function focusMenuSurface(panel) { if (!(panel instanceof HTMLElement)) return false; panel.tabIndex = -1; panel.style.outline = 'none'; panel.focus({ preventScroll: true }); return true; }
   const FLOATING_NOTICE_CSS = '.exp-floating-update{position:fixed;z-index:2147483647;box-sizing:border-box;width:min(312px,calc(100vw - 24px));max-width:calc(100vw - 24px);margin:0;padding:10px 32px 10px 10px;border:1px solid var(--exp-notice-border,#6f42b4);border-radius:10px;background:linear-gradient(180deg,var(--exp-notice-top,#251a35),var(--exp-notice-bottom,#18181d) 70%);color:var(--exp-notice-text,#f4f4f6);box-shadow:0 10px 28px #0008;font:500 var(--exp-font-size-small,11px)/1.45 system-ui,sans-serif}.exp-floating-update[hidden]{display:none!important}.exp-floating-update-dismiss{position:absolute;top:7px;right:7px;width:23px;height:23px;padding:0;border:1px solid transparent;border-radius:7px;background:transparent;color:inherit;cursor:pointer;font:15px/1 Arial,sans-serif}.exp-floating-update-dismiss:hover,.exp-floating-update-dismiss:focus-visible{border-color:var(--exp-notice-border,#6f42b4);outline:none}';
@@ -4848,7 +4698,7 @@ const ExtraPotionsCore = (() => {
   }
 
   function applyTheme(host, value, choices) {
-    const controller = controllers.get(host); if (!controller) return;
+    const controller = controllers.get(host) || menuControllers.get(host); if (!controller) return;
     controller.setTheme(value, choices);
   }
   function normalizeControls(panel) {
@@ -4911,6 +4761,26 @@ const ExtraPotionsCore = (() => {
       node.addEventListener(type, handler, opts);
       removers.push(() => node.removeEventListener(type, handler, opts));
     };
+    const customThemeRoot = options.themeRoot;
+    let customThemeMode = 'system';
+    function setTheme(value) {
+      if (!customThemeRoot) return;
+      customThemeMode = CoreFoundation.normalizeThemeMode(value);
+      const theme = CoreFoundation.resolveTheme(customThemeMode);
+      for (const target of [customThemeRoot,panel]) {
+        for (const key of tokenNames) target.style.setProperty('--theme-'+key,theme[key]);
+        target.style.setProperty('--theme-skin',theme.accent);
+        target.style.setProperty('--theme-skin-vertical',theme.accent);
+        target.dataset.uiTheme=theme.id;target.dataset.themeSkin='flat';target.style.colorScheme=theme.mode;
+      }
+      host.dataset.uiTheme=theme.id;
+      publishMenuPalette(host,theme);
+    }
+    if(customThemeRoot){
+      const customSystemTheme = matchMedia('(prefers-color-scheme: dark)');
+      on(customSystemTheme,'change',()=>{if(customThemeMode==='system')setTheme(customThemeMode);});
+      setTheme(getSettings().uiTheme);
+    }
     function cancelDismiss() {
       clearTimeout(timer);
       timer = 0;
@@ -4958,7 +4828,7 @@ const ExtraPotionsCore = (() => {
         panel.classList.toggle('fl-rail-open', open);
         if (open) scheduleDismiss(); else cancelDismiss();
       },
-      scheduleDismiss, cancelDismiss, enforceDeadline,
+      setTheme, scheduleDismiss, cancelDismiss, enforceDeadline,
       get isOpen() { return open; },
       get dismissAt() { return deadline; },
       get timerActive() { return Boolean(timer); },
@@ -5006,7 +4876,7 @@ const ExtraPotionsCore = (() => {
     const menuNotices=[...themeRoot.querySelectorAll('.update-notice,.changelog')].map(notice=>createMenuNotice({host,shadow,panel,notice,versionButton:notice.classList.contains('changelog')?versionButton:null,manageVersion:false,durationMs:30000}));
     if (launcherSrc) panel.querySelectorAll('.header-icon img').forEach(image => image.src = launcherSrc);
     host.dataset.coreVersion = version; host.dataset.coreSource = 'exp-core';
-    let choices = themes(productTheme), selected = choices.at(-1), open = false, destroyed = false, frame = 0;
+    let selected, requestedTheme = 'system', open = false, destroyed = false, frame = 0;
     const removers = [];
     const on = (node,type,fn,opts) => { node.addEventListener(type,fn,opts); removers.push(() => node.removeEventListener(type,fn,opts)); };
     let localTheme = null;
@@ -5017,28 +4887,31 @@ const ExtraPotionsCore = (() => {
       themeRoot.style.setProperty('--theme-skin-vertical', selected.skinVertical || selected.skin || selected.swatch || selected.accent);
       Object.assign(themeRoot.dataset, { uiTheme:selected.id, themeSkin:selected.skinMode === 'flat' ? 'flat' : 'gradient' });
       host.dataset.uiTheme = selected.id;
+      themeRoot.style.colorScheme = selected.mode;
+      host.style.colorScheme = selected.mode;
     }
     function syncThemeOwner() {
       host.dataset.expThemeDeprioritized = '0';
       host.dataset.expThemeOwner = id;
       paintTheme(localTheme);
     }
-    function setTheme(value, supplied) {
-      if (supplied) choices = supplied.map(t => semanticTheme({ ...t, ...t.vars, skin:t.skin || t.swatch, skinVertical:t.skinVertical || t.skin || t.swatch }));
-      const alias = ({warm:'ember',discord:'glacier',pine:'verdant',obsidian:'contrast'})[value] || value;
-      localTheme = choices.find(t => t.id === alias) || choices.at(-1);
+    function setTheme(value) {
+      requestedTheme = CoreFoundation.normalizeThemeMode(value);
+      localTheme = semanticTheme(CoreFoundation.resolveTheme(requestedTheme));
       publishMenuPalette(host, localTheme);
       syncThemeOwner();
     }
+    const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+    const followSystemTheme = () => { if (requestedTheme === 'system') setTheme(requestedTheme); };
+    systemTheme.addEventListener('change', followSystemTheme);
+    removers.push(() => systemTheme.removeEventListener('change', followSystemTheme));
     function layout() {
       if (destroyed || !launcher.isConnected) return;
       const state = getSettings();
       themeRoot.style.setProperty('--exp-menu-width', menuWidth() + 'px');
       const fontTokens=ExpMenuPreferences.menuSizeTokens();themeRoot.style.setProperty('--exp-font-size-body',fontTokens.body+'px');themeRoot.style.setProperty('--exp-font-size-small',fontTokens.small+'px');
       themeRoot.classList.toggle('reduce-motion', state.reduceMotion === true || state.reduceMotion === 'on' || state.reducedMotion === 'reduce' || (state.reduceMotion === 'system' || state.reducedMotion === 'system') && matchMedia('(prefers-reduced-motion:reduce)').matches);
-      const opacityValue = Number(state.opacityPercent);
-      const opacity = state.customOpacity ? (Number.isFinite(opacityValue) ? Math.max(40, Math.min(100, Math.round(opacityValue / 5) * 5)) : 85)/100 : 1;
-      themeRoot.style.setProperty('--exp-ui-opacity',String(opacity));
+      themeRoot.style.setProperty('--exp-ui-opacity','1');
       const { top, right } = launcherPlacement(host);
       Object.assign(launcher.style,{top:top+'px',right:right+'px',bottom:'auto',left:'auto',zIndex:open?'2147483647':'2147483600'});
       Object.assign(panel.style,{overflowY:'auto',overflowX:'hidden',overscrollBehavior:'contain',zIndex:open?'2147483647':'2147483599'});
@@ -5071,7 +4944,7 @@ const ExtraPotionsCore = (() => {
       get dismissAt(){return menuController.dismissAt;},
       destroy(){destroyed=true;arrangement?.destroy();arrangementAnchor.remove();defaultSupport?.destroy();menuController.destroy();cancelAnimationFrame(frame);resize?.disconnect();mutation?.disconnect();menuNotices.forEach(notice=>notice.destroy());removers.forEach(f=>f());styles.dispose();controllers.delete(host);}
     };
-    controllers.set(host,controller);setTheme(id);
+    controllers.set(host,controller);setTheme(getSettings().uiTheme);
     queueLayout();return controller;
   }
   function createReleaseUpdateChecker(options = {}) {
@@ -5545,18 +5418,18 @@ const ExtraPotionsCore = (() => {
     return Object.freeze({ lifecycle, diagnostics, updates });
   }
 
-  const api = Object.freeze({...ExtraPotionsTools,setMenuHelp:ExpMenuHelp.setMenuHelp,...ExpMenuPreferences,...ExpSiteColors,normalizeHealth,createHealthControls,createRecoveryGuard,version,sourceVersion,protocol,gridProtocol,reference:CoreFoundation,css:canonicalCss,themes,create,createMenuController,createProduct,menuTemplate:ExpLeanMenu.template,setMenuStatus:ExpLeanMenu.setMenuStatus,createSupportControl,createProductNotice,createLifecycle:()=>createProductLifecycle(api),createProductServices,registerLauncher,setLauncherUpdate,setLauncherProgress,bindLauncherDrag,launcherPlacement,placeMenu,placeNotice,resetLauncherGrid,layout:layoutGrid,replaceMenuContent,createDisclosure,createSystemGrid,isOwnedSheet,menuWidth,cloneSettings,applyTextGradient,injectStyle,applyTheme,applyMatteToggleChrome,applyTwoColumnSettingsGrid,applyContentDrivenMenuLayout,createThemeSwatches,publishMenuPalette,createFloatingNotice,createMenuNotice,takeNoticeTurn,releaseNoticeTurn,createReleaseUpdateChecker,registerFloatingNotice,layoutFloatingNotices,claimNotice,consumeVersionChange,isQuietUpgrade,focusMenuSurface,registerDiagnosticsProduct,registerSuiteProduct,suiteContract,suiteSnapshot,hasProductCapability,capabilityProviders,emitSuiteEvent,publishSuiteState,suiteStateSnapshot,latestSuiteState,subscribeSuiteState,onSuiteEvent,suiteSitePaused,suiteSitePausePersisted,setSuiteSitePaused,pageContext,observeNavigation,navigationObserverState,suiteTrust:SUITE_TRUST,registerPresentationProvider,presentationProviders,suiteHealth,readPresentationState,setPresentationState,clearPresentationState,presentationStateChain,isPresentationSuppressed,presentationPhases:PRESENTATION_PHASES,presentationChannels:PRESENTATION_CHANNELS,observePresentationState,observePage,observePageBatch,pageObserverState,suiteProducts:SUITE_PRODUCTS,suitePriority:SUITE_PRIORITY,productCompatibility:productCompatibilityReport,createCompatibilityControls:createSuiteCompatibilityControls,bindDiagnosticsControls:ExtraPotionsDiagnostics.bindControls,createDiagnosticsReport,downloadDiagnostics,createDiagnosticsControls,mountMenuArrangement:ExpMenuArrangement.mount,mountSubmenuTabs:ExpMenuArrangement.mountTabs,menuCategories:ExpMenuArrangement.categories,categorizeMenuSections:ExpMenuArrangement.describe,createMenuCategoryDisclosure:(label,category,...contents)=>ExpMenuArrangement.createDisclosure({document,label,category,contents}),collapseMenuSubmenus:ExpMenuArrangement.collapseSubmenus,compareVersions:CoreFoundation.compareVersions});
+  const api = Object.freeze({...ExtraPotionsTools,setMenuHelp:ExpMenuHelp.setMenuHelp,...ExpMenuPreferences,...ExpSiteColors,normalizeHealth,createHealthControls,createRecoveryGuard,version,sourceVersion,protocol,gridProtocol,reference:CoreFoundation,css:canonicalCss,themes,create,createMenuController,createProduct,menuTemplate:ExpLeanMenu.template,setMenuStatus:ExpLeanMenu.setMenuStatus,createSupportControl,createProductNotice,createLifecycle:()=>createProductLifecycle(api),createProductServices,registerLauncher,setLauncherUpdate,setLauncherProgress,bindLauncherDrag,launcherPlacement,placeMenu,placeNotice,resetLauncherGrid,layout:layoutGrid,replaceMenuContent,createDisclosure,createSystemGrid,isOwnedSheet,menuWidth,cloneSettings,applyTextGradient,injectStyle,applyTheme,applyMatteToggleChrome,applyTwoColumnSettingsGrid,applyContentDrivenMenuLayout,publishMenuPalette,createFloatingNotice,createMenuNotice,takeNoticeTurn,releaseNoticeTurn,createReleaseUpdateChecker,registerFloatingNotice,layoutFloatingNotices,claimNotice,consumeVersionChange,isQuietUpgrade,focusMenuSurface,registerDiagnosticsProduct,registerSuiteProduct,suiteContract,suiteSnapshot,hasProductCapability,capabilityProviders,emitSuiteEvent,publishSuiteState,suiteStateSnapshot,latestSuiteState,subscribeSuiteState,onSuiteEvent,suiteSitePaused,suiteSitePausePersisted,setSuiteSitePaused,pageContext,observeNavigation,navigationObserverState,suiteTrust:SUITE_TRUST,registerPresentationProvider,presentationProviders,suiteHealth,readPresentationState,setPresentationState,clearPresentationState,presentationStateChain,isPresentationSuppressed,presentationPhases:PRESENTATION_PHASES,presentationChannels:PRESENTATION_CHANNELS,observePresentationState,observePage,observePageBatch,pageObserverState,suiteProducts:SUITE_PRODUCTS,suitePriority:SUITE_PRIORITY,productCompatibility:productCompatibilityReport,createCompatibilityControls:createSuiteCompatibilityControls,bindDiagnosticsControls:ExtraPotionsDiagnostics.bindControls,createDiagnosticsReport,downloadDiagnostics,createDiagnosticsControls,mountMenuArrangement:ExpMenuArrangement.mount,mountSubmenuTabs:ExpMenuArrangement.mountTabs,menuCategories:ExpMenuArrangement.categories,categorizeMenuSections:ExpMenuArrangement.describe,createMenuCategoryDisclosure:(label,category,...contents)=>ExpMenuArrangement.createDisclosure({document,label,category,contents}),collapseMenuSubmenus:ExpMenuArrangement.collapseSubmenus,compareVersions:CoreFoundation.compareVersions});
   return api;
 })();
 
-const RC={VERSION:"0.2.11",NOTES:["Add Mark on scroll and Mark on scroll and hide options to Feed Read posts.","Keep only the five most recent import backups per account and clear backups on reset.","Cache unchanged item metadata, media lookups and regex batches across scans.","Dismiss unfocused hover and focus popovers with Escape and re-index rules on removal."],GEM:"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" role=\"img\" aria-label=\"Thread orange Asscher gem\"><polygon points=\"35.00,14.00 93.00,14.00 77.34,41.00 50.66,41.00\" fill=\"#ffd0a3\"/><polygon points=\"50.66,41.00 77.34,41.00 64.00,64.00\" fill=\"#ff7636\"/><polygon points=\"93.00,14.00 114.00,35.00 87.00,50.66 77.34,41.00\" fill=\"#ff8d4b\"/><polygon points=\"77.34,41.00 87.00,50.66 64.00,64.00\" fill=\"#ff4500\"/><polygon points=\"114.00,35.00 114.00,93.00 87.00,77.34 87.00,50.66\" fill=\"#ff7636\"/><polygon points=\"87.00,50.66 87.00,77.34 64.00,64.00\" fill=\"#c6350d\"/><polygon points=\"114.00,93.00 93.00,114.00 77.34,87.00 87.00,77.34\" fill=\"#ff4500\"/><polygon points=\"87.00,77.34 77.34,87.00 64.00,64.00\" fill=\"#a82d0d\"/><polygon points=\"93.00,114.00 35.00,114.00 50.66,87.00 77.34,87.00\" fill=\"#c6350d\"/><polygon points=\"77.34,87.00 50.66,87.00 64.00,64.00\" fill=\"#dd4814\"/><polygon points=\"35.00,114.00 14.00,93.00 41.00,77.34 50.66,87.00\" fill=\"#a82d0d\"/><polygon points=\"50.66,87.00 41.00,77.34 64.00,64.00\" fill=\"#ffb073\"/><polygon points=\"14.00,93.00 14.00,35.00 41.00,50.66 41.00,77.34\" fill=\"#dd4814\"/><polygon points=\"41.00,77.34 41.00,50.66 64.00,64.00\" fill=\"#ffd0a3\"/><polygon points=\"14.00,35.00 35.00,14.00 50.66,41.00 41.00,50.66\" fill=\"#ffb073\"/><polygon points=\"41.00,50.66 50.66,41.00 64.00,64.00\" fill=\"#ff8d4b\"/></svg>",CSS:"/* All page rules are companion-owned or opt-in attributes on exact native nodes. */\n[data-rc-owned]{--rc-bg:var(--color-neutral-background,#fff);--rc-surface:var(--color-neutral-background-weak,#f4f6f7);--rc-text:var(--color-neutral-content-strong,#182126);--rc-muted:var(--color-neutral-content,#4e606a);--rc-line:#71828c;--rc-blue:#174c99;color:var(--rc-text);background:var(--rc-bg);font:400 var(--rc-ui-font,12px)/1.5 \"Segoe UI\",system-ui,sans-serif;box-sizing:border-box;letter-spacing:normal;overflow-wrap:anywhere;color-scheme:light dark}\n@media(prefers-color-scheme:dark){[data-rc-owned]{--rc-bg:var(--color-neutral-background,#0e1113);--rc-surface:var(--color-neutral-background-weak,#181c1f);--rc-text:var(--color-neutral-content-strong,#edf1f3);--rc-muted:var(--color-neutral-content,#b4c1c8);--rc-blue:#90baff}}\n[data-rc-owned] *{box-sizing:border-box}\n[data-rc-owned] :is(button,input,select,textarea){font:inherit;max-width:100%;min-width:0;margin:0;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;letter-spacing:normal}\n[data-rc-owned] button{cursor:pointer}\n[data-rc-owned] button:disabled{opacity:.6;cursor:default}\n[data-rc-owned] :is(button,a,input,select,textarea,summary):focus-visible,[data-rc-selected]{outline:2px solid var(--rc-blue,#1768b5)!important;outline-offset:2px}\n[data-rc-owned] ::selection{background:#203c61;color:#edf1f3}\n[data-rc-owned] a{color:var(--rc-blue);text-decoration:underline;text-underline-offset:2px}\n.rc-tools{position:relative;z-index:1;display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding:5px 0;border-block:1px solid var(--rc-line);margin:5px 0}\n.rc-tools small{color:var(--rc-muted)}\n[data-rc-treatment=\"dim\"]>:not([data-rc-owned]){opacity:.45}\n[data-rc-treatment=\"blur\"]>:not([data-rc-owned]){filter:blur(6px);pointer-events:none;user-select:none}\n[data-rc-treatment=\"hide\"]>:not([data-rc-owned]){display:none!important}\n[data-rc-collapsed]>:not([data-rc-owned]){display:none!important}\n[data-rc-read] [slot=\"comment\"]{opacity:.78}\n[data-rc-post-read-hidden]{display:none!important}\n[data-rc-post-read]:not([data-rc-post-read-hidden])>[slot=\"title\"]{opacity:.75}\n[data-rc-reading-font] :is([slot=\"title\"],[slot=\"comment\"],[slot=\"text-body\"]){font-family:var(--rc-reading-font)!important}\n[data-rc-reading-line] :is([slot=\"comment\"],[slot=\"text-body\"]){line-height:var(--rc-line-height)!important}\n[data-rc-reading-gap] :is([slot=\"comment\"],[slot=\"text-body\"]) p{margin-block:var(--rc-paragraph-gap)!important}\n[data-rc-search-match] [slot=\"comment\"]{outline:2px solid var(--rc-blue,#174c99);outline-offset:2px}\n.rc-reading-controls{display:grid;gap:8px;margin-block:8px}\n.rc-library-entry{border-bottom:1px solid var(--rc-line);padding-block:12px}\n.rc-library-entry button{margin:4px 4px 0 0}\n.rc-popover :is(input,textarea,select){width:100%}\n.rc-popover[data-rc-owned] :is(input,select,button){min-height:44px}\n.rc-popover.rc-reading-panel{left:50%;translate:-50% 0;z-index:2147483647}\n.rc-reading-panel :is(input,textarea)::placeholder{color:var(--rc-muted);opacity:1}\n[data-rc-density=\"compact\"]{padding-block:8px!important}\n[data-rc-density=\"mini\"]{padding-block:5px!important}\n[data-rc-font]{font-size:var(--rc-content-font,14px)!important}\n[data-rc-font] :is([slot=\"comment\"],[slot=\"text-body\"]){font-size:var(--rc-content-font,14px)!important}\n[data-rc-negative] [slot=\"comment\"]{opacity:.55}\n/* At most four columns, each at least 300px: four on a wide desktop, two on a laptop or tablet, one on a phone. */\n[data-rc-view-container=\"grid\"]{position:relative;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(300px,calc((100% - 36px) / 4))),1fr));grid-auto-rows:4px;gap:0 12px;align-items:start}\n[data-rc-view-container=\"grid\"]>[data-rc-view-wrapper]{grid-row-end:span var(--rc-grid-span,60)}\n[data-rc-view-container=\"grid\"]>[data-rc-view-aux]{position:absolute!important;inset:auto 0 0}\n[data-rc-view-container=\"grid\"] [data-rc-view=\"grid\"]{margin-block:0!important}\n[data-rc-view-container=\"grid\"]>hr{display:none!important}\n[data-rc-view-wrapper]{min-width:0;max-width:100%}\n[data-rc-view=\"cards\"],[data-rc-view=\"grid\"]{display:block!important;border:1px solid var(--color-neutral-border,#71828c)!important;border-radius:8px!important;padding:14px!important;margin-block:10px!important;min-width:0;max-width:100%;overflow-wrap:anywhere}\n[data-rc-view=\"compact\"]{display:block!important;padding:4px 6px!important;margin-block:0!important;border-bottom:1px solid var(--color-neutral-border,#71828c)!important}\n/* Native compact ads keep their own inner column; the frame adds no second inset. */\nshreddit-ad-post[data-rc-view=\"compact\"]{padding-inline:0!important}\n[data-rc-view=\"compact\"] [slot=\"title\"]{font-size:16px;line-height:1.25;margin-block:2px}\n[data-rc-view=\"compact\"] [slot=\"text-body\"]{line-height:1.4;margin-block:3px;max-height:2.8em;overflow:hidden}[data-rc-view=\"compact\"] [slot=\"text-body\"] .feed-card-text-preview{line-height:inherit!important;-webkit-line-clamp:2!important;line-clamp:2}\n[data-rc-view=\"compact\"] .rc-tools{padding:0;border:0;margin:3px 0}\n[data-rc-compact-flat]{display:flow-root!important}\n.rc-compact-actions{min-width:0;max-width:100%}\n.rc-compact-actions summary{font:inherit;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;max-width:100%;letter-spacing:normal;cursor:pointer;width:fit-content}\n.rc-action-items{display:flex;flex-wrap:wrap;gap:4px;padding-block:4px}\n.rc-tools[data-rc-feed-actions]{display:inline-flex;order:-1!important;flex:0 1 auto;align-self:flex-start;vertical-align:middle;max-width:100%;padding:0;border:0;margin:0 4px 0 0}\n[data-rc-header-row]{display:flex;align-items:center;gap:4px;min-width:0;position:relative;z-index:1}\n.rc-tools[data-rc-header-actions],[data-rc-compact-flat]>.rc-tools[data-rc-header-actions]{display:flex;flex:0 0 auto;width:fit-content;order:initial!important;align-self:center;margin:0 0 0 auto!important;padding:0!important;border:0!important;pointer-events:auto}\n.rc-tools[data-rc-header-actions],.rc-tools[data-rc-header-actions]>details{background:transparent!important}\n.rc-tools[data-rc-header-actions]>details{display:block;padding:0!important;margin:0!important;border:0!important;border-radius:0}\n.rc-tools[data-rc-header-actions] summary{display:flex;align-items:center;justify-content:center;list-style:none;width:var(--rc-native-action-size,32px);min-width:var(--rc-native-action-size,32px);height:var(--rc-native-action-size,32px);min-height:0!important;margin:0!important;padding:0;border:0;background:var(--rc-native-action-bg,transparent);color:inherit;border-radius:8px;cursor:pointer}\n.rc-tools[data-rc-header-actions] summary svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}\n.rc-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}\n.rc-tools[data-rc-header-actions] summary::-webkit-details-marker{display:none}\n.rc-tools[data-rc-header-actions] summary:focus-visible{outline-offset:-2px}\n.rc-tools[data-rc-header-actions] .rc-action-items{position:fixed;inset:auto;margin:0;padding:4px;z-index:2147483645;max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;background:var(--rc-bg);color:var(--rc-text);border:1px solid var(--color-neutral-border-weak,var(--rc-line));border-radius:7px;box-shadow:0 4px 10px #0003;font:400 var(--rc-ui-font,12px)/1.5 \"Segoe UI\",system-ui,sans-serif}\n.rc-tools[data-rc-header-actions] .rc-action-items:popover-open{display:flex;flex-direction:column;flex-wrap:nowrap;gap:0}\n/* Native menu rows: full-width, left-aligned, tinted only on hover or press. */\n.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a){display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:40px;padding:8px 12px;border:0;border-radius:5px;background:transparent;color:inherit;text-align:start;text-decoration:none;font-size:14px;line-height:20px}\n.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a):is(:hover,:active){background:var(--color-neutral-background-hover,var(--rc-surface))}\n.rc-tools[data-rc-header-actions] .rc-action-items small{display:block;padding:6px 12px 2px;font-size:12px}\n[data-rc-view=\"compact\"][data-rc-compact-preview]:not([data-rc-compact-media-open])>[slot=\"post-media-container\"]:not([hidden]){display:none!important}\n/* Reddit's overflow menu opens from the credit bar; keep it above the preview and footer icon, which sit above the card link. */\n[data-rc-view=\"compact\"]>[slot=\"credit-bar\"]{position:relative;z-index:2}\n.rc-compact-preview{position:relative;z-index:1;display:block;width:104px;height:78px;padding:0;overflow:hidden;cursor:pointer;border:1px solid var(--rc-line);border-radius:6px}\n.rc-compact-preview img{width:100%;height:100%;object-fit:cover}\n.rc-compact-preview>span{display:none}\n[data-rc-compact-flat]>.rc-compact-preview,[data-rc-compact-flat]>[slot=\"thumbnail\"]{float:left;margin:0 8px 4px 0}\n[data-rc-compact-flat]:where(:not([data-rc-treatment=\"hide\"]):not([data-rc-collapsed]))>[slot=\"thumbnail\"]:not([hidden]):not(.hidden){display:block!important;width:104px;max-height:78px;overflow:hidden}\n[data-rc-compact-flat][data-rc-compact-has-thumb]>:is([slot=\"credit-bar\"],[slot=\"title\"],[slot=\"text-body\"]){margin-left:112px!important}\n[data-rc-compact-flat]>[slot=\"credit-bar\"]{font-size:12px;line-height:16px;margin-block:0}\n[data-rc-compact-flat]>[slot=\"title\"]{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}\n[data-rc-compact-flat]>:is([slot=\"post-flair\"],[slot=\"awards\"]){display:none}\n[data-rc-compact-flat]>.rc-tools{display:inline-flex;vertical-align:middle}\n[data-rc-compact-native-layout]>[slot=\"thumbnail\"]>:first-child,[data-rc-compact-native-layout]>[slot=\"thumbnail\"] [slot=\"thumbnail\"]{width:80px!important;max-width:80px!important;height:60px!important;max-height:60px!important;overflow:hidden}\n[data-rc-compact-native-layout]>[slot=\"thumbnail\"] :is(img,video){width:100%;height:100%;object-fit:cover}\n[data-rc-compact-flat]>[slot=\"post-media-container\"]{clear:both}\n@media(pointer:coarse){.rc-compact-actions summary,[data-rc-view=\"compact\"] .rc-tools button{min-height:44px}}\n@media(pointer:coarse){.rc-tools[data-rc-feed-actions] button{min-height:44px}}\n/* Keep native thumbnails compact; only full media owns uncapped height. Native aspect frames already letterbox the whole image. */\n[data-rc-view]:where(:not([data-rc-treatment=\"hide\"]):not([data-rc-collapsed])) [slot=\"post-media-container\"]:not([hidden]):not(.hidden):not(:has(gallery-carousel,faceplate-carousel)):where(:not(:has([data-aspect-ratio-container]))){display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible}\n[data-rc-view] [slot=\"expando-content\"]{width:100%;max-width:100%;max-height:none;overflow:visible}\n[data-rc-view] :is([slot=\"post-media-container\"],[slot=\"expando-content\"]) :is(img,video):not(:is(gallery-carousel,faceplate-carousel) *):where(:not([data-aspect-ratio-container] *)){display:block;max-width:100%!important;max-height:none!important;height:auto!important;object-fit:contain}\n[data-rc-view] :is([slot=\"post-media-container\"],[slot=\"expando-content\"]) :is(iframe,object,embed){max-width:100%!important;box-sizing:border-box}\n[data-rc-view] [data-rc-owned]{order:10}\n[data-rc-select]{user-select:text!important}\n[data-rc-expand] [slot=\"text-body\"]{max-height:none!important;-webkit-line-clamp:unset!important}\n[data-rc-hover]:hover{background:var(--color-neutral-background-hover,#e8edef)}\n[data-rc-hide-author] [slot=\"authorName\"],[data-rc-hide-flair] [slot=\"post-flair\"],[data-rc-hide-awards] [slot=\"awards\"],[data-rc-hide-save] [data-testid=\"save-button\"],[data-rc-profile-simple] :is([data-testid=\"profile-trophy-case\"],[data-testid=\"profile-achievements\"]){display:none!important}\n[data-rc-awards-collapsed] [slot=\"awards\"]{max-height:24px;overflow:auto}\n[data-rc-sidebar-hidden],[data-rc-secondary-hidden]{display:none!important}\n[data-rc-layout]{width:min(100%,var(--rc-width,800px))!important;max-width:100%!important;margin-inline:auto!important;translate:var(--rc-offset,0px) 0}\n.rc-pagebar{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:4px 0;margin:4px 0;position:sticky;top:var(--rc-sticky-top,0px);z-index:10;border-bottom:1px solid var(--rc-line)}\n.rc-pagebar[data-rc-page-type=\"feed\"]{position:static;z-index:auto}\n.rc-pagebar[data-rc-page-type=\"comments\"]{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:thin;scroll-padding-inline:4px}\n.rc-pagebar[data-rc-page-type=\"comments\"]>*{flex:0 0 auto;margin:0}\n.rc-pagebar:empty{display:none}\n/* Inside Reddit's sort row the controls read as native plain buttons: no strip, no box, same 32px rhythm. */\n[data-rc-sort-row]{display:flex;flex-wrap:wrap;align-items:center;column-gap:4px}\n.rc-pagebar[data-rc-inline]{flex:1 1 auto;position:static;z-index:auto;margin:0;padding:0;border:0;gap:2px;background:transparent;color:var(--color-neutral-content-weak,var(--rc-muted));font-size:12px;font-weight:600}\n.rc-pagebar[data-rc-inline] :is(button,select,a){height:32px;min-height:0;margin:0;padding:0 10px;border:0;border-radius:8px;background:transparent;color:inherit;font-weight:inherit;line-height:32px;text-decoration:none}\n.rc-pagebar[data-rc-inline] a{display:inline-block}\n.rc-pagebar[data-rc-inline] :is(button,select,a):hover{background:var(--color-neutral-background-hover,var(--rc-surface))}\n.rc-pagebar label{display:flex;align-items:center;gap:6px}\n.rc-back-top{position:fixed;right:16px;bottom:80px;z-index:20;border:1px solid var(--rc-line);border-radius:6px;padding:7px 10px;min-height:34px;cursor:pointer}\n.rc-back-top[hidden]{display:none}\n/* Right rail handle: mirrors Reddit's left navigation collapse control; the arrow points the way the rail will move. */\n[data-rc-fill]{grid-template-columns:minmax(0,1fr)!important;box-sizing:border-box!important;padding-inline-end:40px!important}\n.rc-rail-handle{position:fixed;z-index:20;display:grid;place-items:center;width:32px;height:32px;padding:0;color:var(--rc-text);background:var(--rc-bg);border:1px solid var(--color-neutral-border-weak,var(--rc-line));border-radius:8px;overflow:visible;cursor:pointer;touch-action:manipulation}\n.rc-rail-handle::before{content:\"\";position:absolute;inset:-6px}\n/* The rail edge line, like the line under Reddit's left navigation button: from the header down, broken where the handle sits. */\n.rc-rail-handle::after{content:\"\";position:absolute;z-index:-1;top:-17px;left:calc(50% - .5px);width:1px;height:100vh;pointer-events:none;background:linear-gradient(var(--color-neutral-border,var(--rc-line)) 0 16px,transparent 16px 48px,var(--color-neutral-border,var(--rc-line)) 48px)}\n.rc-rail-handle:hover{background:var(--rc-surface)}\n.rc-rail-handle:focus-visible{outline:2px solid var(--rc-blue);outline-offset:2px}\n.rc-rail-handle .rc-icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;rotate:90deg}\n.rc-rail-handle[data-rc-open=\"1\"] .rc-icon{rotate:-90deg}\n.rc-popover{position:fixed;z-index:2147483646;inset:12px auto auto 12px;max-width:calc(100vw - 24px);width:350px;max-height:calc(100dvh - 24px);overflow:auto;padding:14px;border:1px solid var(--rc-line);border-radius:7px;box-shadow:0 4px 10px #0003}\n.rc-popover label{display:grid;gap:4px;margin-block:8px}\n.rc-popover h2{font-size:16px;margin:0 0 8px}\n.rc-popover p{margin:8px 0;white-space:pre-wrap}\n.rc-media{position:fixed;inset:0;padding:12px;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000c;color:#edf1f3}\n.rc-media-box{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;background:#181c1f;border-radius:8px;padding:12px}\n.rc-media-stage{overflow:auto;max-height:calc(100dvh - 140px);max-width:100%}\n.rc-media img{display:block;max-width:100%;max-height:calc(100dvh - 150px);object-fit:contain}\n.rc-media-toolbar{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}\n.rc-media button{background:#20272b;color:#edf1f3}\n.rc-error{color:#a51e22}\n@media(prefers-color-scheme:dark){.rc-error{color:#ffaaa6}}\n@media(max-width:600px){[data-rc-layout]{translate:0 0}.rc-pagebar{margin:4px 0}.rc-tools{gap:3px}}\n@media(pointer:coarse){[data-rc-owned] :is(button,input,select){min-height:36px}.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a){min-height:44px}}\n/* Subtle motion: one short exponential ease-out per change, interruptible, and absent under reduced motion. */\n@media(prefers-reduced-motion:no-preference){\n.rc-rail-handle .rc-icon{transition:rotate .18s cubic-bezier(.16,1,.3,1)}\n.rc-tools[data-rc-header-actions] .rc-action-items{transition:opacity .14s cubic-bezier(.16,1,.3,1),translate .14s cubic-bezier(.16,1,.3,1)}\n@starting-style{.rc-tools[data-rc-header-actions] .rc-action-items:popover-open{opacity:0;translate:0 -4px}}\n[data-rc-compact-media-open]>[slot=\"post-media-container\"]{transition:opacity .18s cubic-bezier(.16,1,.3,1),translate .18s cubic-bezier(.16,1,.3,1)}\n@starting-style{[data-rc-compact-media-open]>[slot=\"post-media-container\"]{opacity:0;translate:0 -6px}}\n}\n@media(prefers-reduced-motion:reduce){[data-rc-owned],[data-rc-owned] *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}\n"};
+const RC={VERSION:"0.3.0",NOTES:["Use Slate Blue Light, Dark or System for menus and supported site themes.","Migrate retired color choices to System and remove extra theme and opacity controls.","Show product-only Light, Dark and current changelog screenshots.","Choose Content view inside Feed settings while keeping native Reddit controls available."],GEM:"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" role=\"img\" aria-label=\"Thread orange Asscher gem\"><polygon points=\"35.00,14.00 93.00,14.00 77.34,41.00 50.66,41.00\" fill=\"#ffd0a3\"/><polygon points=\"50.66,41.00 77.34,41.00 64.00,64.00\" fill=\"#ff7636\"/><polygon points=\"93.00,14.00 114.00,35.00 87.00,50.66 77.34,41.00\" fill=\"#ff8d4b\"/><polygon points=\"77.34,41.00 87.00,50.66 64.00,64.00\" fill=\"#ff4500\"/><polygon points=\"114.00,35.00 114.00,93.00 87.00,77.34 87.00,50.66\" fill=\"#ff7636\"/><polygon points=\"87.00,50.66 87.00,77.34 64.00,64.00\" fill=\"#c6350d\"/><polygon points=\"114.00,93.00 93.00,114.00 77.34,87.00 87.00,77.34\" fill=\"#ff4500\"/><polygon points=\"87.00,77.34 77.34,87.00 64.00,64.00\" fill=\"#a82d0d\"/><polygon points=\"93.00,114.00 35.00,114.00 50.66,87.00 77.34,87.00\" fill=\"#c6350d\"/><polygon points=\"77.34,87.00 50.66,87.00 64.00,64.00\" fill=\"#dd4814\"/><polygon points=\"35.00,114.00 14.00,93.00 41.00,77.34 50.66,87.00\" fill=\"#a82d0d\"/><polygon points=\"50.66,87.00 41.00,77.34 64.00,64.00\" fill=\"#ffb073\"/><polygon points=\"14.00,93.00 14.00,35.00 41.00,50.66 41.00,77.34\" fill=\"#dd4814\"/><polygon points=\"41.00,77.34 41.00,50.66 64.00,64.00\" fill=\"#ffd0a3\"/><polygon points=\"14.00,35.00 35.00,14.00 50.66,41.00 41.00,50.66\" fill=\"#ffb073\"/><polygon points=\"41.00,50.66 50.66,41.00 64.00,64.00\" fill=\"#ff8d4b\"/></svg>",CSS:"/* All page rules are companion-owned or opt-in attributes on exact native nodes. */\n[data-rc-owned]{--rc-bg:var(--color-neutral-background,#fff);--rc-surface:var(--color-neutral-background-weak,#f4f6f7);--rc-text:var(--color-neutral-content-strong,#182126);--rc-muted:var(--color-neutral-content,#4e606a);--rc-line:#71828c;--rc-blue:#174c99;color:var(--rc-text);background:var(--rc-bg);font:400 var(--rc-ui-font,12px)/1.5 \"Segoe UI\",system-ui,sans-serif;box-sizing:border-box;letter-spacing:normal;overflow-wrap:anywhere;color-scheme:light dark}\n@media(prefers-color-scheme:dark){[data-rc-owned]{--rc-bg:var(--color-neutral-background,#0e1113);--rc-surface:var(--color-neutral-background-weak,#181c1f);--rc-text:var(--color-neutral-content-strong,#edf1f3);--rc-muted:var(--color-neutral-content,#b4c1c8);--rc-blue:#90baff}}\n[data-rc-owned] *{box-sizing:border-box}\n[data-rc-owned] :is(button,input,select,textarea){font:inherit;max-width:100%;min-width:0;margin:0;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;letter-spacing:normal}\n[data-rc-owned] button{cursor:pointer}\n[data-rc-owned] button:disabled{opacity:.6;cursor:default}\n[data-rc-owned] :is(button,a,input,select,textarea,summary):focus-visible,[data-rc-selected]{outline:2px solid var(--rc-blue,#1768b5)!important;outline-offset:2px}\n[data-rc-owned] ::selection{background:#203c61;color:#edf1f3}\n[data-rc-owned] a{color:var(--rc-blue);text-decoration:underline;text-underline-offset:2px}\n.rc-tools{position:relative;z-index:1;display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding:5px 0;border-block:1px solid var(--rc-line);margin:5px 0}\n.rc-tools small{color:var(--rc-muted)}\n[data-rc-treatment=\"dim\"]>:not([data-rc-owned]){opacity:.45}\n[data-rc-treatment=\"blur\"]>:not([data-rc-owned]){filter:blur(6px);pointer-events:none;user-select:none}\n[data-rc-treatment=\"hide\"]>:not([data-rc-owned]){display:none!important}\n[data-rc-collapsed]>:not([data-rc-owned]){display:none!important}\n[data-rc-read] [slot=\"comment\"]{opacity:.78}\n[data-rc-post-read-hidden]{display:none!important}\n[data-rc-post-read]:not([data-rc-post-read-hidden])>[slot=\"title\"]{opacity:.75}\n[data-rc-reading-font] :is([slot=\"title\"],[slot=\"comment\"],[slot=\"text-body\"]){font-family:var(--rc-reading-font)!important}\n[data-rc-reading-line] :is([slot=\"comment\"],[slot=\"text-body\"]){line-height:var(--rc-line-height)!important}\n[data-rc-reading-gap] :is([slot=\"comment\"],[slot=\"text-body\"]) p{margin-block:var(--rc-paragraph-gap)!important}\n[data-rc-search-match] [slot=\"comment\"]{outline:2px solid var(--rc-blue,#174c99);outline-offset:2px}\n.rc-reading-controls{display:grid;gap:8px;margin-block:8px}\n.rc-library-entry{border-bottom:1px solid var(--rc-line);padding-block:12px}\n.rc-library-entry button{margin:4px 4px 0 0}\n.rc-popover :is(input,textarea,select){width:100%}\n.rc-popover[data-rc-owned] :is(input,select,button){min-height:44px}\n.rc-popover.rc-reading-panel{left:50%;translate:-50% 0;z-index:2147483647}\n.rc-reading-panel :is(input,textarea)::placeholder{color:var(--rc-muted);opacity:1}\n[data-rc-density=\"compact\"]{padding-block:8px!important}\n[data-rc-density=\"mini\"]{padding-block:5px!important}\n[data-rc-font]{font-size:var(--rc-content-font,14px)!important}\n[data-rc-font] :is([slot=\"comment\"],[slot=\"text-body\"]){font-size:var(--rc-content-font,14px)!important}\n[data-rc-negative] [slot=\"comment\"]{opacity:.55}\n/* At most four columns, each at least 300px: four on a wide desktop, two on a laptop or tablet, one on a phone. */\n[data-rc-view-container=\"grid\"]{position:relative;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(300px,calc((100% - 36px) / 4))),1fr));grid-auto-rows:4px;gap:0 12px;align-items:start}\n[data-rc-view-container=\"grid\"]>[data-rc-view-wrapper]{grid-row-end:span var(--rc-grid-span,60)}\n[data-rc-view-container=\"grid\"]>[data-rc-view-aux]{position:absolute!important;inset:auto 0 0}\n[data-rc-view-container=\"grid\"] [data-rc-view=\"grid\"]{margin-block:0!important}\n[data-rc-view-container=\"grid\"]>hr{display:none!important}\n[data-rc-view-wrapper]{min-width:0;max-width:100%}\n[data-rc-view=\"cards\"],[data-rc-view=\"grid\"]{display:block!important;border:1px solid var(--color-neutral-border,#71828c)!important;border-radius:8px!important;padding:14px!important;margin-block:10px!important;min-width:0;max-width:100%;overflow-wrap:anywhere}\n[data-rc-view=\"compact\"]{display:block!important;padding:4px 6px!important;margin-block:0!important;border-bottom:1px solid var(--color-neutral-border,#71828c)!important}\n/* Native compact ads keep their own inner column; the frame adds no second inset. */\nshreddit-ad-post[data-rc-view=\"compact\"]{padding-inline:0!important}\n[data-rc-view=\"compact\"] [slot=\"title\"]{font-size:16px;line-height:1.25;margin-block:2px}\n[data-rc-view=\"compact\"] [slot=\"text-body\"]{line-height:1.4;margin-block:3px;max-height:2.8em;overflow:hidden}[data-rc-view=\"compact\"] [slot=\"text-body\"] .feed-card-text-preview{line-height:inherit!important;-webkit-line-clamp:2!important;line-clamp:2}\n[data-rc-view=\"compact\"] .rc-tools{padding:0;border:0;margin:3px 0}\n[data-rc-compact-flat]{display:flow-root!important}\n.rc-compact-actions{min-width:0;max-width:100%}\n.rc-compact-actions summary{font:inherit;color:inherit;background:var(--rc-surface);border:1px solid var(--rc-line);border-radius:6px;padding:5px 8px;min-height:32px;max-width:100%;letter-spacing:normal;cursor:pointer;width:fit-content}\n.rc-action-items{display:flex;flex-wrap:wrap;gap:4px;padding-block:4px}\n.rc-tools[data-rc-feed-actions]{display:inline-flex;order:-1!important;flex:0 1 auto;align-self:flex-start;vertical-align:middle;max-width:100%;padding:0;border:0;margin:0 4px 0 0}\n[data-rc-header-row]{display:flex;align-items:center;gap:4px;min-width:0;position:relative;z-index:1}\n.rc-tools[data-rc-header-actions],[data-rc-compact-flat]>.rc-tools[data-rc-header-actions]{display:flex;flex:0 0 auto;width:fit-content;order:initial!important;align-self:center;margin:0 0 0 auto!important;padding:0!important;border:0!important;pointer-events:auto}\n.rc-tools[data-rc-header-actions],.rc-tools[data-rc-header-actions]>details{background:transparent!important}\n.rc-tools[data-rc-header-actions]>details{display:block;padding:0!important;margin:0!important;border:0!important;border-radius:0}\n.rc-tools[data-rc-header-actions] summary{display:flex;align-items:center;justify-content:center;list-style:none;width:var(--rc-native-action-size,32px);min-width:var(--rc-native-action-size,32px);height:var(--rc-native-action-size,32px);min-height:0!important;margin:0!important;padding:0;border:0;background:var(--rc-native-action-bg,transparent);color:inherit;border-radius:8px;cursor:pointer}\n.rc-tools[data-rc-header-actions] summary svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}\n.rc-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}\n.rc-tools[data-rc-header-actions] summary::-webkit-details-marker{display:none}\n.rc-tools[data-rc-header-actions] summary:focus-visible{outline-offset:-2px}\n.rc-tools[data-rc-header-actions] .rc-action-items{position:fixed;inset:auto;margin:0;padding:4px;z-index:2147483645;max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;background:var(--rc-bg);color:var(--rc-text);border:1px solid var(--color-neutral-border-weak,var(--rc-line));border-radius:7px;box-shadow:0 4px 10px #0003;font:400 var(--rc-ui-font,12px)/1.5 \"Segoe UI\",system-ui,sans-serif}\n.rc-tools[data-rc-header-actions] .rc-action-items:popover-open{display:flex;flex-direction:column;flex-wrap:nowrap;gap:0}\n/* Native menu rows: full-width, left-aligned, tinted only on hover or press. */\n.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a){display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:40px;padding:8px 12px;border:0;border-radius:5px;background:transparent;color:inherit;text-align:start;text-decoration:none;font-size:14px;line-height:20px}\n.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a):is(:hover,:active){background:var(--color-neutral-background-hover,var(--rc-surface))}\n.rc-tools[data-rc-header-actions] .rc-action-items small{display:block;padding:6px 12px 2px;font-size:12px}\n[data-rc-view=\"compact\"][data-rc-compact-preview]:not([data-rc-compact-media-open])>[slot=\"post-media-container\"]:not([hidden]){display:none!important}\n/* Reddit's overflow menu opens from the credit bar; keep it above the preview and footer icon, which sit above the card link. */\n[data-rc-view=\"compact\"]>[slot=\"credit-bar\"]{position:relative;z-index:2}\n.rc-compact-preview{position:relative;z-index:1;display:block;width:104px;height:78px;padding:0;overflow:hidden;cursor:pointer;border:1px solid var(--rc-line);border-radius:6px}\n.rc-compact-preview img{width:100%;height:100%;object-fit:cover}\n.rc-compact-preview>span{display:none}\n[data-rc-compact-flat]>.rc-compact-preview,[data-rc-compact-flat]>[slot=\"thumbnail\"]{float:left;margin:0 8px 4px 0}\n[data-rc-compact-flat]:where(:not([data-rc-treatment=\"hide\"]):not([data-rc-collapsed]))>[slot=\"thumbnail\"]:not([hidden]):not(.hidden){display:block!important;width:104px;max-height:78px;overflow:hidden}\n[data-rc-compact-flat][data-rc-compact-has-thumb]>:is([slot=\"credit-bar\"],[slot=\"title\"],[slot=\"text-body\"]){margin-left:112px!important}\n[data-rc-compact-flat]>[slot=\"credit-bar\"]{font-size:12px;line-height:16px;margin-block:0}\n[data-rc-compact-flat]>[slot=\"title\"]{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}\n[data-rc-compact-flat]>:is([slot=\"post-flair\"],[slot=\"awards\"]){display:none}\n[data-rc-compact-flat]>.rc-tools{display:inline-flex;vertical-align:middle}\n[data-rc-compact-native-layout]>[slot=\"thumbnail\"]>:first-child,[data-rc-compact-native-layout]>[slot=\"thumbnail\"] [slot=\"thumbnail\"]{width:80px!important;max-width:80px!important;height:60px!important;max-height:60px!important;overflow:hidden}\n[data-rc-compact-native-layout]>[slot=\"thumbnail\"] :is(img,video){width:100%;height:100%;object-fit:cover}\n[data-rc-compact-flat]>[slot=\"post-media-container\"]{clear:both}\n@media(pointer:coarse){.rc-compact-actions summary,[data-rc-view=\"compact\"] .rc-tools button{min-height:44px}}\n@media(pointer:coarse){.rc-tools[data-rc-feed-actions] button{min-height:44px}}\n/* Keep native thumbnails compact; only full media owns uncapped height. Native aspect frames already letterbox the whole image. */\n[data-rc-view]:where(:not([data-rc-treatment=\"hide\"]):not([data-rc-collapsed])) [slot=\"post-media-container\"]:not([hidden]):not(.hidden):not(:has(gallery-carousel,faceplate-carousel)):where(:not(:has([data-aspect-ratio-container]))){display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible}\n[data-rc-view] [slot=\"expando-content\"]{width:100%;max-width:100%;max-height:none;overflow:visible}\n[data-rc-view] :is([slot=\"post-media-container\"],[slot=\"expando-content\"]) :is(img,video):not(:is(gallery-carousel,faceplate-carousel) *):where(:not([data-aspect-ratio-container] *)){display:block;max-width:100%!important;max-height:none!important;height:auto!important;object-fit:contain}\n[data-rc-view] :is([slot=\"post-media-container\"],[slot=\"expando-content\"]) :is(iframe,object,embed){max-width:100%!important;box-sizing:border-box}\n[data-rc-view] [data-rc-owned]{order:10}\n[data-rc-select]{user-select:text!important}\n[data-rc-expand] [slot=\"text-body\"]{max-height:none!important;-webkit-line-clamp:unset!important}\n[data-rc-hover]:hover{background:var(--color-neutral-background-hover,#e8edef)}\n[data-rc-hide-author] [slot=\"authorName\"],[data-rc-hide-flair] [slot=\"post-flair\"],[data-rc-hide-awards] [slot=\"awards\"],[data-rc-hide-save] [data-testid=\"save-button\"],[data-rc-profile-simple] :is([data-testid=\"profile-trophy-case\"],[data-testid=\"profile-achievements\"]){display:none!important}\n[data-rc-awards-collapsed] [slot=\"awards\"]{max-height:24px;overflow:auto}\n[data-rc-sidebar-hidden],[data-rc-secondary-hidden]{display:none!important}\n[data-rc-layout]{width:min(100%,var(--rc-width,800px))!important;max-width:100%!important;margin-inline:auto!important;translate:var(--rc-offset,0px) 0}\n.rc-pagebar{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:4px 0;margin:4px 0;position:sticky;top:var(--rc-sticky-top,0px);z-index:10;border-bottom:1px solid var(--rc-line)}\n.rc-pagebar[data-rc-page-type=\"feed\"]{position:static;z-index:auto}\n.rc-pagebar[data-rc-page-type=\"comments\"]{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:thin;scroll-padding-inline:4px}\n.rc-pagebar[data-rc-page-type=\"comments\"]>*{flex:0 0 auto;margin:0}\n.rc-pagebar:empty{display:none}\n/* Inside Reddit's sort row the controls read as native plain buttons: no strip, no box, same 32px rhythm. */\n[data-rc-sort-row]{display:flex;flex-wrap:wrap;align-items:center;column-gap:4px}\n.rc-pagebar[data-rc-inline]{flex:1 1 auto;position:static;z-index:auto;margin:0;padding:0;border:0;gap:2px;background:transparent;color:var(--color-neutral-content-weak,var(--rc-muted));font-size:12px;font-weight:600}\n.rc-pagebar[data-rc-inline] :is(button,select,a){height:32px;min-height:0;margin:0;padding:0 10px;border:0;border-radius:8px;background:transparent;color:inherit;font-weight:inherit;line-height:32px;text-decoration:none}\n.rc-pagebar[data-rc-inline] a{display:inline-block}\n.rc-pagebar[data-rc-inline] :is(button,select,a):hover{background:var(--color-neutral-background-hover,var(--rc-surface))}\n.rc-pagebar label{display:flex;align-items:center;gap:6px}\n.rc-back-top{position:fixed;right:16px;bottom:80px;z-index:20;border:1px solid var(--rc-line);border-radius:6px;padding:7px 10px;min-height:34px;cursor:pointer}\n.rc-back-top[hidden]{display:none}\n/* Right rail handle: mirrors Reddit's left navigation collapse control; the arrow points the way the rail will move. */\n[data-rc-fill]{grid-template-columns:minmax(0,1fr)!important;box-sizing:border-box!important;padding-inline-end:40px!important}\n.rc-rail-handle{position:fixed;z-index:20;display:grid;place-items:center;width:32px;height:32px;padding:0;color:var(--rc-text);background:var(--rc-bg);border:1px solid var(--color-neutral-border-weak,var(--rc-line));border-radius:8px;overflow:visible;cursor:pointer;touch-action:manipulation}\n.rc-rail-handle::before{content:\"\";position:absolute;inset:-6px}\n/* The rail edge line, like the line under Reddit's left navigation button: from the header down, broken where the handle sits. */\n.rc-rail-handle::after{content:\"\";position:absolute;z-index:-1;top:-17px;left:calc(50% - .5px);width:1px;height:100vh;pointer-events:none;background:linear-gradient(var(--color-neutral-border,var(--rc-line)) 0 16px,transparent 16px 48px,var(--color-neutral-border,var(--rc-line)) 48px)}\n.rc-rail-handle:hover{background:var(--rc-surface)}\n.rc-rail-handle:focus-visible{outline:2px solid var(--rc-blue);outline-offset:2px}\n.rc-rail-handle .rc-icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;rotate:90deg}\n.rc-rail-handle[data-rc-open=\"1\"] .rc-icon{rotate:-90deg}\n.rc-popover{position:fixed;z-index:2147483646;inset:12px auto auto 12px;max-width:calc(100vw - 24px);width:350px;max-height:calc(100dvh - 24px);overflow:auto;padding:14px;border:1px solid var(--rc-line);border-radius:7px;box-shadow:0 4px 10px #0003}\n.rc-popover label{display:grid;gap:4px;margin-block:8px}\n.rc-popover h2{font-size:16px;margin:0 0 8px}\n.rc-popover p{margin:8px 0;white-space:pre-wrap}\n.rc-media{position:fixed;inset:0;padding:12px;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000c;color:#edf1f3}\n.rc-media-box{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;background:#181c1f;border-radius:8px;padding:12px}\n.rc-media-stage{overflow:auto;max-height:calc(100dvh - 140px);max-width:100%}\n.rc-media img{display:block;max-width:100%;max-height:calc(100dvh - 150px);object-fit:contain}\n.rc-media-toolbar{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}\n.rc-media button{background:#20272b;color:#edf1f3}\n.rc-error{color:#a51e22}\n@media(prefers-color-scheme:dark){.rc-error{color:#ffaaa6}}\n@media(max-width:600px){[data-rc-layout]{translate:0 0}.rc-pagebar{margin:4px 0}.rc-tools{gap:3px}}\n@media(pointer:coarse){[data-rc-owned] :is(button,input,select){min-height:36px}.rc-tools[data-rc-header-actions] .rc-action-items :is(button,a){min-height:44px}}\n/* Subtle motion: one short exponential ease-out per change, interruptible, and absent under reduced motion. */\n@media(prefers-reduced-motion:no-preference){\n.rc-rail-handle .rc-icon{transition:rotate .18s cubic-bezier(.16,1,.3,1)}\n.rc-tools[data-rc-header-actions] .rc-action-items{transition:opacity .14s cubic-bezier(.16,1,.3,1),translate .14s cubic-bezier(.16,1,.3,1)}\n@starting-style{.rc-tools[data-rc-header-actions] .rc-action-items:popover-open{opacity:0;translate:0 -4px}}\n[data-rc-compact-media-open]>[slot=\"post-media-container\"]{transition:opacity .18s cubic-bezier(.16,1,.3,1),translate .18s cubic-bezier(.16,1,.3,1)}\n@starting-style{[data-rc-compact-media-open]>[slot=\"post-media-container\"]{opacity:0;translate:0 -6px}}\n}\n@media(prefers-reduced-motion:reduce){[data-rc-owned],[data-rc-owned] *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}\n"};
 // Original local reading model. Copyright expDARE.
 RC.Model=(()=>{
   const PREFIX='exp:v1:thread:';
-  const defaults=Object.freeze({enabled:true,siteColors:'off',hideDecorations:false,unblurSpoilers:false,unblurMature:false,updateNotifications:true,gemTheme:false,defaultView:'native',shortcuts:[],defaultSort:'native',rememberSort:false,sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,flair:true,awards:'show',highlights:false,recommendations:false,hover:false,author:true,selectText:false,expandText:false,saveVisibility:'native',trackRead:false,trackPosts:false,hideReadPosts:false,markScrolled:false,restoreFeed:false,readingFont:'native',lineHeight:0,paragraphGap:0,density:'compact',parentContext:true,keyboard:false,navButtons:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',rememberCommentSort:false,commentSortButtons:false,related:false,stickyBar:false,shareContext:false,dimNegative:false,collapsePinned:false,collapseAutoMod:false,commentSave:true,collapseDepth:99,left:true,right:true,wide:false,feedWidth:800,commentWidth:800,offset:0,contentFont:14,uiFont:12,redirect:'off',simplifyProfile:false,historyCapacity:100,retentionDays:30,theme:'native',nicknameMode:'both',nicknameMax:24,keys:{next:'j',previous:'k',open:'o',collapse:'',save:'',hide:'',upvote:'',downvote:''}});
+  const defaults=Object.freeze({enabled:true,siteColors:'system',hideDecorations:false,unblurSpoilers:false,unblurMature:false,updateNotifications:true,defaultView:'native',shortcuts:[],defaultSort:'native',rememberSort:false,sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,flair:true,awards:'show',highlights:false,recommendations:false,hover:false,author:true,selectText:false,expandText:false,saveVisibility:'native',trackRead:false,trackPosts:false,hideReadPosts:false,markScrolled:false,restoreFeed:false,readingFont:'native',lineHeight:0,paragraphGap:0,density:'compact',parentContext:true,keyboard:false,navButtons:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',rememberCommentSort:false,commentSortButtons:false,related:false,stickyBar:false,shareContext:false,dimNegative:false,collapsePinned:false,collapseAutoMod:false,commentSave:true,collapseDepth:99,left:true,right:true,wide:false,feedWidth:800,commentWidth:800,offset:0,contentFont:14,uiFont:12,redirect:'off',simplifyProfile:false,historyCapacity:100,retentionDays:30,uiTheme:'system',nicknameMode:'both',nicknameMax:24,keys:{next:'j',previous:'k',open:'o',collapse:'',save:'',hide:'',upvote:'',downvote:''}});
   // Settings without a menu control keep one fixed behaviour; stored values for them are ignored.
   const fixed=Object.freeze({shortcuts:[],defaultSort:'native',sortButtons:false,topRange:'day',autoPages:false,autoReplies:false,loadBudget:3,hover:false,selectText:false,expandText:false,restoreFeed:true,density:'compact',parentContext:true,scrollTop:true,inlineMedia:true,backgroundClose:true,backgroundNav:false,commentSort:'native',commentSortButtons:false,stickyBar:false,shareContext:false,dimNegative:false,commentSave:true,left:true,wide:false,offset:0,uiFont:12,simplifyProfile:false,historyCapacity:100,retentionDays:30,nicknameMax:24});
-  const enumValues={siteColors:['off','default','indigo','blue','green','red','gray'],readingFont:['native','sans','serif'],defaultView:['native','cards','compact','grid'],defaultSort:['native','best','hot','new','top','rising'],topRange:['hour','day','week','month','year','all'],awards:['show','upvoted','collapse','off'],saveVisibility:['native','always','upvoted','off'],density:['standard','compact','mini'],commentSort:['native','confidence','top','new','controversial','old','qa'],redirect:['off','suggest','redirect'],theme:['native','contrast','thread'],nicknameMode:['profile','nickname','both']};
+  const enumValues={siteColors:['light','dark','system'],readingFont:['native','sans','serif'],defaultView:['native','cards','compact','grid'],defaultSort:['native','best','hot','new','top','rising'],topRange:['hour','day','week','month','year','all'],awards:['show','upvoted','collapse','off'],saveVisibility:['native','always','upvoted','off'],density:['standard','compact','mini'],commentSort:['native','confidence','top','new','controversial','old','qa'],redirect:['off','suggest','redirect'],uiTheme:['light','dark','system'],nicknameMode:['profile','nickname','both']};
   const ranges={lineHeight:[0,220],paragraphGap:[0,24],loadBudget:[1,5],collapseDepth:[0,99],feedWidth:[320,1600],commentWidth:[320,1600],offset:[-400,400],contentFont:[12,24],uiFont:[12,18],historyCapacity:[0,500],retentionDays:[1,90],nicknameMax:[4,40]};
   const plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
   const text=(v,max=160)=>typeof v==='string'?v.slice(0,max):'';
@@ -5879,8 +5752,7 @@ RC.Runtime=class {
   // Site colors recolor Reddit through its own colour variables, which reach inside post components. Reddit redeclares
   // them on its theme containers, so the override covers those too. Brand, vote and status colours stay native.
   applySiteColors(){
-    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',mode:()=>document.documentElement.classList.contains('theme-dark')?'dark':'light',
-      watch:render=>{const observer=new MutationObserver(render);observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});return ()=>observer.disconnect();},css:RC.siteColorCss});
+    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',css:RC.siteColorCss});
     this.siteColors.apply(this.settings.siteColors);
   }
   // A handle on the right rail mirroring Reddit's left navigation collapse control; the choice persists.
@@ -6294,15 +6166,12 @@ RC.HELP={
   "nicknameMode": "Choose how locally saved nicknames appear beside authors.",
   "readingStyle": "Font, size and spacing for post and comment text. Code and native controls keep their own fonts.",
   "feedWidth": "Maximum feed and discussion width. 800 keeps Reddit’s width; with the right sidebar collapsed the feed fills the free space.",
-  "siteColors": "Recolor Reddit with a palette. Follows Reddit’s light or dark mode; brand, vote and warning colors stay as they are. Choose Reddit to keep its own colors.",
-  "menuTheme": "Colors for Thread’s menus and notices only. Reddit follows the site; Gem uses the Pear Crystal facets.",
   "updateNotifications": "Show a notice when a new Thread release is available.",
   "redirect": "Open old.reddit.com pages on modern Reddit."
 };
 RC.UI=class {
   constructor(runtime){this.r=runtime;runtime.ui=this;
-    const palette={id:'thread',name:'Reddit',bg:'#0e1113',panel:'#181c1f',line:'#71828c',text:'#edf1f3',muted:'#b4c1c8',accent:'#203c61',accent2:'#90baff'};
-    this.product=ExtraPotionsCore.createProduct({id:'thread',name:'Thread',version:RC.VERSION,artwork:RC.ARTWORK,theme:palette,getSettings:()=>({...this.r.settings,menuAutoClose:false}),sections:[['feed','Feed'],['read','Read'],['filters','Filters'],['people','People'],['look','Look'],['system','System']].map(([id,label])=>({id,label,render:()=>this.render(id)}))});
+    this.product=ExtraPotionsCore.createProduct({id:'thread',name:'Thread',version:RC.VERSION,artwork:RC.ARTWORK,getSettings:()=>({...this.r.settings,menuAutoClose:false}),sections:[['feed','Feed'],['read','Read'],['filters','Filters'],['people','People'],['look','Look'],['system','System']].map(([id,label])=>({id,label,render:()=>this.render(id)}))});
     const style=RC.el('style');style.textContent=`.route-body [aria-disabled=true]{opacity:.6;cursor:default}:host .route-body .setting-row[hidden]{display:none!important}.route-body{min-width:0}.route-body pre{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%}.route-body .rc-menu-status{font-size:11px}.route-body label{font-size:12px}.route-body .rc-transfer-actions{display:flex;gap:5px}.route-body .rc-transfer-actions>button{flex:1}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:8px}:host .route-body .setting-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(62px,48%)!important}:host .route-body .setting-row:has(>button[role=switch]){grid-template-columns:minmax(0,1fr) auto!important}:host .route-body .setting-row:has(>select){grid-template-columns:minmax(0,1fr)!important}:host .route-body .setting-row>select{white-space:nowrap;text-overflow:ellipsis}:host .route-body .setting-row>span{min-width:0;overflow-wrap:normal;word-break:normal}:host .route-body .setting-row>:is(input,select){width:100%!important;max-width:100%!important;min-width:0!important}.setting-row>select,.setting-row>input{max-width:48%}.route-body label{display:grid;gap:4px;margin:8px 0}.route-body textarea,.route-body input{width:100%;color:var(--theme-text);background:var(--theme-panel);border:1px solid var(--theme-muted);border-radius:5px;padding:6px;font:inherit;line-height:1.5}.route-body p{font-size:12px;line-height:1.5;overflow-wrap:anywhere}.route-body button{color:var(--theme-text);background:var(--theme-panel);border:1px solid var(--theme-muted);border-radius:5px;padding:5px 8px;min-height:30px;cursor:pointer}.rc-menu-actions{display:flex;gap:5px;flex-wrap:wrap;margin-block:8px}.rc-menu-status{padding:6px 8px;font-size:12px;color:var(--theme-text);border-bottom:1px solid var(--theme-line)}.rc-menu-status:empty{display:none}.rc-rule{padding:6px 0;border-bottom:1px solid var(--theme-line)}.rc-menu-error{color:#ffaaa6}.route-body pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}.route-body details{margin-block:8px}.route-body summary{cursor:pointer}.header-actions .rc-donate{width:28px;min-width:28px;height:28px;padding:4px}.rc-donate svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}`;this.product.shadow.append(style);
     this.statusNode=RC.el('div',{class:'rc-menu-status',role:'status','aria-live':'polite'});this.product.panel.querySelector('header').after(this.statusNode);
     this.updates=ExtraPotionsCore.createReleaseUpdateChecker({productId:'thread',repository:'ExtraPotions/Thread',currentVersion:RC.VERSION,enabled:()=>this.r.settings.updateNotifications});
@@ -6326,15 +6195,7 @@ RC.UI=class {
   }
   status(text){this.statusNode.textContent=text;}
   refresh(){const focused=this.product.shadow.activeElement;const label=focused?.getAttribute('aria-label');this.product.renderActive();if(label)[...this.product.shadow.querySelectorAll('[aria-label]')].find(n=>n.getAttribute('aria-label')===label&&n.getClientRects().length)?.focus();this.product.refresh();this.theme();}
-  theme(){
-    const apply=palette=>ExtraPotionsCore.applyTheme(this.product.host,palette.id,[palette]);
-    if(this.r.settings?.gemTheme)return apply({id:'thread-gem',name:'Pear Crystal',bg:'#1e1410',panel:'#2b1d16',line:'#b17a58',text:'#fff0e1',muted:'#e5bfa6',accent:'#c6350d',accent2:'#ffb073',focus:'#ffd0a3',link:'#ffc18a',skinMode:'flat'});
-    if(this.r.settings?.theme==='contrast')return apply({id:'contrast',name:'High contrast',bg:'#000000',panel:'#111111',line:'#c8c8c8',text:'#ffffff',muted:'#dddddd',accent:'#252525',accent2:'#ffffff',focus:'#ffffff',skinMode:'flat'});
-    // Read the native surface colors without applying a page theme or competing with SHIFT.
-    const css=getComputedStyle(document.documentElement),dark=matchMedia('(prefers-color-scheme:dark)').matches;
-    const color=(name,fallback)=>{const raw=css.getPropertyValue(name).trim();if(/^#[0-9a-f]{6}$/i.test(raw))return raw;const m=raw.match(/^rgba?\(\s*(\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)/);return m?'#'+m.slice(1,4).map(v=>Number(v).toString(16).padStart(2,'0')).join(''):fallback;};
-    apply({id:'reddit-native',name:'Native',bg:color('--color-neutral-background',dark?'#0e1113':'#ffffff'),panel:color('--color-neutral-background-weak',dark?'#181c1f':'#f4f6f7'),line:'#71828c',text:color('--color-neutral-content-strong',dark?'#edf1f3':'#182126'),muted:color('--color-neutral-content',dark?'#b4c1c8':'#4e606a'),accent:dark?'#5c93d7':'#174c99',accent2:dark?'#90baff':'#174c99'});
-  }
+  theme(){ExtraPotionsCore.applyTheme(this.product.host,this.r.settings.uiTheme);}
   health(){
     const r=this.r;
     if(r.store.error)return {state:'attention',reason:r.store.error};
@@ -6383,7 +6244,7 @@ RC.UI=class {
     }
     if(id==='look'){
       const preset=Object.entries(RC.PRESETS).find(([,p])=>Object.entries(p).every(([k,v])=>set[k]===v))?.[0]||'custom';
-      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),ExtraPotionsCore.createSiteColorControl({value:set.siteColors,offLabel:'Reddit',onChange:v=>this.r.update({siteColors:v}),help:RC.HELP.siteColors}),choose('Menu theme',set.gemTheme?'gem':set.theme,[['native','Reddit'],['contrast','High contrast'],['gem','Gem']],v=>this.r.update({gemTheme:v==='gem',theme:v==='contrast'?'contrast':'native'}),RC.HELP.menuTheme),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),RC.button('Check for updates',()=>this.checkUpdates(true)));
+      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),ExtraPotionsCore.createSiteColorControl({value:set.siteColors,onChange:siteColors=>this.r.update({siteColors})}),ExtraPotionsCore.createThemeModeControl({value:set.uiTheme,onChange:uiTheme=>this.r.update({uiTheme})}),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),RC.button('Check for updates',()=>this.checkUpdates(true)));
     }
     if(id==='system')add(RC.switch('Open old links in modern Reddit',set.redirect==='redirect',v=>this.r.update({redirect:v?'redirect':'off'}),RC.HELP.redirect),this.system());
     return root;

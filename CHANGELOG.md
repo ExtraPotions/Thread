@@ -1,3 +1,10 @@
+## 0.3.0 — 2026-11-02
+
+- Use Slate Blue Light, Dark or System for menus and supported site themes.
+- Migrate retired color choices to System and remove extra theme and opacity controls.
+- Show product-only Light, Dark and current changelog screenshots.
+- Choose Content view inside Feed settings while keeping native Reddit controls available.
+
 ## 0.2.11 — 2026-11-02
 
 - Add Mark on scroll and Mark on scroll and hide options to Feed Read posts.

@@ -28,7 +28,11 @@ test('local bookmarks canonicalize and deduplicate safe discussion URLs with bou
  const settings=RC.Model.settings({lineHeight:1,paragraphGap:200});assert.equal(settings.lineHeight,100);assert.equal(settings.paragraphGap,24);assert.equal(RC.Model.defaults.trackPosts,false);assert.equal(RC.Model.defaults.restoreFeed,false);
  assert.throws(()=>RC.Model.validateImport({schema:1,settings:{},rules:[],people:{},library:{}}));
 });
-test('gem theme is off by default and legacy settings migrate without enabling it',()=>{assert.equal(RC.Model.settings({}).gemTheme,false);assert.equal(RC.Model.settings({density:'mini'}).gemTheme,false);assert.equal(RC.Model.settings({gemTheme:'true'}).gemTheme,false);assert.equal(RC.Model.settings({gemTheme:true}).gemTheme,true);assert.equal(RC.Model.settings({gemTheme:false}).gemTheme,false);});
+test('legacy appearance migrates to System without restoring removed color settings',()=>{
+ const model=RC.Model.settings({gemTheme:true,theme:'contrast',siteColors:'blue',defaultView:'grid'});
+ assert.equal(model.uiTheme,'system');assert.equal(model.siteColors,'system');assert.equal(model.defaultView,'grid');assert.equal('gemTheme' in model,false);assert.equal('theme' in model,false);
+ for(const mode of ['light','dark','system'])assert.equal(RC.Model.settings({uiTheme:mode}).uiTheme,mode);
+});
 test('one menu control drives each settings group and new toggles default off',()=>{
   const d=RC.Model.settings({});for(const key of ['hideDecorations','unblurSpoilers','unblurMature'])assert.equal(d[key],false,key);assert.equal(d.flair,true);assert.equal(d.awards,'show');
   const s=RC.Model.settings({hideDecorations:true,rememberSort:true,rememberCommentSort:false,navButtons:true,keyboard:false,collapseAutoMod:true,collapsePinned:false,feedWidth:960,commentWidth:500,highlights:true,trackPosts:false,hideReadPosts:true,markScrolled:true});

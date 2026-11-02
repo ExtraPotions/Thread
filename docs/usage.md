@@ -20,7 +20,7 @@
 - **Keep a local reading library:** save posts and comments into collections with private notes, search, rename and removal Undo. Your local library is separate from Reddit Saved.
 - **Browse fresh posts:** optionally mark read posts, hide them and undo the last read change.
 - **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading style**.
-- **Choose the menu look:** pick Reddit, High contrast or Gem in **Look → Menu theme**. Gem uses Thread's orange palette for the menu and notices.
+Choose Slate Blue Light, Dark or System in **Look → Menu theme** and **Look → Site theme**. The two modes are independent.
 
 ## Compact Cards
 
@@ -67,3 +67,7 @@ Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing 
 ## Support and verification
 
 [Report a problem](https://github.com/ExtraPotions/Thread/issues) or read the [development notes](development.md) for supported behavior and verification limits. Screenshots use sample content; iPad-sized captures use touch emulation and do not establish installed iPad browser support.
+
+## Appearance
+
+Menu theme uses Slate Blue with Light, Dark and System. System follows your device and updates when its appearance changes. Site theme has the same three choices and is independent of the menu. Legacy palette settings migrate to System. Gem themes, palette choices and custom menu opacity are no longer available.

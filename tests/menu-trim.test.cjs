@@ -43,9 +43,9 @@ test('collapsing the right rail lets the feed column fill the free space and res
 test('site colors recolor Reddit variables on its theme containers, follow its dark class and clear completely',async t=>{
  const browser=await launch();t.after(()=>browser.close());const p=await open(browser,'reader');
  await p.evaluate(()=>{document.documentElement.classList.add('theme-dark');const st=document.createElement('style');st.textContent='.theme-rpl{--color-neutral-background:#0e1113}';document.head.append(st);document.querySelector('.main-container').classList.add('theme-rpl');});
- const value=()=>p.evaluate(()=>getComputedStyle(document.querySelector('#t3_a')).getPropertyValue('--color-neutral-background').trim());assert.equal(await value(),'#0e1113');
- await p.evaluate(()=>window.__thread.runtime.update({siteColors:'blue'}));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='blue-dark');assert.equal(await value(),'#0b1420');
- await p.evaluate(()=>document.documentElement.classList.remove('theme-dark'));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='blue-light');assert.equal(await value(),'#e7f0fb');
- await p.evaluate(()=>window.__thread.ui.openRoute('look'));assert.equal(await p.locator('#exp-thread-root').getByRole('combobox',{name:'Site colors',exact:true}).inputValue(),'blue');
- await p.evaluate(()=>window.__thread.runtime.update({siteColors:'off'}));await p.waitForFunction(()=>!document.documentElement.hasAttribute('data-exp-site-colors'));assert.equal(await value(),'#0e1113');assert.equal(await p.locator('[id^="exp-site-colors"]').count(),0);
+ const value=()=>p.evaluate(()=>getComputedStyle(document.querySelector('#t3_a')).getPropertyValue('--color-neutral-background').trim());assert.equal(await value(),'#f4f6fa');
+ await p.evaluate(()=>window.__thread.runtime.update({siteColors:'dark'}));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='slate-blue-dark');assert.equal(await value(),'#111720');
+ await p.evaluate(()=>window.__thread.runtime.update({siteColors:'light'}));await p.waitForFunction(()=>document.documentElement.dataset.expSitePalette==='slate-blue-light');assert.equal(await value(),'#f4f6fa');
+ await p.evaluate(()=>window.__thread.ui.openRoute('look'));assert.equal(await p.locator('#exp-thread-root').getByRole('combobox',{name:'Site theme',exact:true}).inputValue(),'light');
+ await p.evaluate(()=>window.__thread.runtime.update({enabled:false}));await p.waitForFunction(()=>!document.documentElement.hasAttribute('data-exp-site-colors'));assert.equal(await value(),'#0e1113');assert.equal(await p.locator('[id^="exp-site-colors"]').count(),0);
 });

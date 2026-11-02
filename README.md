@@ -15,28 +15,13 @@ After installing, refresh modern Reddit and open the Thread gem below the left n
 
 Thread uses native page data. Personal records stay in local userscript storage until you export them, and pause when your account cannot be identified reliably. Local collections are separate from Reddit Saved.
 
-## See it in action
+## Screenshots
 
-<img src="docs/screenshots/cards-ipad.png" width="640" alt="Thread Cards layout on an iPad-sized sample page">
+<img src="docs/screenshots/menu-light.png" width="324" alt="Thread Light menu with expandable groups closed">
 
-<details>
-<summary>More screenshots</summary>
+<img src="docs/screenshots/menu-dark.png" width="324" alt="Thread Dark menu with expandable groups closed">
 
-![Compact Cards](docs/screenshots/compact-ipad.png)
-
-![Thread actions menu](docs/screenshots/header-actions-ipad.png)
-
-![Local collections](docs/screenshots/collections-ipad.png)
-
-![Reading styles](docs/screenshots/reading-presets-ipad.png)
-
-![Discussion navigation and comment actions](docs/screenshots/discussion-tools-ipad.png)
-
-![Menu walkthrough](docs/screenshots/menu-look-ipad.gif)
-
-</details>
-
-Screenshots use sample content and iPad touch emulation.
+<img src="docs/screenshots/changelog.png" width="324" alt="Thread changelog notice with the current version and release notes">
 
 ---
 
@@ -45,3 +30,4 @@ Screenshots use sample content and iPad touch emulation.
 Donations are optional. All features remain available without donating.
 
 Thread is independent and is not affiliated with or endorsed by Reddit.
+Menus use Slate Blue in Light, Dark or System mode. Site themes offer the same three modes.

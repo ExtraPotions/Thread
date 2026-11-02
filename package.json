@@ -1,6 +1,6 @@
 {
   "name": "extrapotions-thread",
-  "version": "0.2.11",
+  "version": "0.3.0",
   "private": true,
   "author": "expDARE",
   "engines": {
@@ -10,7 +10,7 @@
     "build": "node scripts/build.cjs",
     "build:check": "node scripts/build.cjs --check",
     "test": "node --test --test-concurrency=2 tests/*.test.cjs",
-    "screenshots": "node tests/browser.cjs --captures",
+    "screenshots": "node ../exp-core/scripts/capture-screenshots.cjs THREAD",
     "test:installed-browser": "node tests/browser.cjs",
     "release:check": "node scripts/build.cjs --check",
     "prepare:release:feature": "node scripts/prepare-release.cjs"

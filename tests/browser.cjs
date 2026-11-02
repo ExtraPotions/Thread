@@ -11,8 +11,8 @@ const currentNote=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8').split(/
 const testedSource=source.replace('const ui=new RC.UI(runtime);','const ui=new RC.UI(runtime);window.__thread={RC,runtime,ui};');
 const checks=[],errors=[],requests=[];let browser;
 async function check(name,fn){await fn();checks.push(name);}
-async function pageAt(url='https://www.reddit.com/r/example/',viewport={width:1440,height:1000},settings={}){
- const page=await browser.newPage({viewport});page.setDefaultTimeout(6000);page.on('pageerror',e=>errors.push(e.message));
+async function pageAt(url='https://www.reddit.com/r/example/',viewport={width:1440,height:1000},settings={},contextOptions={}){
+ const page=await browser.newPage({viewport,...contextOptions});page.setDefaultTimeout(6000);page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/*',route=>{const url=new URL(route.request().url());requests.push({host:url.hostname,type:route.request().resourceType()});if(url.hostname==='i.redd.it')return route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="420" height="200"><rect width="420" height="200" fill="#203c61"/><text x="30" y="105" fill="#edf1f3" font-size="24">Authored image fixture</text></svg>'});return route.fulfill({contentType:'text/html',body:fixture});});
  await page.goto(url);
  await page.evaluate(settings=>{
@@ -83,24 +83,24 @@ async function run(){
  await check('image variants share one gallery entry and prefer the observed original without fetching',async()=>{
   const actual=await p.evaluate(()=>{const n=document.createElement('shreddit-post');n.innerHTML='<img src="https://preview.redd.it/title-v0-asset123.jpeg?width=300"><img src="https://preview.redd.it/title-v0-asset123.jpeg?width=900"><img src="https://i.redd.it/asset123.jpeg"><img src="https://i.redd.it/another456.png">';return window.__thread.RC.Adapter.media({node:n,gated:false}).map(n=>n.src);});assert.deepEqual(actual,['https://i.redd.it/asset123.jpeg','https://i.redd.it/another456.png']);
  });
- await check('Pear Crystal theme defaults off, persists, restores and stays inside THREAD',async()=>{
-  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.gemTheme),false);
+ await check('Slate Blue defaults to System, persists, restores and stays inside THREAD',async()=>{
+  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.uiTheme),'system');
   const pageColor=await p.locator('body').evaluate(n=>getComputedStyle(n).backgroundColor);
   const normal=await p.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').style.getPropertyValue('--theme-bg'));
-  await p.evaluate(()=>window.__thread.runtime.update({gemTheme:true}));
-  assert.equal(await p.evaluate(()=>GM_getValue('exp:v1:thread:reader:settings').gemTheme),true);
-  assert.equal(await p.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').dataset.uiTheme),'thread-gem');
+  await p.evaluate(()=>window.__thread.runtime.update({uiTheme:'dark'}));
+  assert.equal(await p.evaluate(()=>GM_getValue('exp:v1:thread:reader:settings').uiTheme),'dark');
+  assert.equal(await p.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').dataset.uiTheme),'dark');
   assert.equal(await p.locator('body').evaluate(n=>getComputedStyle(n).backgroundColor),pageColor);
   await p.evaluate(()=>{const r=window.__thread.runtime;r.refreshSettings();window.__thread.ui.refresh();});
-  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.gemTheme),true);
-  await p.evaluate(()=>window.__thread.runtime.update({gemTheme:false}));
+  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.uiTheme),'dark');
+  await p.evaluate(()=>window.__thread.runtime.update({uiTheme:'light'}));
   assert.equal(await p.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').style.getPropertyValue('--theme-bg')),normal);
  });
  await check('version notice reuses Core theme, actual release notes and published release link',async()=>{
-  await p.evaluate(()=>{window.__thread.runtime.update({gemTheme:true});window.__thread.ui.product.open();window.__thread.ui.product.versionButton.click();});
+  await p.evaluate(()=>{window.__thread.runtime.update({uiTheme:'dark'});window.__thread.ui.product.open();window.__thread.ui.product.versionButton.click();});
   await settle(p);const notice=p.locator('#exp-thread-root').locator('.update-notice');assert.equal(await notice.isVisible(),true);assert.match(await notice.innerText(),/Thread Changelog/);assert.ok((await notice.innerText()).includes(currentNote));assert.equal(await notice.locator('.update-action').isVisible(),false);assert.equal(await notice.locator('.update-release').isVisible(),true);assert.equal(await notice.locator('.update-release').getAttribute('href'),'https://github.com/ExtraPotions/Thread/releases/tag/v'+version);
-  assert.equal(await notice.evaluate(n=>getComputedStyle(n).getPropertyValue('--theme-bg').trim()),'#1e1410');
-  await p.evaluate(()=>{window.__thread.ui.notice.hide();window.__thread.runtime.update({gemTheme:false});window.__thread.ui.product.close();});
+  assert.equal(await notice.evaluate(n=>getComputedStyle(n).getPropertyValue('--theme-bg').trim()),'#111720');
+  await p.evaluate(()=>{window.__thread.ui.notice.hide();window.__thread.runtime.update({uiTheme:'light'});window.__thread.ui.product.close();});
  });
  await check('release lifecycle uses shared notices for available, complete, disabled and failed checks',async()=>{
   const q=await pageAt();await q.evaluate(()=>{GM_setValue('exp:v3:thread:installed-version','0.0.9');dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});await settle(q);
@@ -110,24 +110,24 @@ async function run(){
   await q.evaluate(async()=>{window.__thread.runtime.update({updateNotifications:false});await window.__thread.ui.checkUpdates();});assert.equal(await q.evaluate(()=>window.__updateRequests),1,'disabled notifications make no automatic request');
   await q.evaluate(async()=>{window.GM_xmlhttpRequest=o=>{queueMicrotask(()=>o.onerror());return{abort(){}};};await window.__thread.ui.checkUpdates(true);});assert.match(await q.locator('#exp-thread-root .rc-menu-status').textContent(),/Update check failed/);await q.close();
  });
- await check('enabled switch indicators meet 3:1 contrast in light, dark and gem themes',async()=>{
+ await check('enabled switch indicators meet 3:1 contrast in light, dark and Slate Blue modes',async()=>{
   for(const [scheme,gem]of [['light',false],['dark',false],['dark',true]]){
-   await p.emulateMedia({colorScheme:scheme});await p.evaluate(gem=>{window.__thread.runtime.update({gemTheme:gem});window.__thread.ui.openRoute('look');},gem);
+   await p.emulateMedia({colorScheme:scheme});await p.evaluate(gem=>{window.__thread.runtime.update({uiTheme:gem?'dark':'light'});window.__thread.ui.openRoute('look');},gem);
    // Enable a boolean row to sample the actual shared Core thumb, regardless of gem setting.
    await p.evaluate(()=>window.__thread.ui.openRoute('feed'));
    const colors=await p.locator('#exp-thread-root').getByRole('switch',{name:'Enable Thread',exact:true}).evaluate(n=>({track:getComputedStyle(n,'::before').backgroundColor,thumb:getComputedStyle(n,'::after').backgroundColor}));
    const lum=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];};
    const a=lum(colors.track),b=lum(colors.thumb),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);assert(ratio>=3,JSON.stringify({scheme,gem,colors,ratio}));
   }
-  await p.evaluate(()=>{window.__thread.runtime.update({gemTheme:false});window.__thread.ui.product.close();});await p.emulateMedia({colorScheme:'light'});
+  await p.evaluate(()=>{window.__thread.runtime.update({uiTheme:'light'});window.__thread.ui.product.close();});await p.emulateMedia({colorScheme:'light'});
  });
- await check('pagehide/pageshow rebuilds persisted routes without duplicate menus and retains gem choice',async()=>{
-  await p.evaluate(()=>{window.__thread.runtime.update({gemTheme:true});dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));});
+ await check('pagehide/pageshow rebuilds persisted routes without duplicate menus and retains theme choice',async()=>{
+  await p.evaluate(()=>{window.__thread.runtime.update({uiTheme:'dark'});dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));});
   assert.equal(await p.locator('#exp-thread-root').count(),0);
   await p.evaluate(()=>dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
   await settle(p);assert.equal(await p.locator('#exp-thread-root').count(),1);
-  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.gemTheme),true);
-  await p.evaluate(()=>window.__thread.runtime.update({gemTheme:false}));await settle(p);
+  assert.equal(await p.evaluate(()=>window.__thread.runtime.settings.uiTheme),'dark');
+  await p.evaluate(()=>window.__thread.runtime.update({uiTheme:'light'}));await settle(p);
  });
  await check('regex valid, invalid and catastrophic batches recover without UI lock',async()=>{const results=await p.evaluate(async()=>{const worker=new window.__thread.RC.Regex();const out=[await worker.evaluate('parent',['parent','other']),await worker.evaluate('[',['anything']),await worker.evaluate('(a+)+$',['a'.repeat(3998)+'!'],60),await worker.evaluate('ok',['ok'])];worker.dispose();return out;});assert.deepEqual(results[0].matches,[true,false]);assert.match(results[1].error,/Invalid/);assert.match(results[2].error,/time limit/);assert.deepEqual(results[3].matches,[true]);});
  await check('literal rules match inserted content and reveal without deleting rule',async()=>{await p.evaluate(()=>{const {runtime:r}=window.__thread;r.rules=window.__thread.RC.Model.rules([{pattern:'ordinary',field:'title',treatment:'hide'}]);r.store.set('rules',r.rules);r.schedule();});await settle(p);const post=p.locator('#t3_two');assert.equal(await post.getAttribute('data-rc-treatment'),'hide');await post.getByRole('button',{name:'Reveal',exact:true}).click();await settle(p);assert.equal(await post.getAttribute('data-rc-treatment'),null);assert.equal(await p.evaluate(()=>window.__thread.runtime.rules.length),1);await p.evaluate(()=>{const n=document.createElement('shreddit-post');n.id='t3_inserted';n.setAttribute('author','new_author');n.setAttribute('post-title','ordinary inserted post');n.innerHTML='<h2 slot="title">ordinary inserted post</h2>';document.querySelector('shreddit-feed').append(n);});await settle(p);assert.equal(await p.locator('#t3_inserted').getAttribute('data-rc-treatment'),'hide');});
@@ -175,13 +175,13 @@ async function run(){
   for(const name of ['Unblur spoilers','Unblur mature media','Hide post decorations'])assert.equal(await menuRoot.getByRole('switch',{name,exact:true}).getAttribute('aria-checked'),'false',name);
   assert.equal(await menuRoot.locator('.route-body:not([hidden]) > div > p.note').count(),0);
   await menuRoot.getByRole('tab',{name:'Read',exact:true}).click();assert.equal(await menuRoot.getByRole('textbox',{name:'Key: downvote',exact:true}).count(),0);
-  await menuRoot.getByRole('tab',{name:'Look',exact:true}).click();await menuRoot.getByRole('combobox',{name:'Menu theme',exact:true}).selectOption('contrast');assert.deepEqual(await uiPage.evaluate(()=>[window.__thread.runtime.settings.gemTheme,window.__thread.runtime.settings.theme]),[false,'contrast']);await menuRoot.getByRole('combobox',{name:'Menu theme',exact:true}).selectOption('native');
+  await menuRoot.getByRole('tab',{name:'Look',exact:true}).click();await menuRoot.getByRole('combobox',{name:'Menu theme',exact:true}).selectOption('dark');assert.deepEqual(await uiPage.evaluate(()=>[window.__thread.runtime.settings.uiTheme]),['dark']);await menuRoot.getByRole('combobox',{name:'Menu theme',exact:true}).selectOption('system');
   const header=await menuRoot.locator('.menu-head').boundingBox();assert(header.y>=8&&header.height>20,'header remains visible after inner scroll');
  });
- await check('Thread hover and keyboard help remain inside the menu at desktop, 390px and 320px with native and gem themes',async()=>{
+ await check('Thread hover and keyboard help remain inside the menu at desktop, 390px and 320px with native and Slate Blue modes',async()=>{
   for(const width of [1440,390,320])for(const gem of [false,true]){
-   await uiPage.setViewportSize({width,height:800});await uiPage.evaluate(gem=>{window.__thread.runtime.update({gemTheme:gem});window.__thread.ui.openRoute('look');},gem);await settle(uiPage);
-   const label=menuRoot.getByRole('combobox',{name:'Menu theme',exact:true});await label.hover();const tip=menuRoot.getByRole('tooltip');await tip.waitFor({state:'visible'});assert.match(await tip.innerText(),/Pear Crystal/);
+   await uiPage.setViewportSize({width,height:800});await uiPage.evaluate(gem=>{window.__thread.runtime.update({uiTheme:gem?'dark':'light'});window.__thread.ui.openRoute('look');},gem);await settle(uiPage);
+   const label=menuRoot.getByRole('combobox',{name:'Menu theme',exact:true});await label.hover();const tip=menuRoot.getByRole('tooltip');await tip.waitFor({state:'visible'});assert.match(await tip.innerText(),/Slate Blue/);
    await label.focus();assert.equal(await tip.isVisible(),true);
    await settle(uiPage);const t=await tip.boundingBox(),m=await menuRoot.getByRole('dialog').boundingBox();await uiPage.screenshot({path:path.join(output,'tooltip-'+width+'-'+gem+'.png'),fullPage:false});assert(t.x>=m.x&&t.x+t.width<=m.x+m.width+1&&t.y>=m.y&&t.y+t.height<=m.y+m.height+1,'tooltip contained '+JSON.stringify({width,gem,t,m}));
    await uiPage.keyboard.press('Escape');assert.equal(await tip.isVisible(),false);assert.equal(await menuRoot.getByRole('dialog').isVisible(),true);
@@ -205,7 +205,7 @@ async function run(){
  await check('repeated routes/insert/remove retain bounded runtime resources and teardown restores focus attributes',async()=>{for(let i=0;i<12;i++){await thread.evaluate(i=>{history.pushState({},'','/r/example/?test='+i);const n=document.createElement('shreddit-post');n.id='transient'+i;n.setAttribute('post-title','Transient');document.querySelector('shreddit-feed').append(n);n.remove();},i);await thread.waitForTimeout(180);}const counts=await thread.evaluate(()=>{window.gc?.();const r=window.__thread.runtime;return {items:r.items.size,timers:r.readTimers.size,workers:r.regex.pending.size,listeners:window.__listeners.size,heap:performance.memory?.usedJSHeapSize};});fs.writeFileSync(path.join(output,'route-counters.json'),JSON.stringify(counts,null,2));assert(counts.items<=250);assert(counts.timers<=250);assert.equal(counts.workers,0);assert.equal(counts.listeners,11);await thread.evaluate(()=>window.__thread.runtime.destroy());assert.equal(await thread.locator('[data-rc-owned],#exp-thread-root').count(),0);assert.equal(await thread.evaluate(()=>window.__listeners.size),0);});
  await thread.close();
  // Real suite builds forced onto the authored Reddit fixture: this is coexistence proof, not metadata/site support proof.
- await check('four maintained userscripts coexist in both load orders with native/gem themes and a single flyout',async()=>{
+ await check('four maintained userscripts coexist in both load orders with native/Slate Blue modes and a single flyout',async()=>{
   for(const order of [['thread','dropper','prisma','ward'],['ward','prisma','dropper','thread']]){
    const page=await pageAt('https://www.reddit.com/r/example/',{width:1280,height:1000});
    // pageAt supplied THREAD first; remove it and bootstrap in the declared order.
@@ -215,32 +215,16 @@ async function run(){
    for(const id of order){const host=id==='dropper'?'#tdh-root':'#exp-'+id+'-root';assert.equal(await page.locator(host).count(),1,id+' registered');}
    assert.equal(await page.evaluate(()=>[...document.querySelectorAll('[data-exp-product-launcher="1"]')].map(h=>h.shadowRoot?.querySelector('[data-exp-part="flyout-hub"]')).filter(Boolean).length),1);
     for(const enabled of [false,true,false]){
-     await page.evaluate(enabled=>{window.__thread.runtime.update({defaultView:'compact',gemTheme:enabled});window.__thread.ui.product.open();},enabled);await settle(page);
+     await page.evaluate(enabled=>{window.__thread.runtime.update({defaultView:'compact',uiTheme:enabled?'dark':'light'});window.__thread.ui.product.open();},enabled);await settle(page);
      assert.equal(await page.locator('#exp-thread-root').getByRole('dialog').isVisible(),true);
      const palette=await page.locator('#exp-thread-root').evaluate(h=>h.shadowRoot.querySelector('.exp-core-theme').dataset.uiTheme);
-     assert.equal(palette,enabled?'thread-gem':'reddit-native');
+     assert.equal(palette,enabled?'dark':'light');
      await page.evaluate(()=>window.__thread.ui.product.close());
     }
    await page.close();
   }
  });
  assert.deepEqual(errors,[],'page errors');
- if(process.argv.includes('--captures')){
-  // These captures occur only after all functional/coexistence checks above pass.
-  const page=await pageAt();await page.emulateMedia({colorScheme:'dark'});
-  for(const [enabled,label]of [[false,'off'],[true,'on']]){
-   await page.evaluate(enabled=>{window.__thread.runtime.update({gemTheme:enabled});window.__thread.ui.openRoute('look');},enabled);
-   await settle(page);await page.evaluate(()=>scrollTo(0,0));await settle(page);
-   const file=path.join(output,'thread-gem-'+label+'.png');await page.screenshot({path:file,fullPage:true});
-   fs.copyFileSync(file,path.join(root,'docs/screenshots/gem-'+label+'.png'));
-   await page.locator('#exp-thread-root').getByRole('dialog').screenshot({path:path.join(output,'thread-menu-gem-'+label+'.png')});
-  }
-  await page.evaluate(()=>{window.__thread.runtime.update({gemTheme:false});window.__thread.ui.openRoute('system');});await settle(page);
-  await openSystem(page.locator('#exp-thread-root'),'support');await settle(page);
-  await page.screenshot({path:path.join(output,'thread-support-page.png'),fullPage:false});
-  await page.locator('#exp-thread-root').getByRole('dialog').screenshot({path:path.join(output,'thread-support.png')});
-  await page.close();
- }
  fs.writeFileSync(path.join(output,'verification.json'),JSON.stringify({buildSha256:require('node:crypto').createHash('sha256').update(source).digest('hex'),browser:browser.version(),checks,errors,requests,limits:['Synthetic authored DOM shaped from observed native header/feed structure. No installed candidate, mobile web, authenticated API, real save/vote or long-session proof.']},null,2));
  console.log(JSON.stringify({passed:checks.length,checks,errors},null,2));
 }

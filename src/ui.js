@@ -32,15 +32,12 @@ RC.HELP={
   "nicknameMode": "Choose how locally saved nicknames appear beside authors.",
   "readingStyle": "Font, size and spacing for post and comment text. Code and native controls keep their own fonts.",
   "feedWidth": "Maximum feed and discussion width. 800 keeps Reddit’s width; with the right sidebar collapsed the feed fills the free space.",
-  "siteColors": "Recolor Reddit with a palette. Follows Reddit’s light or dark mode; brand, vote and warning colors stay as they are. Choose Reddit to keep its own colors.",
-  "menuTheme": "Colors for Thread’s menus and notices only. Reddit follows the site; Gem uses the Pear Crystal facets.",
   "updateNotifications": "Show a notice when a new Thread release is available.",
   "redirect": "Open old.reddit.com pages on modern Reddit."
 };
 RC.UI=class {
   constructor(runtime){this.r=runtime;runtime.ui=this;
-    const palette={id:'thread',name:'Reddit',bg:'#0e1113',panel:'#181c1f',line:'#71828c',text:'#edf1f3',muted:'#b4c1c8',accent:'#203c61',accent2:'#90baff'};
-    this.product=ExtraPotionsCore.createProduct({id:'thread',name:'Thread',version:RC.VERSION,artwork:RC.ARTWORK,theme:palette,getSettings:()=>({...this.r.settings,menuAutoClose:false}),sections:[['feed','Feed'],['read','Read'],['filters','Filters'],['people','People'],['look','Look'],['system','System']].map(([id,label])=>({id,label,render:()=>this.render(id)}))});
+    this.product=ExtraPotionsCore.createProduct({id:'thread',name:'Thread',version:RC.VERSION,artwork:RC.ARTWORK,getSettings:()=>({...this.r.settings,menuAutoClose:false}),sections:[['feed','Feed'],['read','Read'],['filters','Filters'],['people','People'],['look','Look'],['system','System']].map(([id,label])=>({id,label,render:()=>this.render(id)}))});
     const style=RC.el('style');style.textContent=`.route-body [aria-disabled=true]{opacity:.6;cursor:default}:host .route-body .setting-row[hidden]{display:none!important}.route-body{min-width:0}.route-body pre{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%}.route-body .rc-menu-status{font-size:11px}.route-body label{font-size:12px}.route-body .rc-transfer-actions{display:flex;gap:5px}.route-body .rc-transfer-actions>button{flex:1}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:8px}:host .route-body .setting-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(62px,48%)!important}:host .route-body .setting-row:has(>button[role=switch]){grid-template-columns:minmax(0,1fr) auto!important}:host .route-body .setting-row:has(>select){grid-template-columns:minmax(0,1fr)!important}:host .route-body .setting-row>select{white-space:nowrap;text-overflow:ellipsis}:host .route-body .setting-row>span{min-width:0;overflow-wrap:normal;word-break:normal}:host .route-body .setting-row>:is(input,select){width:100%!important;max-width:100%!important;min-width:0!important}.setting-row>select,.setting-row>input{max-width:48%}.route-body label{display:grid;gap:4px;margin:8px 0}.route-body textarea,.route-body input{width:100%;color:var(--theme-text);background:var(--theme-panel);border:1px solid var(--theme-muted);border-radius:5px;padding:6px;font:inherit;line-height:1.5}.route-body p{font-size:12px;line-height:1.5;overflow-wrap:anywhere}.route-body button{color:var(--theme-text);background:var(--theme-panel);border:1px solid var(--theme-muted);border-radius:5px;padding:5px 8px;min-height:30px;cursor:pointer}.rc-menu-actions{display:flex;gap:5px;flex-wrap:wrap;margin-block:8px}.rc-menu-status{padding:6px 8px;font-size:12px;color:var(--theme-text);border-bottom:1px solid var(--theme-line)}.rc-menu-status:empty{display:none}.rc-rule{padding:6px 0;border-bottom:1px solid var(--theme-line)}.rc-menu-error{color:#ffaaa6}.route-body pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}.route-body details{margin-block:8px}.route-body summary{cursor:pointer}.header-actions .rc-donate{width:28px;min-width:28px;height:28px;padding:4px}.rc-donate svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}`;this.product.shadow.append(style);
     this.statusNode=RC.el('div',{class:'rc-menu-status',role:'status','aria-live':'polite'});this.product.panel.querySelector('header').after(this.statusNode);
     this.updates=ExtraPotionsCore.createReleaseUpdateChecker({productId:'thread',repository:'ExtraPotions/Thread',currentVersion:RC.VERSION,enabled:()=>this.r.settings.updateNotifications});
@@ -64,15 +61,7 @@ RC.UI=class {
   }
   status(text){this.statusNode.textContent=text;}
   refresh(){const focused=this.product.shadow.activeElement;const label=focused?.getAttribute('aria-label');this.product.renderActive();if(label)[...this.product.shadow.querySelectorAll('[aria-label]')].find(n=>n.getAttribute('aria-label')===label&&n.getClientRects().length)?.focus();this.product.refresh();this.theme();}
-  theme(){
-    const apply=palette=>ExtraPotionsCore.applyTheme(this.product.host,palette.id,[palette]);
-    if(this.r.settings?.gemTheme)return apply({id:'thread-gem',name:'Pear Crystal',bg:'#1e1410',panel:'#2b1d16',line:'#b17a58',text:'#fff0e1',muted:'#e5bfa6',accent:'#c6350d',accent2:'#ffb073',focus:'#ffd0a3',link:'#ffc18a',skinMode:'flat'});
-    if(this.r.settings?.theme==='contrast')return apply({id:'contrast',name:'High contrast',bg:'#000000',panel:'#111111',line:'#c8c8c8',text:'#ffffff',muted:'#dddddd',accent:'#252525',accent2:'#ffffff',focus:'#ffffff',skinMode:'flat'});
-    // Read the native surface colors without applying a page theme or competing with SHIFT.
-    const css=getComputedStyle(document.documentElement),dark=matchMedia('(prefers-color-scheme:dark)').matches;
-    const color=(name,fallback)=>{const raw=css.getPropertyValue(name).trim();if(/^#[0-9a-f]{6}$/i.test(raw))return raw;const m=raw.match(/^rgba?\(\s*(\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)/);return m?'#'+m.slice(1,4).map(v=>Number(v).toString(16).padStart(2,'0')).join(''):fallback;};
-    apply({id:'reddit-native',name:'Native',bg:color('--color-neutral-background',dark?'#0e1113':'#ffffff'),panel:color('--color-neutral-background-weak',dark?'#181c1f':'#f4f6f7'),line:'#71828c',text:color('--color-neutral-content-strong',dark?'#edf1f3':'#182126'),muted:color('--color-neutral-content',dark?'#b4c1c8':'#4e606a'),accent:dark?'#5c93d7':'#174c99',accent2:dark?'#90baff':'#174c99'});
-  }
+  theme(){ExtraPotionsCore.applyTheme(this.product.host,this.r.settings.uiTheme);}
   health(){
     const r=this.r;
     if(r.store.error)return {state:'attention',reason:r.store.error};
@@ -121,7 +110,7 @@ RC.UI=class {
     }
     if(id==='look'){
       const preset=Object.entries(RC.PRESETS).find(([,p])=>Object.entries(p).every(([k,v])=>set[k]===v))?.[0]||'custom';
-      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),ExtraPotionsCore.createSiteColorControl({value:set.siteColors,offLabel:'Reddit',onChange:v=>this.r.update({siteColors:v}),help:RC.HELP.siteColors}),choose('Menu theme',set.gemTheme?'gem':set.theme,[['native','Reddit'],['contrast','High contrast'],['gem','Gem']],v=>this.r.update({gemTheme:v==='gem',theme:v==='contrast'?'contrast':'native'}),RC.HELP.menuTheme),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),RC.button('Check for updates',()=>this.checkUpdates(true)));
+      add(choose('Reading style',preset,[...(preset==='custom'?[['custom','Custom']]:[]),['native','Reddit'],['comfortable','Comfortable'],['dense','Dense'],['book','Book']],v=>this.r.readingPreset(v),RC.HELP.readingStyle),num('feedWidth','Content width (px)',320,1600),ExtraPotionsCore.createSiteColorControl({value:set.siteColors,onChange:siteColors=>this.r.update({siteColors})}),ExtraPotionsCore.createThemeModeControl({value:set.uiTheme,onChange:uiTheme=>this.r.update({uiTheme})}),ExtraPotionsCore.createMenuSizeControls(),t('updateNotifications','Update notifications'),RC.button('Check for updates',()=>this.checkUpdates(true)));
     }
     if(id==='system')add(RC.switch('Open old links in modern Reddit',set.redirect==='redirect',v=>this.r.update({redirect:v?'redirect':'off'}),RC.HELP.redirect),this.system());
     return root;

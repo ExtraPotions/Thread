@@ -157,8 +157,7 @@ RC.Runtime=class {
   // Site colors recolor Reddit through its own colour variables, which reach inside post components. Reddit redeclares
   // them on its theme containers, so the override covers those too. Brand, vote and status colours stay native.
   applySiteColors(){
-    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',mode:()=>document.documentElement.classList.contains('theme-dark')?'dark':'light',
-      watch:render=>{const observer=new MutationObserver(render);observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});return ()=>observer.disconnect();},css:RC.siteColorCss});
+    this.siteColors??=ExtraPotionsCore.createSiteColors({product:'thread',css:RC.siteColorCss});
     this.siteColors.apply(this.settings.siteColors);
   }
   // A handle on the right rail mirroring Reddit's left navigation collapse control; the choice persists.

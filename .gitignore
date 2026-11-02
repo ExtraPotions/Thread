@@ -1,6 +1,19 @@
-node_modules/
-test-artifacts/
-.impeccable/review/
-*.log
-Thumbs.db
-.DS_Store
+# Public distributions only. Development files stay local.
+*
+!/assets/
+!/docs/
+!/docs/screenshots/
+!/.gitattributes
+!/.gitignore
+!/CHANGELOG.md
+!/LICENSE
+!/LICENSE-ASSETS.md
+!/LICENSE-CODE.md
+!/NOTICE.md
+!/README.md
+!/assets/thread-gem.svg
+!/thread.user.js
+!/docs/usage.md
+!/docs/screenshots/menu-light.png
+!/docs/screenshots/menu-dark.png
+!/docs/screenshots/changelog.png

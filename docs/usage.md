@@ -58,7 +58,7 @@ On discussion pages, use **Next top-level thread**, **Next sibling comment** or 
 
 With a recognized account, Thread can return you to a loaded post and its screen offset when you come back to a feed. It respects an already-restored browser position and stops after a bounded wait if the saved post is unavailable. It does not load missing feed pages.
 
-Account switching is unavailable. Thread uses native page data and keeps personal records local. See [development](development.md) for supported behavior and verification limits.
+Account switching is unavailable. Thread uses native page data and keeps personal records local.
 
 ## Shared menu
 
@@ -66,7 +66,7 @@ Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing 
 
 ## Support and verification
 
-[Report a problem](https://github.com/ExtraPotions/Thread/issues) or read the [development notes](development.md) for supported behavior and verification limits. Screenshots use sample content; iPad-sized captures use touch emulation and do not establish installed iPad browser support.
+[Report a problem](https://github.com/ExtraPotions/Thread/issues).
 
 ## Appearance
 

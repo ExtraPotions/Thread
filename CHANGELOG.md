@@ -1,3 +1,10 @@
+## 0.4.0 — 2026-11-11
+
+- Put comment controls in Reddit’s own comment row, with a marker and jump for comments new since your last visit.
+- Play videos, GIFs and embeds in the media viewer, and show tags and nicknames beside usernames.
+- Open panels under their button and save a tag or note when you press outside.
+- Match signed-in Reddit: Card and Compact switching, wider Grid columns and one actions icon in every view.
+
 ## 0.3.0 — 2026-11-02
 
 - Use Slate Blue Light, Dark or System for menus and supported site themes.

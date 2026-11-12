@@ -3786,7 +3786,10 @@ const ExtraPotionsCore = (() => {
     // Do not turn userscript injection timing into a saved preference. A fresh
     // install stays priority-sorted until either the complete suite is present
     // or the user explicitly reorders the visible launchers.
-    if ((Array.isArray(order) && order.length) || completeSuite) write(GRID_ORDER, ids);
+    // Products that have not loaded yet, or are switched off in the userscript manager, keep their place.
+    const kept = Array.isArray(order) ? order.filter(id => typeof id === 'string') : [];
+    const next = [...kept, ...ids.filter(id => !kept.includes(id))];
+    if ((kept.length || completeSuite) && JSON.stringify(next) !== JSON.stringify(order)) write(GRID_ORDER, next);
   }
   // The single source of launcher coordinates for every product: the saved group position
   // (GRID_DELTA) plus the launcher's grid cell. Products position their launcher from this.
@@ -5403,7 +5406,10 @@ const ExtraPotionsCore = (() => {
   // 150ms: a busy page (Twitch chat) would otherwise re-measure the top bar on every change.
   let slotStale=0;
   const markSlotStale=()=>{if(!slotStale)slotStale=setTimeout(()=>{slotStale=0;slotMemo=null;scheduleGrid();},150);};
-  const gridObserver=new MutationObserver(()=>{markSlotStale();scheduleGrid();});
+  // Launcher attributes and launchers coming or going re-lay the grid on the next frame; any other page change
+  // waits for the 150ms gate above.
+  const launcherChange=record=>record.type==='attributes'||[...record.addedNodes,...record.removedNodes].some(node=>node.dataset?.expProductLauncher==='1');
+  const gridObserver=new MutationObserver(records=>{markSlotStale();if(records.some(launcherChange))scheduleGrid();});
   const startGrid=()=>{if(!document.documentElement)return;gridObserver.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['data-exp-product-launcher','data-product-id','data-launcher-priority','data-launcher-reserved-rows','data-exp-flyout','data-exp-update','data-exp-progress','data-exp-open-menu','data-exp-flyout-open']});scheduleGrid();};
   if(document.documentElement)startGrid();else addEventListener('DOMContentLoaded',startGrid,{once:true});
   document.addEventListener('exp-core:coordination',scheduleGrid);
@@ -5662,7 +5668,7 @@ RC.Runtime=class {
   refreshSettings(){this.settings=RC.Model.settings(this.store.get('settings',{}));this.rules=RC.Model.rules(this.store.get('rules',[]));this.history=RC.Model.prune(this.store.get('history',[]),this.settings.historyCapacity,this.settings.retentionDays);this.visits=this.cleanVisits(this.store.get('visits',{}));this.people=this.store.people();this.readingState();}
   cleanVisits(raw){if(!RC.Model.plain(raw))return {};return Object.fromEntries(Object.entries(raw).filter(([k,v])=>k.length<160&&RC.Model.plain(v)&&Number.isFinite(v.at)&&v.at>Date.now()-(this.settings?.retentionDays||30)*86400000).sort((a,b)=>b[1].at-a[1].at).slice(0,100).map(([k,v])=>[k,{at:v.at,read:Array.isArray(v.read)?v.read.filter(id=>typeof id==='string').slice(-500):[],count:Number.isFinite(v.count)?Math.max(0,v.count):0,last:typeof v.last==='string'?v.last.slice(0,120):''}]));}
   accountCheck(){const next=RC.Adapter.account();if(next===this.account&&this.initialized)return false;this.clearRoute();this.postReadUndo=null;this.libraryUndo=null;this.route='';this.initialized=true;this.account=next;this.verified=!!next;this.store.unlisten();this.store.account=next||'unverified';this.refreshSettings();if(!next){this.people={};this.rules=[];this.visits={};this.history=[];}
-    this.store.listen(()=>{this.closeOverlay();this.refreshSettings();if(!this.verified){this.people={};this.rules=[];this.visits={};this.history=[];}this.epoch++;this.schedule();this.ui?.refresh();});return true;
+    this.store.listen(name=>{const quiet=RC.Runtime.QUIET_KEYS.has(name);if(!quiet)this.closeOverlay();this.refreshSettings();if(!this.verified){this.people={};this.rules=[];this.visits={};this.history=[];}this.epoch++;this.schedule();if(!quiet)this.ui?.refresh();});return true;
   }
   schedule(){if(this.timer||this.destroyed)return;this.timer=setTimeout(()=>{this.timer=0;this.scan().catch(()=>this.notify('Page adaptation paused after an error. Reload or disable companion.'));},160);}
   async scan(){
@@ -6111,6 +6117,9 @@ RC.Runtime=class {
   diagnostics(){return {product:'THREAD',version:RC.VERSION,accountVerified:this.verified,loaded:this.items.size,readTimers:this.readTimers.size,regexWorkers:this.regex.pending.size,regexErrors:[...this.regexErrors.values()],storage:this.store.error||'available',api:'Unavailable: own registration and legitimate access required',liveContract:'native header and feed DOM observed; candidate installed behavior unverified'};}
   destroy(){if(this.destroyed)return;this.saveFeedPosition();this.destroyed=true;this.siteColors?.clear();clearTimeout(this.timer);this.observer.disconnect();this.routeObserver?.();this.suiteObserver?.();this.clearRoute();this.store.unlisten();removeEventListener('scroll',this.scroll);removeEventListener('resize',this.resize);document.removeEventListener('keydown',this.key);document.removeEventListener('click',this.click);document.removeEventListener('click',this.layoutClick,true);document.removeEventListener('pointerdown',this.dismissMenus,true);this.style.remove();this.ui?.destroy();if(RC.ARTWORK)URL.revokeObjectURL(RC.ARTWORK);}
 };
+// Keys another tab writes during ordinary reading. A change to them is re-read and the page re-scanned, but
+// open panels stay open and the menu is not rebuilt.
+RC.Runtime.QUIET_KEYS=new Set(['history','visits','sorts','collapse','postReads','feedPositions']);
 
 // Original local reading tools. Copyright expDARE.
 RC.PRESETS={native:{readingFont:'native',lineHeight:0,paragraphGap:0,contentFont:14},comfortable:{readingFont:'sans',contentFont:18,lineHeight:170,paragraphGap:12},dense:{readingFont:'sans',contentFont:15,lineHeight:140,paragraphGap:6},book:{readingFont:'serif',contentFont:18,lineHeight:180,paragraphGap:14}};

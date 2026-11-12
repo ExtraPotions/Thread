@@ -62,12 +62,12 @@ Account switching is unavailable. Thread uses native page data and keeps persona
 
 ## Shared menu
 
-Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing is in **Look**. With multiple ExtraPotions products on the same page, open the shared launcher and choose a product. Donations are available from the header heart.
+Each section is a drawer: opening one closes the others, and the menu reopens on the one you used last. Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing is in **Look**. With multiple ExtraPotions products on the same page, open the shared launcher and choose a product. Donations are available from the header heart.
 
 ## Support and verification
 
 [Report a problem](https://github.com/ExtraPotions/Thread/issues).
 
-## Appearance
+## Look
 
-Menu theme uses Slate Blue with Light, Dark and System. System follows your device and updates when its appearance changes. Site theme has the same three choices and is independent of the menu. Legacy palette settings migrate to System. Gem themes, palette choices and custom menu opacity are no longer available.
+The menu is charcoal with orange highlights, in Light, Dark and System. System follows your device and updates when its appearance changes. Site theme uses Slate Blue with the same three choices and is independent of the menu. Legacy palette settings migrate to System. Gem themes, palette choices and custom menu opacity are no longer available.

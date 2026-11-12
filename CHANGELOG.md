@@ -1,3 +1,9 @@
+## 0.5.0 — 2026-11-12
+
+- Show menu sections as drawers in charcoal with Thread orange, and move People into Filters.
+- Keep open panels and the menu in place when reading progress changes in another tab.
+- Keep the shared launcher order when another ExtraPotions product is switched off or added.
+
 ## 0.4.2 — 2026-11-12
 
 - Tidy the update and changelog notices: a button-style GitHub release control, even spacing and a flat panel.

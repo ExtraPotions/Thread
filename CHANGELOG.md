@@ -1,3 +1,8 @@
+## 0.4.2 — 2026-11-12
+
+- Tidy the update and changelog notices: a button-style GitHub release control, even spacing and a flat panel.
+- Include shared Core 3.12.2.
+
 ## 0.4.1 — 2026-11-12
 
 - Use sentence-case wording in update and changelog notices.

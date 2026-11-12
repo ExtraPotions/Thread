@@ -1,3 +1,8 @@
+## 0.4.1 — 2026-11-12
+
+- Use sentence-case wording in update and changelog notices.
+- Include shared Core 3.12.1.
+
 ## 0.4.0 — 2026-11-11
 
 - Put comment controls in Reddit’s own comment row, with a marker and jump for comments new since your last visit.

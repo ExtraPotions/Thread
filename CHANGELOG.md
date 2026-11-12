@@ -1,3 +1,8 @@
+## 0.5.1 — 2026-11-12
+
+- Drop hover tips from settings that explain themselves, such as Enable Thread, Content view and Reading style.
+- Keep tips where behaviour isn't obvious: read markers, community filters, decorations and content width.
+
 ## 0.5.0 — 2026-11-12
 
 - Show menu sections as drawers in charcoal with Thread orange, and move People into Filters.

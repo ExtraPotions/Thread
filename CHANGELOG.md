@@ -1,3 +1,8 @@
+## 0.5.3 — 2026-11-13
+
+- Code that could no longer run is gone; nothing changes in use.
+- Built on Core 3.16.0.
+
 ## 0.5.2 — 2026-11-13
 
 - Built on Core 3.15.1: menu lists and scrollbars are light in Light.

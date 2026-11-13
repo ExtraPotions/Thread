@@ -1,3 +1,8 @@
+## 0.6.0 — 2026-11-13
+
+- Labels are in Title Case, such as Save to Collection in Thread Actions.
+- Built on Core 3.17.0.
+
 ## 0.5.3 — 2026-11-13
 
 - Code that could no longer run is gone; nothing changes in use.

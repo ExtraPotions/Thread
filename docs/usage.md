@@ -10,25 +10,25 @@
 
 ## Features and controls
 
-- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid in **Feed → Content view**. On feeds, Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into up to four readable columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards. Cards and Grid set Reddit's own View menu to Card and Compact Cards sets it to Compact, so posts arrive with the right media; the feed reloads once when that changes. Choosing Compact or Card in Reddit's View menu switches Thread to match.
+- **Choose your layout:** keep Reddit's Native view or use Cards, Compact Cards or Grid in **Feed → Content View**. On feeds, Thread's feed buttons sit in Reddit's own sort row, so posts start where they normally do; other pages keep a separate strip. Cards keep Reddit's whole-image media frames, Grid packs cards of different heights into up to four readable columns without empty gaps, and switching views fades in briefly unless your device asks for reduced motion. Saved List preferences use Compact Cards. Cards and Grid set Reddit's own View menu to Card and Compact Cards sets it to Compact, so posts arrive with the right media; the feed reloads once when that changes. Choosing Compact or Card in Reddit's View menu switches Thread to match.
 - **Read media comfortably:** use thumbnail previews in Compact Cards and open full media when you want it. Opened images and embedded players fit the post width while keeping the original player controls.
-- **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules, or a whole community with **Filter r/…** in a post's actions menu. Manage community filters in **Feed → Community filters**.
-- **Skip the blur:** turn on **Feed → Unblur spoilers** or **Unblur mature media**. Mature media unblurs only where Reddit already shows it to your signed-in account.
+- **Filter your feed:** hide, dim or blur matching posts and comments with reversible local rules, or a whole community with **Filter r/…** in a post's actions menu. Manage community filters in **Feed → Community Filters**.
+- **Skip the blur:** turn on **Feed → Unblur Spoilers** or **Unblur Mature Media**. Mature media unblurs only where Reddit already shows it to your signed-in account.
 - **Make room for posts:** collapse Reddit's right sidebar with the handle at its edge, like the left navigation rail. The feed widens into the free space, and your choice is remembered.
 - **Keep private notes:** add local author tags, notes and nicknames. Personal records stay paused when your account cannot be identified reliably.
 - **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.
 - **Keep a local reading library:** save posts and comments into collections with private notes, search, rename and removal Undo. Your local library is separate from Reddit Saved.
 - **Browse fresh posts:** optionally mark read posts, hide them and undo the last read change.
-- **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading style**.
-Choose Slate Blue Light, Dark or System in **Look → Menu theme** and **Look → Site theme**. The two modes are independent.
+- **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading Style**.
+Choose Slate Blue Light, Dark or System in **Look → Menu Theme** and **Look → Site Theme**. The two modes are independent.
 
 ## Compact Cards
 
-Compact Cards shows thumbnail-and-text rows with two-line previews and a **Thread actions** disclosure. Promoted posts use Reddit's own compact layout. Full media stays collapsed until you tap the thumbnail (**Open media**) or Reddit's existing expand control. Opened images and players keep their full readable layout.
+Compact Cards shows thumbnail-and-text rows with two-line previews and a **Thread Actions** disclosure. Promoted posts use Reddit's own compact layout. Full media stays collapsed until you tap the thumbnail (**Open Media**) or Reddit's existing expand control. Opened images and players keep their full readable layout.
 
 ## Post actions
 
-In Compact Cards and Grid, and in every view on touch devices, open **Thread actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
+In Compact Cards and Grid, and in every view on touch devices, open **Thread Actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
 
 ## Tablet and phone layouts
 
@@ -36,23 +36,23 @@ In Compact Cards on tablet-width feeds, the vote, comment and share row sits bes
 
 ## Media
 
-Native galleries retain Reddit's slide sizing and navigation. **View media** shows one image per gallery slide in order, without feed thumbnails or decorative background copies.
+Native galleries retain Reddit's slide sizing and navigation. **View Media** shows one image per gallery slide in order, without feed thumbnails or decorative background copies.
 
-Previews recover when Reddit refreshes a post or loads its media later. Hide, blur and collapse also apply to media previews. **Close media** pauses native audio/video; embedded providers keep their own playback controls.
+Previews recover when Reddit refreshes a post or loads its media later. Hide, blur and collapse also apply to media previews. **Close Media** pauses native audio/video; embedded providers keep their own playback controls.
 
 ## Local collections
 
-Use **Save to collection** in Thread actions, or beside a comment. Open **Local collections** in the feed bar or **Read → Local collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
+Use **Save to Collection** in Thread actions, or beside a comment. Open **Local Collections** in the feed bar or **Read → Local Collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
 
 ## Read tracking
 
-Set **Feed → Read posts** to **Mark** to mark posts when opening them or using **Mark read**, or **Mark and hide** to also hide them. **Show read posts** and **Undo read change** stay in the feed bar. Read markers expire after 30 days.
+Set **Feed → Read Posts** to **Mark** to mark posts when opening them or using **Mark Read**, or **Mark and Hide** to also hide them. **Show Read Posts** and **Undo Read Change** stay in the feed bar. Read markers expire after 30 days.
 
 ## Comment navigation
 
-Discussion controls sit in Reddit’s own comment row, after its sort menu: a Jump list, previous and next arrows, and a More menu. Each comment’s **Thread actions** icon shares Reddit’s native footer. Open it for local tags, parent context, collapse and other comment actions.
+Discussion controls sit in Reddit’s own comment row, after its sort menu: a Jump list, previous and next arrows, and a More menu. Each comment’s **Thread Actions** icon shares Reddit’s native footer. Open it for local tags, parent context, collapse and other comment actions.
 
-On discussion pages, use **Next top-level thread**, **Next sibling comment** or **Collapse / expand loaded replies** while keeping the parent available. **Search loaded comments** outlines matching comments and offers Previous/Next; hidden, collapsed, gated and unloaded content is excluded.
+On discussion pages, use **Next Top-Level Thread**, **Next Sibling Comment** or **Collapse / expand loaded replies** while keeping the parent available. **Search Loaded Comments** outlines matching comments and offers Previous/Next; hidden, collapsed, gated and unloaded content is excluded.
 
 ## Returning to a feed
 

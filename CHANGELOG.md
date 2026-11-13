@@ -1,3 +1,8 @@
+## 0.5.2 — 2026-11-13
+
+- Built on Core 3.15.1: menu lists and scrollbars are light in Light.
+- An update card shown in the open menu waits its turn beside other products' cards when the menu closes.
+
 ## 0.5.1 — 2026-11-12
 
 - Drop hover tips from settings that explain themselves, such as Enable Thread, Content view and Reading style.

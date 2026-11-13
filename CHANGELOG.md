@@ -1,3 +1,8 @@
+## 0.6.1 — 2026-11-13
+
+- Release notes show in full in the changelog card.
+- Built on Core 3.17.1.
+
 ## 0.6.0 — 2026-11-13
 
 - Labels are in Title Case, such as Save to Collection in Thread Actions.

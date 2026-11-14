@@ -1,3 +1,8 @@
+## 0.6.3 — 2026-11-14
+
+- WARD shows in green in the shared launcher next to Thread.
+- Built on Core 3.17.3.
+
 ## 0.6.2 — 2026-11-14
 
 - Built on Core 3.17.2: WARD shows its new green gem beside Thread in the shared launcher.

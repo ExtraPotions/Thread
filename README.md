@@ -28,4 +28,4 @@ Thread uses native page data. Personal records stay in local userscript storage 
 Donations are optional. All features remain available without donating.
 
 Thread is independent and is not affiliated with or endorsed by Reddit.
-Menus use Slate Blue in Light, Dark or System mode. Site themes offer the same three modes.
+Menus are charcoal with orange highlights in Light, Dark or System mode. Site themes use Slate Blue in the same three modes.

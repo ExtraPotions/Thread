@@ -20,7 +20,7 @@
 - **Keep a local reading library:** save posts and comments into collections with private notes, search, rename and removal Undo. Your local library is separate from Reddit Saved.
 - **Browse fresh posts:** optionally mark read posts, hide them and undo the last read change.
 - **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading Style**.
-Choose Slate Blue Light, Dark or System in **Look → Menu Theme** and **Look → Site Theme**. The two modes are independent.
+Choose Light, Dark or System in **Look → Menu Theme**, and Slate Blue Light, Dark or System in **Look → Site Theme**. The two are independent.
 
 ## Compact Cards
 

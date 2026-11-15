@@ -1,4 +1,4 @@
-## 0.6.4 — 2026-11-15
+## 0.6.4 — 2026-11-14
 
 - Replying to a comment opens the reply box at full width; Thread’s icon stays at the end of the comment’s action row.
 - Built on Core 3.17.4.

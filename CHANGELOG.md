@@ -1,3 +1,8 @@
+## 0.6.6 — 2026-11-21
+
+- On Reddit, Thread opens from its tab on the right edge of the window instead of a button in the left rail.
+- The Thread tab stacks with the other product tabs and moves up and down with them.
+
 ## 0.6.5 — 2026-11-20
 
 - The launcher is a tab on the right edge of the window instead of a badge in the corner.

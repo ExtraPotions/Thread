@@ -6,7 +6,7 @@
 
 1. Install a userscript manager such as [Violentmonkey](https://violentmonkey.github.io/get-it/) or [Tampermonkey](https://www.tampermonkey.net/).
 2. [Install Thread for Reddit](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) and confirm in your userscript manager.
-3. Refresh modern Reddit and open the Thread gem below the left navigation rail's collapse handle. On other sites Thread is a tab on the right edge of the window, next to the tabs of any other ExtraPotions products.
+3. Refresh modern Reddit and open Thread from its tab on the right edge of the window, next to the tabs of any other ExtraPotions products.
 
 ## Features and controls
 

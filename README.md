@@ -4,7 +4,7 @@ Adjust modern Reddit’s layouts, filter your feed and keep a private reading li
 
 [Install Thread for Reddit](https://github.com/ExtraPotions/Thread/releases/latest/download/thread.user.js) · Requires [Violentmonkey](https://violentmonkey.github.io/get-it/) or [Tampermonkey](https://www.tampermonkey.net/).
 
-After installing, refresh modern Reddit and open the Thread gem below the left navigation rail’s collapse handle. [Setup and controls →](docs/usage.md)
+After installing, refresh modern Reddit and open Thread from its tab on the right edge of the window. [Setup and controls →](docs/usage.md)
 
 ## Features
 

@@ -1,3 +1,8 @@
+## 0.6.5 — 2026-11-20
+
+- The launcher is a tab on the right edge of the window instead of a badge in the corner.
+- With other ExtraPotions products on the page, each has its own tab; drag to move them, Shift+drag to reorder.
+
 ## 0.6.4 — 2026-11-14
 
 - Replying to a comment opens the reply box at full width; Thread’s icon stays at the end of the comment’s action row.

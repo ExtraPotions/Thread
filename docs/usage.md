@@ -16,7 +16,7 @@
 - **Skip the blur:** turn on **Feed → Unblur Spoilers** or **Unblur Mature Media**. Mature media unblurs only where Reddit already shows it to your signed-in account.
 - **Make room for posts:** collapse Reddit's right sidebar with the handle at its edge, like the left navigation rail. The feed widens into the free space, and your choice is remembered.
 - **Keep private notes:** add local author tags, notes and nicknames. Personal records stay paused when your account cannot be identified reliably.
-- **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled. Jump targets do not filter comments or search unloaded replies.
+- **Navigate discussions:** jump between loaded comments, return to a reading position and track unread comments when local read tracking is enabled.
 - **Keep a local reading library:** save posts and comments into collections with private notes, search, rename and removal Undo. Your local library is separate from Reddit Saved.
 - **Browse fresh posts:** optionally mark read posts, hide them and undo the last read change.
 - **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading Style**.
@@ -28,7 +28,7 @@ Compact Cards shows thumbnail-and-text rows with two-line previews and a **Threa
 
 ## Post actions
 
-In Compact Cards and Grid, and in every view on touch devices, open **Thread Actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
+Open **Thread Actions** with the small icon button at the right end of the post's voting/share row. It matches the native button size and opens a menu list without resizing the card. On narrow Grid cards with many native buttons, the row wraps and the icon stays at the right on a second line. Posts without a native action row show the icon at the end of the post.
 
 ## Tablet and phone layouts
 
@@ -42,7 +42,7 @@ Previews recover when Reddit refreshes a post or loads its media later. Hide, bl
 
 ## Local collections
 
-Use **Save to Collection** in Thread actions, or beside a comment. Open **Local Collections** in the feed bar or **Read → Local Collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
+Use **Save to Collection** in **Thread Actions**. Open **Local Collections** in the feed bar or **Read → Local Collections** to manage up to 500 bookmarks. Settings export/import includes this library; private notes stay in your local userscript storage until you export them.
 
 ## Read tracking
 
@@ -62,7 +62,7 @@ Account switching is unavailable. Thread uses native page data and keeps persona
 
 ## Shared menu
 
-Each section is a drawer: opening one closes the others, and the menu reopens on the one you used last. Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing is in **Look**. With multiple ExtraPotions products on the same page, open the shared launcher and choose a product. Donations are available from the header heart.
+Each section is a drawer: opening one closes the others, and the menu reopens on the one you used last. Open **System** for status, diagnostics, troubleshooting and Reset. Menu sizing is in **Look**. With multiple ExtraPotions products on the same page, their tabs stack on the right edge of the window. Donations are available from the header heart.
 
 ## Support and verification
 

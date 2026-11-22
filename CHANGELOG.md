@@ -1,3 +1,8 @@
+## 0.6.7 — 2026-11-21
+
+- Removed hovertips that only repeated a setting's label.
+- Built on Core 3.18.2.
+
 ## 0.6.6 — 2026-11-21
 
 - On Reddit, Thread opens from its tab on the right edge of the window instead of a button in the left rail.

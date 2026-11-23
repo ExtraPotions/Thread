@@ -1,3 +1,8 @@
+## 0.6.8 — 2026-11-22
+
+- Recognizes your signed-in Reddit account again after Reddit stopped showing the username on its pages.
+- Another user's profile page is never mistaken for your account.
+
 ## 0.6.7 — 2026-11-21
 
 - Removed hovertips that only repeated a setting's label.

@@ -1,3 +1,9 @@
+## 0.6.9 — 2026-11-25
+
+- Subreddit and author hover cards stay above feed rows and the right sidebar's edge line.
+- The Reddit theme uses charcoal with Thread's orange instead of Slate Blue.
+- Built on Core 3.18.3.
+
 ## 0.6.8 — 2026-11-22
 
 - Recognizes your signed-in Reddit account again after Reddit stopped showing the username on its pages.

@@ -20,7 +20,7 @@
 - **Keep a local reading library:** save posts and comments into collections with private notes, search, rename and removal Undo. Your local library is separate from Reddit Saved.
 - **Browse fresh posts:** optionally mark read posts, hide them and undo the last read change.
 - **Tune your reading:** choose Reddit, Comfortable, Dense or Book typography in **Look → Reading Style**.
-Choose Light, Dark or System in **Look → Menu Theme**, and Slate Blue Light, Dark or System in **Look → Site Theme**. The two are independent.
+Choose Light, Dark or System in **Look → Menu Theme**, and Light, Dark or System in **Look → Site Theme**. The two are independent.
 
 ## Compact Cards
 
@@ -70,4 +70,4 @@ Each section is a drawer: opening one closes the others, and the menu reopens on
 
 ## Look
 
-The menu is charcoal with orange highlights, in Light, Dark and System. System follows your device and updates when its appearance changes. Site theme uses Slate Blue with the same three choices and is independent of the menu. Legacy palette settings migrate to System. Gem themes, palette choices and custom menu opacity are no longer available.
+The menu is charcoal with orange highlights, in Light, Dark and System. System follows your device and updates when its appearance changes. Site theme uses the same charcoal with orange highlights and the same three choices and is independent of the menu. Legacy palette settings migrate to System. Gem themes, palette choices and custom menu opacity are no longer available.
